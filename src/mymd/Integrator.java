@@ -7,7 +7,7 @@ package mymd;
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
-public interface Integrator<E extends MdSystem<? extends MdVector>>{
+public interface Integrator<E extends MdSystem<?>>{
 
 	/**
 	 * using position, velocity, and(or) force at time t stored in sys
@@ -20,8 +20,8 @@ public interface Integrator<E extends MdSystem<? extends MdVector>>{
 	 * @param prm MdParam instance containing simulation setup parameters
 	 * @param newTraj Trajectory instance for storing computed result
 	 */
-	public <E> void forwardPosition<E>(MdSystem<?> sys, Topology top, 
-										MdParam prm, Trajectory newTraj);
+	public <E> void forwardPosition<E>(E sys, Topology top, 
+										MdParam prm, Trajectory<?> newTraj);
 
 
 	/**
@@ -36,7 +36,7 @@ public interface Integrator<E extends MdSystem<? extends MdVector>>{
 	 * @param prm MdParam instance containing simulation setup parameters
 	 * @param newTraj Trajectory instance for storing computed result
 	 */
-	public <E> void forwardVelocity<E>(MdSystem<?> sys, Topology top, 
-                                        MdParam prm, Trajectory newTraj);
+	public <E> void forwardVelocity<E>(E sys, Topology top, 
+                                        MdParam prm, Trajectory<?> newTraj);
 
 }
