@@ -1,6 +1,6 @@
 package mymd;
 
-public class DomainDecomposition<E extends MdVector> implements Decomposition<E>{
+public class DomainDecomposition implements Decomposition{
 
 	private final int npartition;
 	private List<List<Integer>> domains;
@@ -25,8 +25,8 @@ public class DomainDecomposition<E extends MdVector> implements Decomposition<E>
 		return this.domains.get(i);
 	}
 
-	public void partition(MdSystem<E> sys){
-
+	public void partition(MdSystem sys){
+		// Need to be implemented!
 	}
 
 }

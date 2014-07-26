@@ -4,7 +4,7 @@ package mymd.datatype;
  * Trajectory class contains dynamic simulation system information 
  * such as position, velocity, force, and etc that changes over time
  * In order to optimize intensive computation on these data, arrays are 
- * used to store instances of MdVector that contain primitive data types
+ * used to store instances of E that contain primitive data types
  *
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
@@ -90,17 +90,17 @@ public class Trajectory<E extends MdVector> {
 
     private void initPositions() {
         for ( int i = 0; i < this.size; i++ ) {
-            this.positions[i] = new MdVector();
+            this.positions[i] = E.create();
         }
     }
     private void initVelocities() {
         for ( int i = 0; i < this.size; i++ ) {
-            this.velocities[i] = new MdVector();
+            this.velocities[i] = E.create();
         }
     }
     private void initForces() {
         for ( int i = 0; i < this.size; i++ ) {
-            this.forces[i] = new MdVector();
+            this.forces[i] = E.create();
         }
     }
 
