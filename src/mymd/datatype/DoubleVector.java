@@ -1,6 +1,6 @@
 package mymd.datatype;
 
-public class DoubleVector{
+public class DoubleVector implements MdVector{
 
     private double x,y,z;
 
