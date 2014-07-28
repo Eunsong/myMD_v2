@@ -37,16 +37,40 @@ public class DomainDecomposition implements Decomposition{
 		}
 	} 
 
-	public List<List<Integer>> getPartitions(){
-		return this.domains;
-	}
 
-	public List<Integer> getPartition(int i){
-		if ( i >= npartition ) {
+	/**
+	 * Exports particle list in the specified domain and associated buffer region
+	 * The first element indicates the number of particles in the domain region 
+	 *
+	 * @param i an identification number specifying which partition information 
+	 * 	        will be retrived
+	 * @return int array where the first element indicates the number of particles
+	 *		   in the domain region
+	 */
+	public in[] getPartition(int i){
+		if ( i >= npartition ) {		
 			throw new IllegalArgumentException("i greater than npartition!");
 		}
-		return this.domains.get(i);
+		else {
+			Domain domain = this.domains.get(i);
+			int domainSize = domain.getDomain().size();
+			int bufferSize = domain.getBuffer().size();
+			int totalSize = domainSize + bufferSize;
+			int[] outArray = new int[totalSize + 1];
+			outArray[0] = domainSize; 
+			int j = 1;
+			for ( int particleID : domain.getDomain() ){
+				outArray[j] = particleID;	
+				j++;
+			}
+			for ( int particleID : domain.getBuffer() ){
+				outArray[j] = particleID;
+				j++;
+			}
+			return outArray;
+		}
 	}
+
 
 	public void partition(MdSystem sys){
 		// Need to be implemented!

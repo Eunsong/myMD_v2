@@ -11,25 +11,28 @@ package mymd;
 public interface Decomposition{
 
 	/**
-	 * getPartitions method returns partitioned particles result 
+	 * exportPartitions method returns partitioned particles result 
 	 * stored in a member variable of a Decomposition instance
 	 *
-	 * @return List of Lits containing integers indicating 
-	 *         particle identification numbers. For example, 
-	 *         The first element of the list is a list of particle
-	 *         id numbers that are members of the first partition
+	 * @return int array containing partitioned system information.
+	 *         Specific form of output array depends on the implementation.
+	 *		   In any case, output array should contain sufficient information
+	 *		   to update entire partitions.
 	 */
-	public List<List<Integer>> getPartitions();
+	/** UNNECCESSARY METHOD **/
+	//public int[] exportPartitions();
 
 
 	/**
 	 * getPartition method returns particles in partition i
 	 * stored in a member variable of a Decomposition instance
 	 *
-	 * @return List containing integers indicating 
-	 *         particle identification numbers in partition i. 
+	 * @return int array containing paricle information in a partition i.
+	 *         Specific form of output array depends on the implementation.
+	 *		   In any case, output array should contain sufficient information
+	 *		   to update a partition i.
 	 */
-	public List<Integer> getPartition(int i);
+	public int[] exportPartition(int i);
 
 	
 	/**
@@ -48,6 +51,6 @@ public interface Decomposition{
 	 * @param sys MdSystem instance containing current particle locations
 	 * @param np Number of partitions (typically equal to the number of nodes)
 	 */
-	public void partiion(MdSystem<?> sys);
+	public void partiion(MdSystem<?> sys, int np);
 
 }
