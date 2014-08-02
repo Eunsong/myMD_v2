@@ -7,6 +7,9 @@ public class DoubleVector implements MdVector{
 	public static DoubleVector create(){
 		return new DoubleVector();
 	}
+	public static DoubleVector create(MdVector v){
+		return new DoubleVector(v);
+	}
 
     public DoubleVector() {
         this.x = 0.0;
@@ -21,9 +24,9 @@ public class DoubleVector implements MdVector{
     }
 
     public DoubleVector(MdVector vec) {
-        this.x = vec.getx();
-        this.y = vec.gety();
-        this.z = vec.getz();
+        this.x = vec.getX();
+        this.y = vec.getY();
+        this.z = vec.getZ();
     }
 
 	public double getX(){
@@ -45,9 +48,9 @@ public class DoubleVector implements MdVector{
     }
 
     public void copy(MdVector vec) {
-        this.x = vec.getx();
-        this.y = vec.gety();
-        this.z = vec.getz();
+        this.x = vec.getX();
+        this.y = vec.getY();
+        this.z = vec.getZ();
     }
 	public void copy(double x, double y, double z){
 		this.x = x;
@@ -56,54 +59,96 @@ public class DoubleVector implements MdVector{
 	}
 
     public void sub(MdVector vec) {
-        this.x -= vec.getx();
-        this.y -= vec.gety();
-        this.z -= vec.getz();
+        this.x -= vec.getX();
+        this.y -= vec.getY();
+        this.z -= vec.getZ();
     }
 
     public void add(MdVector vec) {
-        this.x += vec.getx();
-        this.y += vec.gety();
-        this.z += vec.getz();
+        this.x += vec.getX();
+        this.y += vec.getY();
+        this.z += vec.getZ();
     }
+
+	public void add(MdVector vec1, MdVector vec2){
+        this.x += (vec1.getX() + vec2.getX() );
+        this.y += (vec1.getY() + vec2.getY() );
+        this.z += (vec1.getZ() + vec2.getZ() );
+    }
+
+    public void add(MdVector vec1, MdVector vec2, MdVector vec3){
+        this.x += (vec1.getX() + vec2.getX() + vec3.getX() );
+        this.y += (vec1.getY() + vec2.getY() + vec3.getY() );
+        this.z += (vec1.getZ() + vec2.getZ() + vec3.getZ() );
+    }
+
+
+
+	public void times(double factor){
+		this.x *= factor;
+		this.y *= factor;
+		this.z *= factor;
+	}
+
+	public void times(int factor){
+		this.x *= factor;
+		this.y *= factor;
+		this.z *= factor;
+	}
+
+	public void reset(){
+		this.x = 0.0;
+		this.y = 0.0;
+		this.z = 0.0;
+	}
+
+	
 
 
 	/******** Static methods ********/
 
     public static double norm(MdVector vec) {
-        return Math.sqrt( vec.getx()*vec.getx() + vec.gety()*vec.gety() + vec.getz()*vec.getz() );
+        return Math.sqrt( vec.getX()*vec.getX() + vec.getY()*vec.getY() + vec.getZ()*vec.getZ() );
     }
 
     public static DoubleVector sub(MdVector v1, MdVector v2) {
-        return new DoubleVector( v1.getx() - v2.getx(), v1.gety() - v2.gety(), v1.getz() - v2.getz() );
+        return new DoubleVector( v1.getX() - v2.getX(), v1.getY() - v2.getY(), v1.getZ() - v2.getZ() );
     }
 
     public static DoubleVector add(MdVector v1, MdVector v2) {
-        return new DoubleVector( v1.getx() + v2.getx(), v1.gety() + v2.gety(), v1.getz() + v2.getz() );
+        return new DoubleVector( v1.getX() + v2.getX(), v1.getY() + v2.getY(), v1.getZ() + v2.getZ() );
     }
 
     // three vector addition
     public static DoubleVector add(MdVector v1, MdVector v2, MdVector v3) {
-        return new DoubleVector( v1.getx() + v2.getx() + v3.getx(), v1.gety() + v2.gety() + v3.gety(), v1.getz() + v2.getz() + v3.getz());
+        return new DoubleVector( v1.getX() + v2.getX() + v3.getX(), v1.getY() + v2.getY() + v3.getY(), v1.getZ() + v2.getZ() + v3.getZ());
 
     }
 
     public static double dot(MdVector v1, MdVector v2) {
-        return (v1.getx()*v2.getx() + v1.gety()*v2.gety() + v1.getz()*v2.getz());
+        return (v1.getX()*v2.getX() + v1.getY()*v2.getY() + v1.getZ()*v2.getZ());
     }
     public static DoubleVector cross(MdVector v1, MdVector v2) {
-        return new DoubleVector( v1.gety()*v2.getz() - v1.getz()*v2.gety(), -v1.getx()*v2.getz() + v1.getz()*v2.getx(), v1.getx()*v2.gety() - v1.gety()*v2.getx() );
+        return new DoubleVector( v1.getY()*v2.getZ() - v1.getZ()*v2.getY(), -v1.getX()*v2.getZ() + v1.getZ()*v2.getX(), v1.getX()*v2.getY() - v1.getY()*v2.getX() );
     }
 
-    public DoubleVector times(double factor) {
-        DoubleVector tmp = new DoubleVector( this.x*factor, this.y*factor, this.z*factor );
+    public static DoubleVector times(double factor, MdVector v) {
+        DoubleVector tmp = new DoubleVector( v.x*factor, v.y*factor, v.z*factor );
         return tmp;
     }
-    public DoubleVector times(int factor) {
-        DoubleVector tmp = new DoubleVector( this.x*factor, this.y*factor, this.z*factor );
+    public static DoubleVector times(MdVector v, double factor) {
+        DoubleVector tmp = new DoubleVector( v.x*factor, v.y*factor, v.z*factor );
         return tmp;
     }
 
+    public static DoubleVector times(int factor, MdVector v) {
+        DoubleVector tmp = new DoubleVector( v.x*factor, v.y*factor, v.z*factor );
+        return tmp;
+    }
+	public static DoubleVector times(MdVector v, int factor){
+        DoubleVector tmp = new DoubleVector( v.x*factor, v.y*factor, v.z*factor );
+        return tmp;
+    }
 
 
 

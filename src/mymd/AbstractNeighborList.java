@@ -9,8 +9,8 @@ package mymd;
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
-public abstract class AbstractNeighborList<E extends MdVector> 
-					  			    implements NeighborList<E>{
+public abstract class AbstractNeighborList<E extends MdVector, 
+			 T extends MdSystem<E, ?>> implements NeighborList<E, T>{
 
 	private List<SubList> nblist;
 	private static final int INIT_CAPACITY = 1000;
@@ -30,6 +30,10 @@ public abstract class AbstractNeighborList<E extends MdVector>
 		}
 	}
 
+	public int getSize(){
+		return this.nblist.size();
+	}
+
 	public int[] getArray(int i){
 		if ( i >= nblist.size() ){
 			throw new IllegalArgumentException
@@ -41,9 +45,10 @@ public abstract class AbstractNeighborList<E extends MdVector>
 	 * abstract method update() needs to be implemented from a sub class
 	 *
 	 * @param sys
+	 * @param prm 
 	 * @param positions
 	 */
-	public abstract void update(MdSystem<?> sys, E[] positions);
+	public abstract void update(T sys, E[] positions);
 
 
 

@@ -8,7 +8,7 @@ package mymd;
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
-public interface Decomposition{
+public interface Decomposition<E extends MdSystem<?>>{
 
 	/**
 	 * exportPartitions method returns partitioned particles result 
@@ -51,6 +51,6 @@ public interface Decomposition{
 	 * @param sys MdSystem instance containing current particle locations
 	 * @param np Number of partitions (typically equal to the number of nodes)
 	 */
-	public void partiion(MdSystem<?> sys, int np);
+	public void partiion(E sys, int np);
 
 }

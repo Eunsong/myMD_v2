@@ -1,7 +1,7 @@
 package mymd;
 
-public interface Energy<E extends MdVector>{
+public interface Energy<E extends MdVector, T extends MdSystem<E>>{
 
-	public double get(MdSystem<E> sys, Topology top, int i, int j);
+	public double get(T sys, int i, int j);
 
 }

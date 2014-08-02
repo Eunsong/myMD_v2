@@ -4,11 +4,13 @@ public interface MdVector{
 
 	public static MdVector create();
 
-    public MdVector();
+	public static MdVector create(MdVector vec);
 
-    public MdVector(double x, double y, double z);
+    //public MdVector();
 
-    public MdVector(MdVector vec);
+    //public MdVector(double x, double y, double z);
+
+    //public MdVector(MdVector vec);
 
 	public double getX();
 	public double getY();
@@ -25,6 +27,15 @@ public interface MdVector{
     public void sub(MdVector vec);
 
     public void add(MdVector vec);
+	public void add(MdVector vec1, MdVector vec2);
+	public void add(MdVector vec1, MdVector vec2, MdVector vec3);
+
+	public void times(double factor);
+	public void times(int factor);
+
+
+	// set to 0 vector	
+	public void reset();
 
 
 	/******** Static methods ********/
@@ -42,12 +53,11 @@ public interface MdVector{
 
     public static MdVector cross(MdVector v1, MdVector v2);
 
-    public MdVector times(double factor);
+    public static MdVector times(double factor, MdVector v);
+    public static MdVector times(MdVector v, double factor);
 
-    public MdVector times(int factor);
-
-
-
+    public static MdVector times(int factor, MdVector v);
+	public static MdVector times(MdVector v, int factor);
 
 
 }

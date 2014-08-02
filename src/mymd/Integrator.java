@@ -7,21 +7,45 @@ package mymd;
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
-public interface Integrator{
+public interface Integrator<E extends MdSystem<?, ?>>{
+
+
+
+	/**
+	 * using position, velocity, and(or) force at time t stored in sys
+	 * derive a new position at t+dt and update sys(specific
+	 * implement may vary) 
+	 *
+	 * @param sys MdSystem object containing all necessary information 
+	 *			  at current time t
+	 */
+	public void forwardPosition(E sys);
+
 
 	/**
 	 * using position, velocity, and(or) force at time t stored in sys
 	 * derive a new position at t+dt and store the result in newTraj
 	 *
-	 * @param sys MdSystem instance containing all necessary information 
+	 * @param sys MdSystem object containing all necessary information 
 	 *			  at current time t
-	 * @param top Topology instance containing all static 
-	 * 			  molecular/atomistic information
-	 * @param prm MdParam instance containing simulation setup parameters
-	 * @param newTraj Trajectory instance for storing computed result
+	 * @param prm MdParameter object containing simulation setup parameters
+	 * @param newTraj Trajectory object for storing computed result
 	 */
-	public void forwardPosition(MdSystem<?> sys, Topology top, 
-										MdParam prm, Trajectory<?> newTraj);
+	public void forwardPosition(E sys, MdParameter prm, Trajectory<?> newTraj);
+
+
+
+
+	/**
+	 * using position, velocity, and(or) force at time t stored in sys
+	 * and possibly some information(force for example) at time t+dt stored
+	 * in sys, derive a new velocity at t+dt and update sys(specific
+	 * implementation may vary)
+	 *
+	 * @param sys MdSystem object containing all necessary information 
+	 *			  at current time t
+	 */
+	public void forwardVelocity(E sys);
 
 
 	/**
@@ -29,14 +53,11 @@ public interface Integrator{
 	 * and possibly some information(force for example) at time t+dt stored
 	 * in newTraj, derive a new velocity at t+dt and store the result in newTraj
 	 *
-	 * @param sys MdSystem instance containing all necessary information 
+	 * @param sys MdSystem object containing all necessary information 
 	 *			  at current time t
-	 * @param top Topology instance containing all static 
-	 * 			  molecular/atomistic information
-	 * @param prm MdParam instance containing simulation setup parameters
-	 * @param newTraj Trajectory instance for storing computed result
+	 * @param prm MdParameter object containing simulation setup parameters
+	 * @param newTraj Trajectory object for storing computed result
 	 */
-	public void forwardVelocity(MdSystem<?> sys, Topology top, 
-                                        MdParam prm, Trajectory<?> newTraj);
+	public void forwardVelocity(E sys, MdParameter prm, Trajectory<?> newTraj);
 
 }

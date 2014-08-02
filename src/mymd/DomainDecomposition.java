@@ -2,26 +2,26 @@ package mymd;
 
 /**
  * DomainDecomposition class implements Decomposition interface for 
- * optimized parallel md simulations using messege parallel interface
+ * optimized parallel md simulations using messege parallel interface.
  * The key idea of the domain decomposition is to provide an efficient partitioning
  * scheme that groups particles based on their physical locations(domains)
  * such that each domain serves as a self-sufficient chunk of data for 
- * nonbonded force calculation
+ * nonbonded force calculation.
  * Ultimately, one should be able to partition entire system into smaller 
- * number of particles which consequently decreases the amount of data need 
- * to be transfered across the nodes
+ * number of particles which decreases the amount of data need 
+ * to be transfered across the nodes as a result.
  * 
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
 
-public class DomainDecomposition implements Decomposition{
+public class DomainDecomposition implements Decomposition<E extends MdSystem<?>>{
 
 	private static final double CAPACITY_FACTOR = 1.2;
 	private final int npartition;
 	private List<Domain> domains;
 
-	public DomainDecomposition(MdSystem<?> sys, int np){
+	public DomainDecomposition(E sys, int np){
 		this.npartition = np;
 		// get total number of particles from sys
 		int totalNumber = /***** FILL IN ******/
@@ -72,7 +72,7 @@ public class DomainDecomposition implements Decomposition{
 	}
 
 
-	public void partition(MdSystem sys){
+	public void partition(E sys){
 		// Need to be implemented!
 	}
 
