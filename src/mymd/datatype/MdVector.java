@@ -59,60 +59,93 @@ public class MdVector{
         return this.x*this.x + this.y*this.y + this.z*this.z;
     }
 
-    public MdVector copy(MdVector vec) {
+    public void copySet(MdVector vec) {
         this.x = vec.getX();
         this.y = vec.getY();
         this.z = vec.getZ();
-		return this;
     }
-	public MdVector copy(double x, double y, double z){
+	public void copySet(double x, double y, double z){
 		this.x = x;
 		this.y = y;
 		this.z = z;
+	}
+
+    public void subSet(MdVector vec) {
+        this.x -= vec.getX();
+        this.y -= vec.getY();
+        this.z -= vec.getZ();
+    }
+
+    public void addSet(MdVector vec) {
+        this.x += vec.getX();
+        this.y += vec.getY();
+        this.z += vec.getZ();
+    }
+
+	public void addSet(MdVector vec1, MdVector vec2){
+        this.x += (vec1.getX() + vec2.getX() );
+        this.y += (vec1.getY() + vec2.getY() );
+        this.z += (vec1.getZ() + vec2.getZ() );
+    }
+
+    public void addSet(MdVector vec1, MdVector vec2, MdVector vec3){
+        this.x += (vec1.getX() + vec2.getX() + vec3.getX() );
+        this.y += (vec1.getY() + vec2.getY() + vec3.getY() );
+        this.z += (vec1.getZ() + vec2.getZ() + vec3.getZ() );
+    }
+
+
+    public MdVector copy(MdVector vec) {
+		copySet(vec);
+		return this;
+    }
+	public MdVector copy(double x, double y, double z){
+		copySet(x, y, z);
 		return this;
 	}
 
     public MdVector sub(MdVector vec) {
-        this.x -= vec.getX();
-        this.y -= vec.getY();
-        this.z -= vec.getZ();
+		subSet(vec);
 		return this;
     }
 
     public MdVector add(MdVector vec) {
-        this.x += vec.getX();
-        this.y += vec.getY();
-        this.z += vec.getZ();
+		addSet(vec);
 		return this;
     }
 
 	public MdVector add(MdVector vec1, MdVector vec2){
-        this.x += (vec1.getX() + vec2.getX() );
-        this.y += (vec1.getY() + vec2.getY() );
-        this.z += (vec1.getZ() + vec2.getZ() );
+		addSet(vec1, vec2);
 		return this;
     }
 
     public MdVector add(MdVector vec1, MdVector vec2, MdVector vec3){
-        this.x += (vec1.getX() + vec2.getX() + vec3.getX() );
-        this.y += (vec1.getY() + vec2.getY() + vec3.getY() );
-        this.z += (vec1.getZ() + vec2.getZ() + vec3.getZ() );
+		addSet(vec1, vec2, vec3);
 		return this;
     }
 
 
 
-	public MdVector times(double factor){
+	public void timesSet(double factor){
 		this.x *= factor;
 		this.y *= factor;
 		this.z *= factor;
+	}
+
+	public void timesSet(int factor){
+		this.x *= factor;
+		this.y *= factor;
+		this.z *= factor;
+	}
+
+
+	public MdVector times(double factor){
+		timesSet(factor);
 		return this;
 	}
 
 	public MdVector times(int factor){
-		this.x *= factor;
-		this.y *= factor;
-		this.z *= factor;
+		timesSet(factor);
 		return this;
 	}
 
@@ -122,7 +155,13 @@ public class MdVector{
 		this.z = 0.0;
 	}
 
-	
+	/**
+	 * done method is used to finalize successive operations 
+	 * e.g. vector1.add(someVector).sub(anotherVcetor).done()
+	 */
+	public void done(){
+		// do nothing	
+	}	
 
 
 	/******** Static methods ********/
