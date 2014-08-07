@@ -1,15 +1,17 @@
 package mymd;
 
-public interface Force<E extends MdVector, T extends MdSystem<E>>{
+import mymd.datatype.MdVector;
 
-	public <E> E get( T sys, int i, int j, double r);
+public interface Force<T extends MdSystem<?>>{
+
+	public MdVector get( T sys, int i, int j);
 
 	/**  
-	 * Update all forces in currTraj of sys using nblist
+	 * Update all forces in newTraj of sys using nblist
 	 *
 	 * @param sys
 	 * @param nblist 
 	 */
-	public <E> void update( T sys, NeighborList nblist ); 
+	public void update( T sys, NeighborList nblist ); 
 
 }

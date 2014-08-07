@@ -1,7 +1,8 @@
 package mymd;
 
-public class VelocityVerlet<E extends MdVector, T extends MdSystem<?, ?>> 
-												 implements Integrator<T>{
+import mymd.datatype.*;
+
+public class VelocityVerlet<T extends MdSystem<?>> implements Integrator<T>{
 
 	private final double dt;
 
@@ -12,26 +13,25 @@ public class VelocityVerlet<E extends MdVector, T extends MdSystem<?, ?>>
 	public void forwardPosition(T sys){
 		Trajectory currTraj = sys.getCurrTraj();
 		Trajectory newTraj = sys.getNewTraj();
-		newTraj.resetPositions(); // reset new positions to 0
 		int N = currTraj.getSize();
-		E vdt = E.create();
-		E adt2 = E.create();
-		E box = currTraj.getBox();
+		MdVector vdt = new MdVector();
+		MdVector adt2 = new MdVector();
+		MdVector box = currTraj.getBox();
+		newTraj.setBox(box); // assumes fixed volume
 
 		for ( int i = 0; i < N; i++){
 			double m = sys.getParticle(i).getMass();
-			E newPosition = newTraj.getPosition(i);
-			vdt.copy( currTraj.getVel(i) );
-			vdt.times(dt); // v(t)*dt
-			adt2.copy( currTraj.getForce(i) );
-			adt2.times(0.5*dt*dt/m); // 0.5*a(t)+dt^2
-			newPosition.add( currTraj.getPosition(i), vdt, adt2);
+			MdVector newPosition = newTraj.getPosition(i);
+			vdt.copy( currTraj.getVelocity(i) ).times(dt).done(); // v(t)*dt
+			adt2.copy( currTraj.getForce(i) ).times(0.5*dt*dt/m).done(); // 0.5*a(t)+dt^2
+			// x(t+dt) = x(t) + v(t)*dt + 0.5*a(t)*dt^2
+			newPosition.copy(currTraj.getPosition(i)).add(vdt, adt2).done();
 			pbc(box, newPosition );
 		}	
 	} 
 
 
-	public void forwardPosition(T sys, MdParam prm, Trajectory<?> newTraj){
+	public void forwardPosition(T sys, MdParameter prm, Trajectory newTraj){
 		throw new UnsupportedOperationException();
 	}
 
@@ -41,41 +41,39 @@ public class VelocityVerlet<E extends MdVector, T extends MdSystem<?, ?>>
 		Trajectory currTraj = sys.getCurrTraj();
 		Trajectory newTraj = sys.getNewTraj();
 		int N = currTraj.getSize();
-		E adt = E.create(); // 0.5*a(t)*dt term
-		E atdtdt = E.create(); // 0.5*a(t+dt)*dt term
-		newTraj.resetVelocities(); // reset new velocities to 0
+		MdVector adt = new MdVector(); // 0.5*a(t)*dt term
+		MdVector atdtdt = new MdVector(); // 0.5*a(t+dt)*dt term
 
 		for ( int i = 0; i < N; i ++) {
 			double m = sys.getParticle(i).getMass();
-			E newV = newTraj.getVelocity(i); // v(t+dt)
-			E oldV = currTraj.getVelocity(i); // v(t)
-			E newF = newTraj.getForce(i); // F(t+dt)
-			E oldF = currTraj.getForce(i); // F(t)
-			adt.copy(oldF);
-			adt.times(0.5*dt/m); // 0.5*a(t)*dt
-			atdtdt.copy(newF);
-			atdtdt.times(0.5*dt/m); // 0.5*a(t+dt)+dt
-			newV.add( oldV, adt, adtdt );
+			MdVector newV = newTraj.getVelocity(i); // v(t+dt)
+			MdVector oldV = currTraj.getVelocity(i); // v(t)
+			MdVector newF = newTraj.getForce(i); // F(t+dt)
+			MdVector oldF = currTraj.getForce(i); // F(t)
+			adt.copy(oldF).times(0.5*dt/m).done(); // 0.5*a(t)*dt
+			atdtdt.copy(newF).times(0.5*dt/m).done(); // 0.5*a(t+dt)+dt
+			// v(t+dt) = v(t)+0.5*a(t)*dt + 0.5*a(t+dt)*dt
+			newV.copy(oldV).add( adt, atdtdt ).done();
 		}
 
 		// ADD RATTLE HERE
 	}
 
 
-    public void forwardVelocity(E sys, MdParam prm, Trajectory<?> newTraj){
+    public void forwardVelocity(T sys, MdParameter prm, Trajectory newTraj){
 		throw new UnsupportedOperationException();
 	}
 
 
 
-	private static void pbc(E box, E pos){
-        if ( pos.getX() > box.getX() ) pos.getX() = pos.getX() - box.getX();
-        else if ( pos.getX() < 0 ) pos.getX() = pos.getX() + box.getX();
+	private static void pbc(MdVector box, MdVector pos){
+        if ( pos.getX() > box.getX() ) pos.setX( pos.getX() - box.getX() );
+        else if ( pos.getX() < 0 ) pos.setX( pos.getX() + box.getX() );
 
-        if ( pos.getY() > box.getY() ) pos.getY() = pos.getY() - box.getY();
-        else if ( pos.getY() < 0 ) pos.getY() = pos.getY() + box.getY();
+        if ( pos.getY() > box.getY() ) pos.setY( pos.getY() - box.getY() );
+        else if ( pos.getY() < 0 ) pos.setY( pos.getY() + box.getY() );
 
-        if ( pos.getZ() > box.getZ() ) pos.getZ() = pos.getZ() - box.getZ();
-        else if ( pos.getZ() < 0 ) pos.getZ() = pos.getZ() + box.getZ();
+        if ( pos.getZ() > box.getZ() ) pos.setZ( pos.getZ() - box.getZ() );
+        else if ( pos.getZ() < 0 ) pos.setZ( pos.getZ() + box.getZ() );
 	}
 }

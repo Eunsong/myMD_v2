@@ -1,55 +1,107 @@
 package mymd;
 
+import mymd.datatype.*;
+import java.util.List;
+import java.util.ArrayList;
+import java.util.Arrays;
+
 /**
  * AbstractNeighborList class provides skeleton code for implementing 
  * NeighborList interface. Internal sub-lists are stored in inner class
- * SubList in an array rather than List to optimize performance.
+ * SubList in an array instead of a List to optimize performance.
  *  
  *
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
-public abstract class AbstractNeighborList<E extends MdVector, 
-			 T extends MdSystem<E, ?>> implements NeighborList<E, T>{
+public abstract class AbstractNeighborList<T extends MdSystem<?>> 
+									   implements NeighborList<T>{
 
-	private List<SubList> nblist;
-	private static final int INIT_CAPACITY = 1000;
-	private static int max_capacity = INIT_CAPACITY; // max sublist size
+	protected List<SubList> nblist;
+	protected static final int INIT_CAPACITY = 1000;
+	protected static int max_capacity = INIT_CAPACITY; // max sublist size
+	protected final double rc; // cut-off distance for neighbor lists
 
 	/**
 	 * constructor with an input parameter specifying total number of particles
 	 * (i.e. total number of sub-neighbor lists where each sub-neighbor list 
 	 *  contains list of one's entire neighbors)
 	 *
-	 * @param numberOfParticles total number of particles, or sub-neighborlists. 
+	 * @param numberOfParticles total number of particles, or sub-neighborlists.
+	 * @param rc cut-off distance for neighbor list 
 	 */
-	public NeighborList(int numberOfParticles){
+	protected AbstractNeighborList(int numberOfParticles, double rc){
 		this.nblist = new ArrayList<SubList>(numberOfParticles);
 		for ( int i = 0; i < numberOfParticles; i++){
 			nblist.add(new SubList());
 		}
+		this.rc = rc;
 	}
 
+
+	/**
+	 * getSize() method returns the number of sublists which is essentially
+	 * numberOfParticles value given when constructor was invoked.
+	 *
+	 * @return the number of sublists (i.e. number of particle i)
+	 */
 	public int getSize(){
 		return this.nblist.size();
 	}
 
+	/**
+	 * getSize(int i) method returns the number of neighbors of ith particle.
+	 * When treversing through the sublist arrays, one should make sure that
+	 * the iteration does not go beyond the size of each sublist array using
+	 * returned value of this method.
+	 *
+	 * @param i particle i 
+	 * @return the number of neighboring particles of the particle i
+	 */
+	public int getSize(int i){
+		return this.nblist.get(i).getSize();
+	}
+
+
+	/**
+	 * getArray(int i) method returns an array containing the list of 
+	 * neighbors of particle i. 
+	 *
+	 * @param i particle i
+	 * @return ith sublist array containing i's neighbors
+	 */
 	public int[] getArray(int i){
 		if ( i >= nblist.size() ){
 			throw new IllegalArgumentException
 					  ("invalid input parameter i for neighbor list");
+		}
 		return nblist.get(i).getList();
 	}
+
+
+	/**
+	 *
+	 * @param sys
+	 */
+	public abstract void update(T sys);
+
 
 	/**
 	 * abstract method update() needs to be implemented from a sub class
 	 *
 	 * @param sys
-	 * @param prm 
 	 * @param positions
+	 * @param box
 	 */
-	public abstract void update(T sys, E[] positions);
+	public abstract void update(T sys, MdVector[] positions, MdVector box);
 
+	
+	
+	protected void reset(){
+		for ( int i = 0; i < getSize(); i++){
+			nblist.get(i).reset();
+		}
+	}
 
 
 	/**
@@ -59,7 +111,7 @@ public abstract class AbstractNeighborList<E extends MdVector,
 	 * array (if it's size is alread max_capacity, then double the size and
 	 * update max_capacity)
 	 */
-	private class SubList{
+	protected class SubList{
 
 		private int[] sublist;
 		private int size;
@@ -68,7 +120,7 @@ public abstract class AbstractNeighborList<E extends MdVector,
 			this.size = 0;
 			this.sublist = new int[max_capacity];
 		}
-		public getList(){
+		public int[] getList(){
 			return this.sublist;
 		} 
 		public int getSize(){
@@ -92,7 +144,7 @@ public abstract class AbstractNeighborList<E extends MdVector,
 				expand();		
 			}
 		}
-		public void expand(){
+		private void expand(){
 			int currLength = this.sublist.length;
 			int newLength = (currLength < max_capacity)? max_capacity:2*max_capacity;
 			max_capacity = newLength;

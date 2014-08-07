@@ -25,9 +25,9 @@ public class MdVector{
     }
 
     public MdVector(MdVector vec) {
-        this.x = vec.getX();
-        this.y = vec.getY();
-        this.z = vec.getZ();
+        this.x = vec.x;
+        this.y = vec.y;
+        this.z = vec.z;
     }
 
 	public double getX(){
@@ -60,9 +60,9 @@ public class MdVector{
     }
 
     public void copySet(MdVector vec) {
-        this.x = vec.getX();
-        this.y = vec.getY();
-        this.z = vec.getZ();
+        this.x = vec.x;
+        this.y = vec.y;
+        this.z = vec.z;
     }
 	public void copySet(double x, double y, double z){
 		this.x = x;
@@ -71,27 +71,27 @@ public class MdVector{
 	}
 
     public void subSet(MdVector vec) {
-        this.x -= vec.getX();
-        this.y -= vec.getY();
-        this.z -= vec.getZ();
+        this.x -= vec.x;
+        this.y -= vec.y;
+        this.z -= vec.z;
     }
 
     public void addSet(MdVector vec) {
-        this.x += vec.getX();
-        this.y += vec.getY();
-        this.z += vec.getZ();
+        this.x += vec.x;
+        this.y += vec.y;
+        this.z += vec.z;
     }
 
 	public void addSet(MdVector vec1, MdVector vec2){
-        this.x += (vec1.getX() + vec2.getX() );
-        this.y += (vec1.getY() + vec2.getY() );
-        this.z += (vec1.getZ() + vec2.getZ() );
+        this.x += (vec1.x + vec2.x );
+        this.y += (vec1.y + vec2.y );
+        this.z += (vec1.z + vec2.z );
     }
 
     public void addSet(MdVector vec1, MdVector vec2, MdVector vec3){
-        this.x += (vec1.getX() + vec2.getX() + vec3.getX() );
-        this.y += (vec1.getY() + vec2.getY() + vec3.getY() );
-        this.z += (vec1.getZ() + vec2.getZ() + vec3.getZ() );
+        this.x += (vec1.x + vec2.x + vec3.x );
+        this.y += (vec1.y + vec2.y + vec3.y );
+        this.z += (vec1.z + vec2.z + vec3.z );
     }
 
 
@@ -164,49 +164,65 @@ public class MdVector{
 	}	
 
 
+	public void minImage(MdVector box){
+        if ( this.x > box.x/2.0 ) this.x -= box.x;
+        else if ( this.x < -box.x/2.0 ) this.x += box.x;
+
+        if ( this.y > box.y/2.0 ) this.y -= box.y;
+        else if ( this.y < -box.y/2.0 ) this.y += box.y;
+
+        if ( this.z > box.z/2.0 ) this.z -= box.z;
+        else if ( this.z < -box.z/2.0 ) this.z += box.z;
+	}
+
+
+	public void print(){
+		System.out.println(this.x + ", " + this.y + ", " + this.z);
+	}
+
 	/******** Static methods ********/
 
     public static double norm(MdVector vec) {
-        return Math.sqrt( vec.getX()*vec.getX() + vec.getY()*vec.getY() + vec.getZ()*vec.getZ() );
+        return Math.sqrt( vec.x*vec.x + vec.y*vec.y + vec.z*vec.z );
     }
 
     public static MdVector diff(MdVector v1, MdVector v2) {
-        return new MdVector( v1.getX() - v2.getX(), v1.getY() - v2.getY(), v1.getZ() - v2.getZ() );
+        return new MdVector( v1.x - v2.x, v1.y - v2.y, v1.z - v2.z );
     }
 
     public static MdVector sum(MdVector v1, MdVector v2) {
-        return new MdVector( v1.getX() + v2.getX(), v1.getY() + v2.getY(), v1.getZ() + v2.getZ() );
+        return new MdVector( v1.x + v2.x, v1.y + v2.y, v1.z + v2.z );
     }
 
     // three vector addition
     public static MdVector sum(MdVector v1, MdVector v2, MdVector v3) {
-        return new MdVector( v1.getX() + v2.getX() + v3.getX(), v1.getY() + v2.getY() + v3.getY(), v1.getZ() + v2.getZ() + v3.getZ());
+        return new MdVector( v1.x + v2.x + v3.x, v1.y + v2.y + v3.y, v1.z + v2.z + v3.z);
 
     }
 
     public static double dot(MdVector v1, MdVector v2) {
-        return (v1.getX()*v2.getX() + v1.getY()*v2.getY() + v1.getZ()*v2.getZ());
+        return (v1.x*v2.x + v1.y*v2.y + v1.z*v2.z);
     }
 
     public static MdVector cross(MdVector v1, MdVector v2) {
-        return new MdVector( v1.getY()*v2.getZ() - v1.getZ()*v2.getY(), -v1.getX()*v2.getZ() + v1.getZ()*v2.getX(), v1.getX()*v2.getY() - v1.getY()*v2.getX() );
+        return new MdVector( v1.y*v2.z - v1.z*v2.y, -v1.x*v2.z + v1.z*v2.x, v1.x*v2.y - v1.y*v2.x );
     }
 
     public static MdVector times(double factor, MdVector v) {
-        MdVector tmp = new MdVector( v.getX()*factor, v.getY()*factor, v.getZ()*factor );
+        MdVector tmp = new MdVector( v.x*factor, v.y*factor, v.z*factor );
         return tmp;
     }
     public static MdVector times(MdVector v, double factor) {
-        MdVector tmp = new MdVector( v.getX()*factor, v.getY()*factor, v.getZ()*factor );
+        MdVector tmp = new MdVector( v.x*factor, v.y*factor, v.z*factor );
         return tmp;
     }
 
     public static MdVector times(int factor, MdVector v) {
-        MdVector tmp = new MdVector( v.getX()*factor, v.getY()*factor, v.getZ()*factor );
+        MdVector tmp = new MdVector( v.x*factor, v.y*factor, v.z*factor );
         return tmp;
     }
 	public static MdVector times(MdVector v, int factor){
-        MdVector tmp = new MdVector( v.getX()*factor, v.getY()*factor, v.getZ()*factor );
+        MdVector tmp = new MdVector( v.x*factor, v.y*factor, v.z*factor );
         return tmp;
     }
 

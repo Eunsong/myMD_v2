@@ -6,13 +6,17 @@ public interface Particle{
 	
 	public String getName();
 	
-	public String getTypeName();
+	public String getType();
 
 	public int getTypeNumber();
 
-	public int getResidueName();
+	public String getResidueName();
 
 	public int getResidueNumber();
+	
+	public String getMoleculeType();
+	
+	public int getMoleculeNumber();
 	
 	public double getMass();
 		
@@ -20,5 +24,6 @@ public interface Particle{
 	
 	public boolean isShell();
 
+	public boolean isCharged();
 
 }

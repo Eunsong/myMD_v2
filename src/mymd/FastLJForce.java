@@ -1,3 +1,10 @@
+package mymd;
+
+import mymd.datatype.LJParticle;
+import mymd.datatype.MdVector;
+import java.util.List;
+import java.util.ArrayList;
+
 /**
  * FastLJForce class implements Force interface for computing
  * Lennard-Jones forces using lookup tables for a faster computation speed
@@ -6,50 +13,101 @@
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
-public class FastLJForce<E extends MdVector, T extends MdSystem<E, LJParticle>> 
-											implements Force<E, T>{
+public class FastLJForce<T extends MdSystem<LJParticle>> 
+									 implements Force<T>{
 
-	private final RnTable R8Table, R14Table;
-	//private final double[] C6, C12;	// caching computed mixing terms
+	private final double rc;
+	private final int size;
+	private final LJForceLookupTable[] tables;
+	private List<LJForceLookupTable> ljTempList;
 
-	public FastLJForce(int rc){
-		this.R8Table = new RnTable(8, rc);
-		this.R14Table = new RnTable(14, rc);
+
+	public FastLJForce(T sys){
+		this.rc = sys.getParam().getRvdw();
+		this.size = sys.getSize();
+		this.tables = new LJForceLookupTable[size*size];
+		this.ljTempList = new ArrayList<LJForceLookupTable>();
+		buildTables(sys);
+	}
+
+	private void buildTables(T sys){
+		for ( int i = 0; i < size; i++){
+
+			double C6i = sys.getParticle(i).getC6();
+			double C12i = sys.getParticle(i).getC12();
+
+			for ( int j = 0; j < size; j++){ 
+				double C6j = sys.getParticle(j).getC6();
+				double C12j = sys.getParticle(j).getC12();
+				double C6ij = combrule(C6i, C6j);
+				double C12ij = combrule(C12i, C12j);
+
+				int index = find(C6ij, C12ij);
+				// if C6ij and C12ij pair don't exist already
+				// create a new table and add it to ljTempList
+				if ( index == -1 ){
+					LJForceLookupTable newTable = 
+					new LJForceLookupTable(rc, C6ij, C12ij);
+					ljTempList.add(newTable);
+					setTable(i, j, newTable);
+				} 	
+				// if C6ij and C12ij pair exist already
+				else {
+					setTable(i, j, ljTempList.get(index));
+				}
+			}
+		}
+	}
+
+	private int find(double C6, double C12){
+		int index = 0;
+		for ( LJForceLookupTable table : ljTempList ){
+			if ( table.getC6() == C6 && table.getC12() == C12 ){
+				 return index;		
+			}
+			index++;
+		}
+		return -1;
+	}
+	private void setTable(int i, int j, LJForceLookupTable table){
+		this.tables[j*size + i] = table;
+	}
+	private LJForceLookupTable getTable(int i, int j){
+		return this.tables[j*size + i];	
 	}
 
 
 	/**
 	 * computes a LJ force vector acting on the particle i due to j 
-	 * using the particle positions stored in the currTraj in sys
+	 * using the particle positions stored in the newTraj in sys
 	 *
 	 * @param sys 
 	 * @param i index number of particle i
 	 * @param j index number of particle j
-	 * @param Rij MdVector object representing a vector Ri - Rj 
 	 * @return MdVector object representing a force vector acting on
 	 *		   the particle i due to the particle j
 	 */
+    public MdVector get( T sys, int i, int j){
+		MdVector box = sys.getBox();
 
-    public <E> E get( T sys, int i, int j, E Rij){
-		double C6i = sys.getParticle(i).getC6();
-		double C6j = sys.getParticle(j).getC6();
-		double C6ij = combrule(C6i, C6j);
-	
-		double C12i = sys.getParticle(i).getC12();
-		double C12j = sys.getParticle(j).getC12();
-		double C12ij = combrule(C12i, C12j);
-
+		MdVector Ri = sys.getNewTraj().getPosition(i);
+		MdVector Rj = sys.getNewTraj().getPosition(j);
+		MdVector Rij = new MdVector();
+		Rij.copy(Ri).sub(Rj);
+		Rij.minImage(box);
+ 
 		double r = Rij.norm();
-		E C6term = E.times(Rij, -6*C6ij*R8Table.get(r));
-		E C6term = E.times(Rij, 12*C12ij*R14Table.get(r));
-		return E.add(C6term, C12term);
+		if ( r < rc ){
+			return MdVector.times(Rij, getTable(i,j).get(r));
+		}
+		return new MdVector();
 	}
 
 
 	/**
 	 * computes LJ force vectors of all partifcles in sys due to 
 	 * their neighbors specified in the given nblist and add computed
-	 * forces on their current force component. 
+	 * forces on their new force component. 
 	 *
 	 * @param sys 
 	 * @param nblist a NeighborList object containing index of neighboring
@@ -57,36 +115,30 @@ public class FastLJForce<E extends MdVector, T extends MdSystem<E, LJParticle>>
 	 * 				 this method assumes the size of nblist and trajectories
 	 * 				 in sys are the same and they are written in the same order
 	 */
-    public <E> void update( T sys, NeighborList nblist ){
+    public void update( T sys, NeighborList nblist ){
 		if ( sys.getSize() != nblist.getSize() ){
 			throw new IllegalArgumentException
 					("size of input NeighborList object does not match!");
 		}
 
-		Trajectory<E> traj = sys.getCurrTraj();	
-
+		Trajectory traj = sys.getNewTraj();	
+		MdVector box = sys.getBox();
+		MdVector Rij = new MdVector();
+		MdVector F = new MdVector();
 		for ( int i = 0; i < nblist.getSize(); i++){
-
-			E Ri = traj.getPosition(i);
-			double C6i = sys.getParticle(i).getC6();
-			double C12i = sys.getParticle(i).getC12();
+			MdVector Ri = traj.getPosition(i);
 			int[] sublist = nblist.getArray(i);
-
-			for ( int j : sublist ){
-
-				E Rj = traj.getPosition(j);
-				E Rij = E.sub( Ri, Rj);
-				double C6j = sys.getParticle(j).getC6();
-				double C12j = sys.getParticle(j).getC12();
-	
-				double C6ij = combrule(C6i, C6j);
-				double C12ij = combrule(C12i, C12j);
+			for ( int k = 0; k < nblist.getSize(i); k++){ 
+				int j = sublist[k];
+				MdVector Rj = traj.getPosition(j);
+				Rij.copy(Ri).sub(Rj); // Rij = Ri - Rj
+				Rij.minImage(box);
 				double r = Rij.norm();
-					
-				E C6term = E.times(Rij, -6*C6ij*R8Table.get(r));
-				E C6term = E.times(Rij, 12*C12ij*R14Table.get(r));
-				traj.addForce(i, C6term);
-				traj.addForce(i, C12term);
+				if ( r < rc ){
+					F.copy(Rij).timesSet( getTable(i,j).get(r) );
+					traj.addForce(i, F);
+					traj.addReactionForce(j, F);
+				}
 			}
 		}
 	}

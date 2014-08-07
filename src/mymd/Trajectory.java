@@ -6,47 +6,47 @@ import mymd.datatype.*;
  * Trajectory class contains dynamic simulation system information 
  * such as position, velocity, force, and etc that changes over time
  * In order to optimize intensive computation on these data, arrays are 
- * used to store instances of E that contain primitive data types
+ * used to store instances of MdVector that contain primitive data types
  *
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
 
-public class Trajectory<E extends MdVector> {
+public class Trajectory{
 
     private int size;
-    private E[] positions;
-    private E[] velocities;
-    private E[] forces;
+    private MdVector[] positions;
+    private MdVector[] velocities;
+    private MdVector[] forces;
     private double time;
-    private E box;
+    private MdVector box;
 
 	// The positions, velocities, and forces can only contain
-	// E instances set from set methods. Thus we can ensure type safety. 
+	// MdVector instances set from set methods. Thus we can ensure type safety. 
 	@SuppressWarnings("unchecked")
     public Trajectory(int N) {
         this.size = N;
-        this.positions = (E[]) new Object[N];
-        this.velocities = (E[]) new Object[N];
-        this.forces = (E[]) new Object[N];
+        this.positions = new MdVector[N];
+        this.velocities = new MdVector[N];
+        this.forces = new MdVector[N];
 		initPositions();
 		initVelocities();
 		initForces();
         this.time = 0.0;
-        this.box = new E();
+        this.box = new MdVector();
     }
 
     public int getSize() {
         return this.size;
     }   
-    public E[] getPositions() {
+    public MdVector[] getPositions() {
         return this.positions;
     }
-    public E getPosition(int i) {
+    public MdVector getPosition(int i) {
         return this.positions[i];
     }
-    public void setPosition(int i, E v) {
-        this.positions[i].copy(v);
+    public void setPosition(int i, MdVector v) {
+        this.positions[i].copySet(v);
     }
 	public void resetPositions(){
 		for ( int i = 0; i < size; i++){
@@ -55,14 +55,14 @@ public class Trajectory<E extends MdVector> {
 	}
 
 
-    public E[] getVelocities() {
+    public MdVector[] getVelocities() {
         return this.velocities;
     }
-    public E getVelocity(int i) {
+    public MdVector getVelocity(int i) {
         return this.velocities[i];
     }
-    public void setVel(int i, E v) {
-        this.velocities[i].copy(v);
+    public void setVel(int i, MdVector v) {
+        this.velocities[i].copySet(v);
     }
 	public void resetVelocities(){
 		for ( int i = 0; i < size; i++){
@@ -71,18 +71,23 @@ public class Trajectory<E extends MdVector> {
 	}
 
 
-    public E[] getForces() {
+    public MdVector[] getForces() {
         return this.forces;
     }
-    public E getForce(int i) {
+    public MdVector getForce(int i) {
         return this.forces[i];
     }
-    public void setForce(int i, E v) {
-        this.forces[i].copy(v);
+    public void setForce(int i, MdVector v) {
+        this.forces[i].copySet(v);
     }
-	public void addForce(int i, E v){
-		this.forces[i].add(v);
+	public void addForce(int i, MdVector v){
+		this.forces[i].addSet(v);
 	}
+	public void addReactionForce(int i, MdVector v){
+		this.forces[i].subSet(v);
+	}
+
+
 	public void resetForces(){
 		for ( int i = 0; i < size; i++){
 			this.forces[i].reset();
@@ -97,30 +102,30 @@ public class Trajectory<E extends MdVector> {
         this.time = t;
     }
     
-    public E getBox() {
+    public MdVector getBox() {
         return this.box;
     }
-    public void setBox(E b) {
-        this.box.copy(b);
+    public void setBox(MdVector b) {
+        this.box.copySet(b);
     }
     public void setBox(double l) {
-        this.box.copy(l, l, l);
+        this.box.copySet(l, l, l);
     }
 
 
     private void initPositions() {
         for ( int i = 0; i < this.size; i++ ) {
-            this.positions[i] = E.create();
+            this.positions[i] = new MdVector();
         }
     }
     private void initVelocities() {
         for ( int i = 0; i < this.size; i++ ) {
-            this.velocities[i] = E.create();
+            this.velocities[i] = new MdVector();
         }
     }
     private void initForces() {
         for ( int i = 0; i < this.size; i++ ) {
-            this.forces[i] = E.create();
+            this.forces[i] = new MdVector();
         }
     }
 
@@ -158,7 +163,7 @@ public class Trajectory<E extends MdVector> {
 			double x = positionArray[i++];
 			double y = positionArray[i++];
 			double z = positionArray[i++];
-			this.positions[id].copy(x, y, z); 
+			this.positions[id].copySet(x, y, z); 
 		}
 	}
 	
@@ -168,7 +173,7 @@ public class Trajectory<E extends MdVector> {
 			double x = positionArray[i++];
 			double y = positionArray[i++];
 			double z = positionArray[i++];
-			this.positions[id++].copy(x, y, z); 
+			this.positions[id++].copySet(x, y, z); 
 		}
 	}
 

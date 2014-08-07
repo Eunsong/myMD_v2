@@ -7,7 +7,7 @@ package mymd;
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
-public interface Integrator<E extends MdSystem<?, ?>>{
+public interface Integrator<E extends MdSystem<?>>{
 
 
 
@@ -31,7 +31,7 @@ public interface Integrator<E extends MdSystem<?, ?>>{
 	 * @param prm MdParameter object containing simulation setup parameters
 	 * @param newTraj Trajectory object for storing computed result
 	 */
-	public void forwardPosition(E sys, MdParameter prm, Trajectory<?> newTraj);
+	public void forwardPosition(E sys, MdParameter prm, Trajectory newTraj);
 
 
 
@@ -58,6 +58,6 @@ public interface Integrator<E extends MdSystem<?, ?>>{
 	 * @param prm MdParameter object containing simulation setup parameters
 	 * @param newTraj Trajectory object for storing computed result
 	 */
-	public void forwardVelocity(E sys, MdParameter prm, Trajectory<?> newTraj);
+	public void forwardVelocity(E sys, MdParameter prm, Trajectory newTraj);
 
 }

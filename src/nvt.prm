@@ -1,0 +1,51 @@
+; simulation run parameters
+
+; time step
+dt			=		0.002 ; (in ps)
+nsteps		=		1000000
+
+
+; neighbor list
+hashTS		=		10	  ; size of the hash table for neighbor search
+rlist		=		1.4   ; neighbor list cut-off
+nstlist		=		10	  ; neighbor list update frequency
+
+
+; output control
+nstxout		=		100
+nstvout		=		100
+nstenergy	=		100
+
+
+; coulomb interaction
+rc			=		1.4   ; coulomb cut-off
+coulombType	=		pme
+pme			=		true  
+n_pme		=		4	; pme interpolation order
+K_pme		=		48	; number of PME grids (each dimension)
+beta_pme	=		2.2310; (=1.0/0.448228) ;pme Gaussian width
+
+
+; vdw interaction
+Lennard_Jones	=	true
+vdwType		=		cut-off
+rvdw		=		1.4   ; rvdw cut-off
+
+
+; temperature coupling
+thermostat  =	    berendsen ; (use none for microcanonical ensemble)
+T0			=		300	; initial temperature
+refT		=		300	; reference temperature
+tauT		=		0.5	; temperature coupling constant
+
+
+; constraints
+convertHbonds	=	true ; convert bonds with h atoms to constraints
+maxCItr			=	20	; max number of iterations for constraint algorithm
+CTol			=	0.0001 ; tolerance(nm) for constraint relaxation
+
+
+; dynamic load-balancing 
+LoadBalancingFreq	=	100000 ;   dynamic load balancing frequency 
+LoadBalancingTimeLimit	=	1 ; Last time step when to stop dynamic load balancing(for isotropic system) 
+

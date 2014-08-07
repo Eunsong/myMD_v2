@@ -13,7 +13,7 @@ public class RnTable implements LookupTable{
 	private final double rc; // cut-off distance
 	private static final int DEFAULT_TABLE_SIZE = 1000000;
 	private final int TABLE_SIZE;
-	private final double[] table;
+	private double[] table;
 	private final double C; // optional coefficient
 
 	/**

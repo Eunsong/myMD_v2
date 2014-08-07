@@ -1,6 +1,6 @@
 package mymd;
 
-public interface Energy<E extends MdVector, T extends MdSystem<E>>{
+public interface Energy<T extends MdSystem<?>>{
 
 	public double get(T sys, int i, int j);
 

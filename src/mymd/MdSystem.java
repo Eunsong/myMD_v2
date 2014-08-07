@@ -14,26 +14,31 @@ import java.util.List;
  * @version 1.0
  */
 
-
-public class MdSystem<E extends MdVector, T extends Particle>{
+public class MdSystem<T extends Particle>{
 
 	private final String name;
 	private final int size;
 	private List<T> particles;
-	private Trajectory<E> currTraj, newTraj, pastTraj;
+	private Trajectory currTraj, newTraj, pastTraj;
   	private final MdParameter parameters;
 	private final Topology topology;
+	private final double dt; 
 
-
-	private MdSystem(Builder builder){
+	private MdSystem(Builder<T> builder){
 		this.name = builder.name;
 		this.particles = builder.particles;
 		this.parameters = builder.parameters;
 		this.topology = builder.topology;
 		this.size = builder.size;
 		this.currTraj = builder.initialTrajectory;
-		this.newTraj = new Trajectory<E>(size);
-		this.pastTraj = new Trajectory<E>(size);
+		this.newTraj = new Trajectory(size);
+		this.pastTraj = new Trajectory(size);
+		this.dt = this.parameters.getDt();
+		this.newTraj.setTime(currTraj.getTime() + this.dt);
+	}
+
+	public String getName(){
+		return this.name;
 	}
 	
 	public List<T> getParticles(){
@@ -43,20 +48,20 @@ public class MdSystem<E extends MdVector, T extends Particle>{
 		return this.particles.get(i);
 	}
 
-	public E getBox(){
+	public MdVector getBox(){
 		return this.currTraj.getBox();
 	}
 	public int getSize(){
 		return this.size;
 	}
 
-	public Trajectory<E> getCurrTraj(){
+	public Trajectory getCurrTraj(){
 		return this.currTraj;
 	}
-	public Trajectory<E> getNewTraj(){
+	public Trajectory getNewTraj(){
 		return this.newTraj;
 	}
-	public Trajectory<E> getPastTraj(){
+	public Trajectory getPastTraj(){
 		return this.pastTraj;
 	}
 	
@@ -67,51 +72,57 @@ public class MdSystem<E extends MdVector, T extends Particle>{
 		return this.topology;
 	}
 
+	public double getTime(){
+		return this.currTraj.getTime();
+	}
 
 	public void update(){
+		Trajectory tmp = this.pastTraj;
 		this.pastTraj = this.currTraj;
 		this.currTraj = this.newTraj;
-		this.newTraj.resetForces();	
+		this.newTraj = tmp;
+		this.newTraj.resetForces();
+		this.newTraj.setTime( currTraj.getTime() + dt );
 	}
 
 
 	/**
 	 * Builder class provies a builder method to construct a MdSystem object.
-	 * Usage example: MdSystem<E> system = new MdSystem<E>.Builder("my simulation").
+	 * Usage example: MdSystem system = new MdSystem.Builder("my simulation").
 	 * 				  particles(myparticles).parameters(myparameters).
 	 *				  topology(mytopology).initialTrajectory(traj).build();
 	 */
-	public static class Builder{
+	public static class Builder<T extends Particle>{
 		private String name;
 		private List<T> particles;
 		private MdParameter parameters;
 		private Topology topology;
 		private int size;
-		private Trajectory<E> initialTrajectory;
+		private Trajectory initialTrajectory;
 
 		public Builder(String name){
 			this.name= name;
 		} 
-		public Builder particles(List<T> particles){
+		public Builder<T> particles(List<T> particles){
 			this.particles = particles;
 			return this;
 		}
-		public Builder parameters(MdParameter prm){
+		public Builder<T> parameters(MdParameter prm){
 			this.parameters = prm;
 			return this;
 		}
-		public Builder topology(Topology top){
+		public Builder<T> topology(Topology top){
 			this.topology = top;
 			return this;
 		}
-		public Builder initialTrajectory(Trajectory<E> traj){
+		public Builder<T> initialTrajectory(Trajectory traj){
 			this.initialTrajectory = traj;
 			this.size = traj.getSize();
 			return this;
 		} 
 
-		public MdSystem<E> build(){
-			return new MdSystem<E>(this);
+		public MdSystem<T> build(){
+			return new MdSystem<T>(this);
 		}
 	}
 
