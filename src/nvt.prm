@@ -1,8 +1,8 @@
 ; simulation run parameters
 
 ; time step
-dt			=		0.002 ; (in ps)
-nsteps		=		1000000
+dt			=		0.01 ; (in ps)
+nsteps		=		100000
 
 
 ; neighbor list
@@ -27,7 +27,6 @@ beta_pme	=		2.2310; (=1.0/0.448228) ;pme Gaussian width
 
 
 ; vdw interaction
-Lennard_Jones	=	true
 vdwType		=		cut-off
 rvdw		=		1.4   ; rvdw cut-off
 

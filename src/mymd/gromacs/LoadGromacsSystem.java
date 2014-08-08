@@ -9,12 +9,10 @@ public class LoadGromacsSystem{
 	private GromacsSystem mdsystem;
 	private MdTop top;
 
-	private String inputPrmFile;
 	private String inputConfFile;
 	private String inputTopFile;
 
-	public LoadGromacsSystem(String inputPrmFile, String inputConfFile, String inputTopFile){
-		this.inputPrmFile = inputPrmFile;
+	public LoadGromacsSystem(String inputConfFile, String inputTopFile){
 		this.inputConfFile = inputConfFile;
 		this.inputTopFile = inputTopFile;
 	}
@@ -79,28 +77,6 @@ public class LoadGromacsSystem{
 
     public void build(){
 
-        /** creat a MdPrm object **/
-        MdPrm prm = new MdPrm();
-        // read input parameters from input prm file
-        MdIO.readMdPrm(inputPrmFile, prm);
-
-
-        /** simulation setup **/
-        // hashtable size
-        final int hashTS = prm.getHashTS();
-
-        final double dt = prm.getDt(); 
-        final int nsteps = prm.getNsteps();
-        final double rlist = prm.getRlist();
-        final int nstlist = prm.getNstlist();
-        final int nstxout = prm.getNstxout();
-        final int nstvout = prm.getNstvout();
-        final int nstenergy = prm.getNstenergy();
-        final double T0 = prm.getT0(); //initial temp
-
-        final boolean convertHbonds = prm.convertHbonds(); // if true, convert all bonds including H atom to constraints
-
-
         /** read topology from input file */
         top = new MdTop();        
         MdIO.readMdTop(inputTopFile, top);
@@ -124,10 +100,9 @@ public class LoadGromacsSystem{
         /** load run topology data **/
         MdIO.convMdTop(top, mdsystem);
 
-        /** convert all hbonds to constraints if convertHbonds field is true **/
-        if ( prm.convertHbonds() ) {
-            MdConstraint.convertHbondsToConstraints(mdsystem, top);
-        }
+        /** convert all hbonds to constraints if convertHbonds field **/
+//        MdConstraint.convertHbondsToConstraints(mdsystem, top);
+/*
 		try {
 			PrintStream ps = new PrintStream("test.gro");
 			GromacsSystem.writeTraj("test", mdsystem, ps);
@@ -136,5 +111,6 @@ public class LoadGromacsSystem{
 		catch (Exception ex){
 
 		}
+*/
     }
 } 

@@ -12,9 +12,9 @@ public class LoadTest{
 		Integrator<MdSystem<LJParticle>> it = new VelocityVerlet<MdSystem<LJParticle>>(dt);
 
 		Topology top = new Topology();
-	
+MdSystem<LJParticle> test = MdSystem.buildFromGromacsInputs("water.gro", "topol.top");
 		
-		mymd.gromacs.LoadGromacsSystem tmp = new mymd.gromacs.LoadGromacsSystem("nvt.prm", "water.gro", "topol.top");
+		mymd.gromacs.LoadGromacsSystem tmp = new mymd.gromacs.LoadGromacsSystem("water.gro", "topol.top");
 		tmp.build();
 	
 		System.out.println(tmp.getPositionArray(0)[0]);

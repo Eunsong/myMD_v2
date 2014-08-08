@@ -1,7 +1,8 @@
 package mymd;
 
 import mymd.datatype.*;
-
+import java.io.*;
+import java.util.Scanner;
 
 public class MdParameter{
 
@@ -13,9 +14,10 @@ public class MdParameter{
     private int nsteps;
 
 	// particle system type
-	private enum particleSystem{
+	public enum ParticleSystem{
 		Lennard_Jones, Lennard_Jones_Coulomb, SAPT;
 	}
+//	private final ParticleSystem particleSystem;
 
     // coulomb cut-off distance
     private double rc;
@@ -230,6 +232,140 @@ public class MdParameter{
     public String getThermostat(){
         return this.thermostat;
     }
+
+
+
+	public void importFromFile(String filename){
+
+        // Check whether the input file exists and is readable
+        File file = new File(filename);
+        if ( !file.exists() || !file.canRead() ) {
+            System.out.println("Error: Cannot access input file " + filename );
+            System.exit(0);
+        }
+
+        Scanner inFile;
+
+        try {
+            inFile = new Scanner(file);
+            String line = inFile.nextLine();
+            String title = line;
+
+            while ( inFile.hasNext() ) {
+                line = removeComment(inFile.nextLine()).trim();
+                String[] tokens = line.split("\\s+");
+
+                if ( tokens[0].equals("hashTS")) {
+                    setHashTS(Integer.parseInt(tokens[2]));
+                }
+                else if ( tokens[0].equals("dt")) {
+                    setDt(Double.parseDouble(tokens[2]));
+                }
+                else if ( tokens[0].equals("nsteps")) {
+                    setNsteps(Integer.parseInt(tokens[2]));
+                }
+                else if ( tokens[0].equals("rc")) {
+                    setRc(Double.parseDouble(tokens[2]));
+                }
+                else if ( tokens[0].equals("rvdw")) {
+                    setRvdw(Double.parseDouble(tokens[2]));
+                }
+                else if ( tokens[0].equals("rlist")) {
+                    setRlist(Double.parseDouble(tokens[2]));
+                }
+                else if ( tokens[0].equals("nstlist")) {
+                    setNstlist(Integer.parseInt(tokens[2]));
+                }
+                else if ( tokens[0].equals("nstxout")) {
+                    setNstxout(Integer.parseInt(tokens[2]));
+                }
+                else if ( tokens[0].equals("nstvout")) {
+                    setNstvout(Integer.parseInt(tokens[2]));
+                }
+                else if ( tokens[0].equals("nstenergy")) {
+                    setNstenergy(Integer.parseInt(tokens[2]));
+                }
+                else if ( tokens[0].equals("T0")) {
+                    setT0(Double.parseDouble(tokens[2]));
+                }
+                else if ( tokens[0].equals("refT")) {
+                    setRefT(Double.parseDouble(tokens[2]));
+                }
+                else if ( tokens[0].equals("tauT")) {
+                    setTauT(Double.parseDouble(tokens[2]));
+                }
+                else if ( tokens[0].equals("pme")) {
+                    if ( tokens[2].equals("true") ) setPME(true);
+                    else if ( tokens[2].equals("false")) setPME(false);
+                    else {
+                        System.out.println("ERROR! Invalid entry for PME(should be true or false)");
+                        System.exit(0);
+                    }
+                }
+                else if ( tokens[0].equals("n_pme")) {
+                    setN_pme(Integer.parseInt(tokens[2]));
+                }
+                else if ( tokens[0].equals("K_pme")) {
+                    setK_pme(Integer.parseInt(tokens[2]));
+                }
+                else if ( tokens[0].equals("beta_pme")) {
+                    setBeta_pme(Double.parseDouble(tokens[2]));
+                }
+                else if ( tokens[0].equals("vdwType")) {
+                    setVdwType(new String(tokens[2]));
+                }
+                else if ( tokens[0].equals("convertHbonds")) {
+                    if ( tokens[2].equals("true") ) setConvertHbonds(true);
+                    else if ( tokens[2].equals("false")) setConvertHbonds(false);
+                    else {
+                        System.out.println("ERROR! Invalid entry for convertHbonds(should be true or false)");
+                        System.exit(0);
+                    }
+                }
+                else if ( tokens[0].equals("maxCItr")) {
+                    setMaxCItr(Integer.parseInt(tokens[2]));
+                }
+                else if ( tokens[0].equals("CTol")) {
+                    setCTol(Double.parseDouble(tokens[2]));
+                }
+                else if ( tokens[0].equals("thermostat")) {
+                    if ( tokens[2].equals("berendsen") || tokens[2].equals("none") ) {
+                        setThermostat(tokens[2]);
+                    }
+                    else {
+                        System.out.println("ERROR! Unsupported thermostat type " + tokens[2]);
+                        System.exit(0);
+                    }
+                }
+                else if ( tokens[0].equals("")) {
+                    // empty line. do nothing
+                }
+                else {
+                    System.out.println(String.format(
+                    "WARNING! Invalid entry [%s] in the prm file", tokens[0]));
+                }
+            }
+        }
+        catch(IOException ex) {
+            System.out.println(String.format(
+            "IOException caught: something wrong in input file %s", filename));
+            System.exit(0);
+        }
+
+    }
+
+
+    /**************** returns a String with the comments removed  ********************************/
+    private static String removeComment(String str) {
+
+        int offset = str.indexOf(";"); // remove everything which follows ; symbol (GROMACS style)
+        if ( -1 != offset ) {
+            str = str.substring(0, offset);
+        }
+        return str;
+    }
+
+
 
 
 }
