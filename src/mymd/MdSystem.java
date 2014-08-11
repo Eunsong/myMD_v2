@@ -2,6 +2,7 @@ package mymd;
 
 
 import mymd.datatype.*;
+import mymd.bond.*;
 import mymd.gromacs.LoadGromacsSystem;
 import java.util.List;
 
@@ -24,7 +25,7 @@ public class MdSystem<T extends Particle>{
 	private List<T> particles;
 	private Trajectory currTraj, newTraj, pastTraj;
   	private final MdParameter parameters;
-	private final Topology topology;
+	private final Topology<MdSystem<T>> topology;
 	private final double dt; 
 
 	private MdSystem(Builder<T> builder){
@@ -71,12 +72,21 @@ public class MdSystem<T extends Particle>{
 	public MdParameter getParam(){
 		return this.parameters;
 	}
-	public Topology getTop(){
+	public Topology<MdSystem<T>> getTop(){
 		return this.topology;
 	}
 
 	public double getTime(){
 		return this.currTraj.getTime();
+	}
+
+	
+	public void forwardPosition(Integrator<MdSystem<T>> it){
+		it.forwardPosition(this);
+	}
+
+	public void forwardVelocity(Integrator<MdSystem<T>> it){
+		it.forwardVelocity(this);
 	}
 
 	public void update(){
@@ -89,43 +99,58 @@ public class MdSystem<T extends Particle>{
 	}
 
 
+
+	public void updateNonBondedForce
+	(NonBondedForce<MdSystem<T>> nonbonded, NeighborList nblist){
+		nonbonded.updateAll(this, nblist);
+	}
+
+	public void updateBondForce(){
+		updateBondForce(topology.getBonds());
+	}
+
+	public void updateBondForce(Bonds<MdSystem<T>> bonds){
+		bonds.updateAllForces(this);
+	}
+
+
 	/**
 	 * Builder class provies a builder method to construct a MdSystem object.
 	 * Usage example: MdSystem system = new MdSystem.Builder("my simulation").
 	 * 				  particles(myparticles).parameters(myparameters).
 	 *				  topology(mytopology).initialTrajectory(traj).build();
 	 */
-	public static class Builder<T extends Particle>{
+	public static class Builder<E extends Particle>{
 		private String name;
-		private List<T> particles;
+		private List<E> particles;
 		private MdParameter parameters;
-		private Topology topology;
+		private Topology<MdSystem<E>> topology;
 		private int size;
 		private Trajectory initialTrajectory;
 
 		public Builder(String name){
 			this.name= name;
 		} 
-		public Builder<T> particles(List<T> particles){
+		public Builder<E> particles(List<E> particles){
 			this.particles = particles;
 			return this;
 		}
-		public Builder<T> parameters(MdParameter prm){
+		public Builder<E> parameters(MdParameter prm){
 			this.parameters = prm;
 			return this;
 		}
-		public Builder<T> topology(Topology top){
+		public Builder<E> topology(Topology<MdSystem<E>> top){
 			this.topology = top;
 			return this;
 		}
-		public Builder<T> initialTrajectory(Trajectory traj){
+		public Builder<E> initialTrajectory(Trajectory traj){
 			this.initialTrajectory = traj;
 			this.size = traj.getSize();
 			return this;
 		} 
 
-		public MdSystem<T> build(){
-			return new MdSystem<T>(this);
+		public MdSystem<E> build(){
+			return new MdSystem<E>(this);
 		}
 
 	}

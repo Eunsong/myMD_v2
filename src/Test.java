@@ -1,22 +1,14 @@
 import mymd.*;
 import mymd.datatype.*;
 import java.util.*;
+import mymd.bond.*;
 
 public class Test{
 	public static void main(String[] args){
 
-		LookupTable table = new RnTable(6, 1.4);
-	
-		Integrator<MdSystem<LJParticle>> it = new VelocityVerlet<MdSystem<LJParticle>>(0.1);
-		final int SIZE = 100;
-
-		List<LJParticle> particles = new ArrayList<LJParticle>();
-		MdParameter param = new MdParameter();
+		Bonds bonds = new Bonds();
+		Bond bond = new HarmonicBond(1, 2, 0.3, 0.5);
 		Topology top = new Topology();
-		Trajectory trj = new Trajectory(SIZE);
-	
-		MdSystem<LJParticle> sys = new MdSystem.Builder<LJParticle>("test").particles(particles).parameters(param).
-						topology(top).initialTrajectory(trj).build();
 
 	}
 }

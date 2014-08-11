@@ -1,6 +1,7 @@
 package mymd;
 
-import mymd.datatype.*;
+//import mymd.datatype.MdVector;
+import mymd.bond.Bonds;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -12,10 +13,39 @@ import java.util.ArrayList;
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
-public class Topology {
+public class Topology<T extends MdSystem<?>> {
 
-    // List of bond pairs 
-    private List<Bond> bonds;
+	private final Bonds<T> bonds;
+
+
+	private Topology(Builder<T> builder){
+		this.bonds = builder.bonds;
+	}
+
+
+	public Bonds<T> getBonds(){
+		return this.bonds;
+	}
+
+	public static class Builder<E extends MdSystem<?>>{
+
+		private Bonds<E> bonds;
+	
+		public Builder(){
+		}
+
+		public Builder<E> bonds(Bonds<E> bonds){
+			this.bonds = bonds;
+			return this;
+		}
+		
+		public Topology<E> build(){
+			return new Topology<E>(this);
+		}
+
+
+	}
+/*
     // List of angle triplets
     private List<Angle> angles;
     // List of dihedral quartets
@@ -41,7 +71,6 @@ public class Topology {
 
 
     public Topology() {
-        this.bonds = new ArrayList<Bond>();
         this.angles = new ArrayList<Angle>();
         this.dihedrals = new ArrayList<Dihedral>();
         this.ljPairTypes = new ArrayList<List<LJPairType>>();
@@ -51,6 +80,6 @@ public class Topology {
         this.constraintGroups = new ArrayList<ConstraintGroup>();
     }
 
-		
+	*/	
 
 }

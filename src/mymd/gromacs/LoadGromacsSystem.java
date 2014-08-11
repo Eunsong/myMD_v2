@@ -4,6 +4,16 @@ import java.util.*;
 import java.io.*;
 
 
+/**
+ * LoadGromacsSystem is an ad-hoc class that provides a bridge between mymd alpha
+ * version and the myme version 1.0 to generate initial configuration and topologies 
+ * for mymd simulations. 
+ * 
+ * @author Eunsong Choi (eunsong.choi@gmail.com)
+ * @version 1.0
+ */
+
+
 public class LoadGromacsSystem{
 	
 	private GromacsSystem mdsystem;
@@ -73,6 +83,26 @@ public class LoadGromacsSystem{
 		return this.mdsystem.getSite(i).getWii();
 	}
 	
+	public int getBondSize(){
+		return this.top.getBonds().size();
+	}
+	public int getBondi(int i){
+		return this.top.getBonds().get(i).geti();
+	}
+
+	public int getBondj(int i){
+		return this.top.getBonds().get(i).getj();
+	}
+
+	public double getBondk0(int i){
+		return this.top.getBonds().get(i).getK0();
+	}
+	public double getBondb0(int i){
+		return this.top.getBonds().get(i).getB0();
+	}
+	public int getBondFunc(int i){
+		return this.top.getBonds().get(i).getFunc();
+	} 
 
 
     public void build(){

@@ -6,7 +6,7 @@ public interface Particle{
 	
 	public String getName();
 	
-	public String getType();
+	public ParticleType getType();
 
 	public int getTypeNumber();
 

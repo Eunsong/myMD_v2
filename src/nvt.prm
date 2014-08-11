@@ -12,8 +12,8 @@ nstlist		=		10	  ; neighbor list update frequency
 
 
 ; output control
-nstxout		=		100
-nstvout		=		100
+nstxout		=		10
+nstvout		=		10
 nstenergy	=		100
 
 

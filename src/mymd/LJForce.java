@@ -9,7 +9,7 @@ import mymd.datatype.MdVector;
  * @version 1.0
  */
 public class LJForce<T extends MdSystem<LJParticle>> 
-									 implements Force<T>{
+									 implements NonBondedForce<T>{
 
 	private final double rc;
 
@@ -67,7 +67,7 @@ public class LJForce<T extends MdSystem<LJParticle>>
 	 * 				 this method assumes the size of nblist and trajectories
 	 * 				 in sys are the same and they are written in the same order
 	 */
-    public void update( T sys, NeighborList nblist ){
+    public void updateAll( T sys, NeighborList nblist ){
 		if ( sys.getSize() != nblist.getSize() ){
 			throw new IllegalArgumentException
 					("size of input NeighborList object does not match!");

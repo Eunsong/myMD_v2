@@ -1,6 +1,7 @@
 package mymd;
 
 import mymd.datatype.LJParticle;
+import mymd.datatype.LJParticleType;
 import mymd.datatype.MdVector;
 import java.util.List;
 import java.util.ArrayList;
@@ -14,61 +15,64 @@ import java.util.ArrayList;
  * @version 1.0
  */
 public class FastLJForce<T extends MdSystem<LJParticle>> 
-									 implements Force<T>{
+									 implements NonBondedForce<T>{
 
 	private final double rc;
 	private final int size;
 	private final LJForceLookupTable[] tables;
-	private List<LJForceLookupTable> ljTempList;
 
 
 	public FastLJForce(T sys){
-		this.rc = sys.getParam().getRvdw();
-		this.size = sys.getSize();
-		this.tables = new LJForceLookupTable[size*size];
-		this.ljTempList = new ArrayList<LJForceLookupTable>();
+		rc = sys.getParam().getRvdw();
+		size = sys.getSize();
+
+		List<Integer> particleTypeNumberList = new ArrayList<Integer>();
+		for ( LJParticle particle : sys.getParticles() ){
+			int typeNumber = particle.getType().getNumber();
+			if ( !particleTypeNumberList.contains(typeNumber) ){
+				particleTypeNumberList.add(typeNumber);
+			}
+		}
+		int numberOfDistinctTypes = particleTypeNumberList.size();
+		tables = new LJForceLookupTable[numberOfDistinctTypes*numberOfDistinctTypes];
+
 		buildTables(sys);
 	}
 
 	private void buildTables(T sys){
-		for ( int i = 0; i < size; i++){
 
-			double C6i = sys.getParticle(i).getC6();
-			double C12i = sys.getParticle(i).getC12();
+		for ( int i = 0; i < size; i++){
+					
+			LJParticleType iType = sys.getParticle(i).getType();
+			double C6i = iType.getC6();
+			double C12i = iType.getC12();
 
 			for ( int j = 0; j < size; j++){ 
-				double C6j = sys.getParticle(j).getC6();
-				double C12j = sys.getParticle(j).getC12();
-				double C6ij = combrule(C6i, C6j);
-				double C12ij = combrule(C12i, C12j);
+				LJParticleType jType = sys.getParticle(j).getType();
+				double C6j = jType.getC6();
+				double C12j = jType.getC12();
 
-				int index = find(C6ij, C12ij);
 				// if C6ij and C12ij pair don't exist already
-				// create a new table and add it to ljTempList
-				if ( index == -1 ){
-					LJForceLookupTable newTable = 
+				// create a new table 
+				if ( getTable( iType.getNumber(), jType.getNumber()) == null ){
+					double C6ij = combrule(C6i, C6j);
+					double C12ij = combrule(C12i, C12j);
+					LJForceLookupTable newTable =
 					new LJForceLookupTable(rc, C6ij, C12ij);
-					ljTempList.add(newTable);
-					setTable(i, j, newTable);
-				} 	
-				// if C6ij and C12ij pair exist already
-				else {
-					setTable(i, j, ljTempList.get(index));
+					setTable( iType.getNumber(), jType.getNumber(), newTable);
 				}
 			}
 		}
+	
+		// test correctness of input particleType settings
+		for ( int i = 0; i < tables.length; i++){
+			if ( tables[i] == null ) {
+				throw new RuntimeException("Error! LJParticle type number mismatch!");
+			}
+		}
+
 	}
 
-	private int find(double C6, double C12){
-		int index = 0;
-		for ( LJForceLookupTable table : ljTempList ){
-			if ( table.getC6() == C6 && table.getC12() == C12 ){
-				 return index;		
-			}
-			index++;
-		}
-		return -1;
-	}
 	private void setTable(int i, int j, LJForceLookupTable table){
 		this.tables[j*size + i] = table;
 	}
@@ -115,7 +119,7 @@ public class FastLJForce<T extends MdSystem<LJParticle>>
 	 * 				 this method assumes the size of nblist and trajectories
 	 * 				 in sys are the same and they are written in the same order
 	 */
-    public void update( T sys, NeighborList nblist ){
+    public void updateAll( T sys, NeighborList nblist ){
 		if ( sys.getSize() != nblist.getSize() ){
 			throw new IllegalArgumentException
 					("size of input NeighborList object does not match!");

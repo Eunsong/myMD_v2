@@ -59,19 +59,14 @@ public class GromacsImporter{
 			// build Topology object
 			Bonds<MdSystem<LJParticle>> bonds = new Bonds<MdSystem<LJParticle>>();
 			for ( int k = 0; k < loader.getBondSize(); k++){
-				int i = loader.getBondi(k);
-				int j = loader.getBondj(k);
-				double k0 = loader.getBondk0(k);
-				double b0 = loader.getBondb0(k);
-				int func = loader.getBondFunc(k);
+				int i = loader.getBondi();
+				int j = loader.getBondj();
+				double k0 = loader.getBondk0();
+				double b0 = loader.getBondb0();
+				int func = loader.getBondFunc();
 				if ( func == 1 ){
-					Bond<MdSystem<LJParticle>> bond = new HarmonicBond<MdSystem<LJParticle>>(i, j, k0, b0);
-					bonds.add(bond);
-				}
-				else throw new IllegalArgumentException("bond type other than 1 is not supported yet");
-			}
-
-			Topology<MdSystem<LJParticle>> top = new Topology.Builder<MdSystem<LJParticle>>().bonds(bonds).build();	
+					Bond<MdSystem<LJParticle>> bond = new HarmonicBond<MdSystem<LJParticle>>(i, j, k0, b0)
+			}	
 	
 			return new MdSystem.Builder<LJParticle>(jobName).particles(particles).
 			parameters(prm).topology(top).initialTrajectory(trj).build();
