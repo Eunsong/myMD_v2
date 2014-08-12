@@ -23,7 +23,7 @@ public class MdSystem<T extends Particle>{
 	private final String name;
 	private final int size;
 	private final List<T> particles;
-	private final Trajectory currTraj, newTraj, pastTraj;
+	private Trajectory currTraj, newTraj, pastTraj;
   	private final MdParameter parameters;
 	private final Topology<MdSystem<T>> topology;
 	private final double dt; 
@@ -31,24 +31,25 @@ public class MdSystem<T extends Particle>{
 
 
 	/**
-	 * Constructor for subclassing
+	 * public constructor is not provided. Instead, builder pattern(similar to
+	 * that is introduced in Joshua Bloch's "Effective Java" and modified by
+	 * Eamonn McManus in the link below. Slight modification was made to
+	 * use generic type parameter.
+	 *
+	 * @param init abstract builder class that needs to be subclassed
 	 */
-	protected MdSystem(){
-		this.verbose = false;	
-	}
-
-	private MdSystem(Builder<T> builder){
-		this.name = builder.name;
-		this.particles = builder.particles;
-		this.parameters = builder.parameters;
-		this.topology = builder.topology;
-		this.size = builder.size;
-		this.currTraj = builder.initialTrajectory;
+	protected MdSystem(Init<T, ?> init){
+		this.name = init.name;
+		this.particles = init.particles;
+		this.parameters = init.parameters;
+		this.topology = init.topology;
+		this.size = init.size;
+		this.currTraj = init.initialTrajectory;
 		this.newTraj = new Trajectory(size);
 		this.pastTraj = new Trajectory(size);
 		this.dt = this.parameters.getDt();
-		this.newTraj.setTime(currTraj.getTime() + this.dt);
-		this.verbose = builder.verbose;
+		if ( this.currTraj != null ) this.newTraj.setTime(currTraj.getTime() + this.dt);
+		this.verbose = init.verbose;
 	}
 
 	public String getName(){
@@ -102,6 +103,7 @@ public class MdSystem<T extends Particle>{
 		it.forwardVelocity(this);
 	}
 
+
 	public void update(){
 		Trajectory tmp = this.pastTraj;
 		this.pastTraj = this.currTraj;
@@ -110,7 +112,6 @@ public class MdSystem<T extends Particle>{
 		this.newTraj.resetForces();
 		this.newTraj.setTime( currTraj.getTime() + dt );
 	}
-
 
 
 	public void updateNonBondedForce
@@ -128,12 +129,12 @@ public class MdSystem<T extends Particle>{
 
 
 	/**
-	 * Builder class provies a builder method to construct a MdSystem object.
-	 * Usage example: MdSystem system = new MdSystem.Builder<Particle>("test").
-	 * 				  particles(myparticles).parameters(myparameters).
-	 *				  topology(mytopology).initialTrajectory(traj).build();
+	 * Build pattern for generic subclassing. 
+	 * @see https://weblogs.java.net/blog/emcmanus/archive/
+	 *              2010/10/25/using-builder-pattern-subclasses
 	 */
-	public static class Builder<E extends Particle>{
+	protected static abstract class Init<E extends Particle, T extends Init<E,T>>{
+
 		private String name;
 		private List<E> particles;
 		private MdParameter parameters;
@@ -142,32 +143,54 @@ public class MdSystem<T extends Particle>{
 		private Trajectory initialTrajectory;
 		private boolean verbose = false; 
 
-		public Builder(String name){
-			this.name= name;
-		} 
-		public Builder<E> particles(List<E> particles){
+		protected abstract T self();
+
+		public T name(String name){
+			this.name = name;
+			return self();
+		}
+		public T particles(List<E> particles){
 			this.particles = particles;
-			return this;
+			return self();
 		}
-		public Builder<E> parameters(MdParameter prm){
+		public T parameters(MdParameter prm){
 			this.parameters = prm;
-			return this;
+			return self();
 		}
-		public Builder<E> topology(Topology<MdSystem<E>> top){
+		public T topology(Topology<MdSystem<E>> top){
 			this.topology = top;
-			return this;
+			return self();
 		}
-		public Builder<E> initialTrajectory(Trajectory traj){
+		public T initialTrajectory(Trajectory traj){
 			this.initialTrajectory = traj;
 			this.size = traj.getSize();
-			return this;
+			return self();
 		} 
-		public Builder<E> verbose(){
+		public T verbose(){
 			this.verbose = true;
-			return this;
+			return self();
 		}
+
 		public MdSystem<E> build(){
 			return new MdSystem<E>(this);
+		}
+	}
+
+	/**
+	 * Builder class provies a builder method to construct a MdSystem object.
+	 * Usage example: MdSystem system = new MdSystem.Builder<Particle>("test").
+	 * 				  particles(myparticles).parameters(myparameters).
+	 *				  topology(mytopology).initialTrajectory(traj).build();
+	 */
+	public static class Builder<E extends Particle> extends Init<E, Builder<E>>{
+
+		public Builder(String name){
+			super();
+			super.name(name);
+		} 
+
+		@Override protected Builder<E> self(){
+			return this;
 		}
 
 	}

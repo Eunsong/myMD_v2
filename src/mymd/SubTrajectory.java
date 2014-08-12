@@ -12,8 +12,8 @@ public class SubTrajectory extends Trajectory{
 	private int subSize;
 
 	public SubTrajectory(int size){
-		this.size = size;
 		super(size);
+		this.size = size;
 	}
 	
 	public void setSubSize(int subSize){
