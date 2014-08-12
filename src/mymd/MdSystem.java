@@ -1,7 +1,7 @@
 package mymd;
 
-
 import mymd.datatype.*;
+import mymd.nonbond.*;
 import mymd.bond.*;
 import mymd.gromacs.LoadGromacsSystem;
 import java.util.List;
@@ -31,12 +31,14 @@ public class MdSystem<T extends Particle>{
 
 
 	/**
-	 * public constructor is not provided. Instead, builder pattern(similar to
+	 * public constructor is not provided. Instead, builder pattern, similar to
 	 * that is introduced in Joshua Bloch's "Effective Java" and modified by
-	 * Eamonn McManus in the link below. Slight modification was made to
+	 * Eamonn McManus in the link below, is used. Slight modification was made to
 	 * use generic type parameter.
 	 *
 	 * @param init abstract builder class that needs to be subclassed
+	 * @see https://weblogs.java.net/blog/emcmanus/archive/
+	 *			  2010/10/25/using-builder-pattern-subclasses
 	 */
 	protected MdSystem(Init<T, ?> init){
 		this.name = init.name;

@@ -1,6 +1,7 @@
 package mymd;
 
 //import mymd.datatype.MdVector;
+import mymd.nonbond.*;
 import mymd.bond.Bonds;
 import java.util.List;
 import java.util.ArrayList;

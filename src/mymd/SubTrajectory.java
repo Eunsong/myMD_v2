@@ -2,7 +2,14 @@ package mymd;
 
 import mymd.datatype.*;
 
-
+/**
+ * SubTrajectory class adds size and subSize fields to its parent Trajectory class.
+ * An instance of SubTrajectory can be used as a member of SubSystem object 
+ * on a slave-node when using parallel computation. 
+ *
+ * @author Eunsong Choi (eunsong.choi@gmail.com)
+ * @version 1.0
+ */
 public class SubTrajectory extends Trajectory{
 
 	// size of member arrays (fixed size)

@@ -1,4 +1,5 @@
 import mymd.*;
+import mymd.nonbond.*;
 import mymd.datatype.*;
 import mymd.gromacs.LoadGromacsSystem;
 import mymd.bond.*;
