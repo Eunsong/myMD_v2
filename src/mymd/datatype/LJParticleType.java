@@ -13,7 +13,8 @@ public class LJParticleType extends ParticleType{
 	}
 
 	private LJParticleType(Builder builder){
-		super(builder.name, builder.number, builder.mass, builder.charge);
+		super(builder.name, builder.number, builder.mass, 
+						builder.charge, builder.isShell);
 		this.C6 = builder.C6;
 		this.C12 = builder.C12;
 	}
@@ -30,6 +31,7 @@ public class LJParticleType extends ParticleType{
 		private int number;
 		private double mass;
 		private double charge;
+		private boolean isShell = false;
 		private double C6;
 		private double C12;
 
@@ -46,6 +48,11 @@ public class LJParticleType extends ParticleType{
 		}
 		public Builder charge(double charge){
 			this.charge = charge;
+			return this;
+		}
+		// invoke this method prior to buile() only if it is a shell type particle
+		public Builder isShell(){
+			this.isShell = true;
 			return this;
 		}
 		public Builder C6(double C6){

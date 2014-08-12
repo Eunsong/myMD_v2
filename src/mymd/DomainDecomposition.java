@@ -47,7 +47,7 @@ public class DomainDecomposition implements Decomposition<E extends MdSystem<?>>
 	 * @return int array where the first element indicates the number of particles
 	 *		   in the domain region
 	 */
-	public in[] getPartition(int i){
+	public int[] getPartition(int i){
 		if ( i >= npartition ) {		
 			throw new IllegalArgumentException("i greater than npartition!");
 		}

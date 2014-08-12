@@ -6,6 +6,8 @@ public class LJParticle implements Particle{
 	private final String name;
 
 	private final LJParticleType type;
+//	private final String type;
+	private final int typeNumber;
 
 	private final String residueName;
 	private final int residueNumber;
@@ -18,13 +20,15 @@ public class LJParticle implements Particle{
 	private final boolean isShell;
 	private final boolean isCharged;
 
-
+	private final double C6;
+	private final double C12;
 
 
 	private LJParticle(Builder builder){
 		this.number = builder.number;
 		this.name = builder.name;
 		this.type = builder.type;
+		this.typeNumber = builder.type.getNumber();
 		this.residueName = builder.residueName;
 		this.residueNumber = builder.residueNumber;
 		this.moleculeNumber = builder.moleculeNumber;
@@ -34,6 +38,8 @@ public class LJParticle implements Particle{
 		this.chargeGroup = builder.chargeGroup;
 		this.isShell = builder.isShell;
 		this.isCharged = builder.isCharged;
+		this.C6 = builder.C6;
+		this.C12 = builder.C12;
 	}
 
 
@@ -51,7 +57,7 @@ public class LJParticle implements Particle{
 	}
 
 	public int getTypeNumber(){
-		return this.type.getNumber();
+		return this.typeNumber;
 	}
 
 	public String getResidueName(){
@@ -86,11 +92,11 @@ public class LJParticle implements Particle{
 	}
 
 	public double getC6(){
-		return this.type.getC6();
+		return this.C6;
 	}
 
 	public double getC12(){
-		return this.type.getC12();
+		return this.C12;
 	}
 
 
@@ -104,6 +110,7 @@ public class LJParticle implements Particle{
 		private int number;
 		private String name = "unnamedParticle";
 		private LJParticleType type;
+//		private int typeNumber = -1;
 		private String residueName = "unnamedResidue";
 		private int residueNumber = -1;
 		private String moleculeType = "unnamedMolecule";
@@ -114,23 +121,30 @@ public class LJParticle implements Particle{
 		private int chargeGroup = -1;
 		private boolean isShell = false;
 		private boolean isCharged = false;
-	
+
+		private double C6 = 0.0;
+		private double C12 = 0.0;;	
 
 		public Builder(int number, LJParticleType type){
 			this.number = number;
 			this.type = type;
 			this.mass = type.getMass();
 			this.charge = type.getCharge();
-			if ( this.charge != 0.0 ){
+			if ( charge != 0.0 ){
 				this.isCharged = true;
 			}
+			this.C6 = type.getC6();
+			this.C12 = type.getC12();
+			this.isShell = type.isShell();
 		}
 
 
 		/**
-		 * mass and charge values are copied from LJParticleType object 
-	 	 * provided at construction by default. charge() and mass() methods can be
-		 * used to overwrite default values. 
+		 * mass and charge values are copied from given LJParticleType by default.
+		 * To overload these values, use charge() and mass() method prior to build()
+		 * method call. If the particle is declared as shell type with isShell() method
+		 * mass value is ignored. If charge value is not overwritten, and default value 
+		 * is 0, build method will create a non-charged type LJParticle object.
 		 */
  		public Builder charge(double charge){
 			this.isCharged = true;
@@ -139,6 +153,25 @@ public class LJParticle implements Particle{
 		}
 		public Builder mass(double mass){
 			this.mass = mass;
+			return this;
+		}
+
+		/**
+		 * These methods override C6 and C12 value. Defaults are those specified
+		 * the type object(otherwise, 0.0)
+		 */
+		public Builder C6(double C6){
+			this.C6 = C6;
+			return this;
+		}
+		public Builder C12(double C12){
+			this.C12 = C12;
+			return this;
+		}
+
+		// Shell type is also overridable 
+		public Builder isShell(){
+			this.isShell = true;
 			return this;
 		}
 
@@ -162,11 +195,6 @@ public class LJParticle implements Particle{
 		}
 		public Builder moleculeNumber(int number){
 			this.moleculeNumber = number;
-			return this;
-		}
-
-		public Builder isShell(){
-			this.isShell = true;
 			return this;
 		}
 

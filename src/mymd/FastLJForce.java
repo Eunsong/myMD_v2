@@ -5,6 +5,7 @@ import mymd.datatype.LJParticleType;
 import mymd.datatype.MdVector;
 import java.util.List;
 import java.util.ArrayList;
+import java.lang.ArrayIndexOutOfBoundsException;
 
 /**
  * FastLJForce class implements Force interface for computing
@@ -19,30 +20,46 @@ public class FastLJForce<T extends MdSystem<LJParticle>>
 
 	private final double rc;
 	private final int size;
+	private final int numberOfDistinctTypes;
 	private final LJForceLookupTable[] tables;
-
 
 	public FastLJForce(T sys){
 		rc = sys.getParam().getRvdw();
 		size = sys.getSize();
 
-		List<Integer> particleTypeNumberList = new ArrayList<Integer>();
+		List<LJParticleType> LJTypesInUse = new ArrayList<LJParticleType>();
 		for ( LJParticle particle : sys.getParticles() ){
-			int typeNumber = particle.getType().getNumber();
-			if ( !particleTypeNumberList.contains(typeNumber) ){
-				particleTypeNumberList.add(typeNumber);
+			if ( !LJTypesInUse.contains(particle.getType()) ){
+				LJTypesInUse.add(particle.getType());
 			}
 		}
-		int numberOfDistinctTypes = particleTypeNumberList.size();
-		tables = new LJForceLookupTable[numberOfDistinctTypes*numberOfDistinctTypes];
+		numberOfDistinctTypes = LJTypesInUse.size();
+		// verify if particle type numbers are correctly assigned
+		for ( LJParticleType type : LJTypesInUse ){
+			if ( type.getNumber() >= numberOfDistinctTypes ) {
+				throw new ArrayIndexOutOfBoundsException("Check LJParticleType assignments");
+			}
+		}		
 
+		tables = new LJForceLookupTable[numberOfDistinctTypes*numberOfDistinctTypes];
 		buildTables(sys);
+	
+		if ( sys.verbose() ){
+			System.out.println("FastLJForce lookup tables created..");
+			System.out.print(String.format(
+			"There are %d distinctive non-bonded LJ types including :", numberOfDistinctTypes));
+			for ( LJParticleType type : LJTypesInUse ){
+				System.out.print(String.format(" %s", type.getName()));
+			}
+			System.out.print("\n");
+		}
+
 	}
 
 	private void buildTables(T sys){
 
 		for ( int i = 0; i < size; i++){
-					
+		
 			LJParticleType iType = sys.getParticle(i).getType();
 			double C6i = iType.getC6();
 			double C12i = iType.getC12();
@@ -74,10 +91,11 @@ public class FastLJForce<T extends MdSystem<LJParticle>>
 	}
 
 	private void setTable(int i, int j, LJForceLookupTable table){
-		this.tables[j*size + i] = table;
+		this.tables[j*numberOfDistinctTypes + i] = table;
+		this.tables[i*numberOfDistinctTypes + j] = table; // symmetric pair 
 	}
 	private LJForceLookupTable getTable(int i, int j){
-		return this.tables[j*size + i];	
+		return this.tables[j*numberOfDistinctTypes + i];	
 	}
 
 
@@ -102,7 +120,9 @@ public class FastLJForce<T extends MdSystem<LJParticle>>
  
 		double r = Rij.norm();
 		if ( r < rc ){
-			return MdVector.times(Rij, getTable(i,j).get(r));
+			int itype = sys.getParticle(i).getTypeNumber();
+			int jtype = sys.getParticle(j).getTypeNumber();
+			return MdVector.times(Rij, getTable(itype,jtype).get(r));
 		}
 		return new MdVector();
 	}
@@ -111,7 +131,7 @@ public class FastLJForce<T extends MdSystem<LJParticle>>
 	/**
 	 * computes LJ force vectors of all partifcles in sys due to 
 	 * their neighbors specified in the given nblist and add computed
-	 * forces on their new force component. 
+	 * forces to their new force component. 
 	 *
 	 * @param sys 
 	 * @param nblist a NeighborList object containing index of neighboring
@@ -139,7 +159,9 @@ public class FastLJForce<T extends MdSystem<LJParticle>>
 				Rij.minImage(box);
 				double r = Rij.norm();
 				if ( r < rc ){
-					F.copy(Rij).timesSet( getTable(i,j).get(r) );
+					int itype = sys.getParticle(i).getTypeNumber();
+					int jtype = sys.getParticle(j).getTypeNumber();
+					F.copy(Rij).timesSet( getTable(itype,jtype).get(r) );
 					traj.addForce(i, F);
 					traj.addReactionForce(j, F);
 				}

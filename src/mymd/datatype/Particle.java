@@ -5,8 +5,10 @@ public interface Particle{
 	public int getNumber();
 	
 	public String getName();
-	
+
 	public ParticleType getType();
+	
+//	public String getType();
 
 	public int getTypeNumber();
 

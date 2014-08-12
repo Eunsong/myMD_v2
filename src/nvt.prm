@@ -12,9 +12,9 @@ nstlist		=		10	  ; neighbor list update frequency
 
 
 ; output control
-nstxout		=		10
+nstxout		=		100
 nstvout		=		10
-nstenergy	=		100
+nstenergy	=		1000
 
 
 ; coulomb interaction

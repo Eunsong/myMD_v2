@@ -22,11 +22,20 @@ public class MdSystem<T extends Particle>{
 
 	private final String name;
 	private final int size;
-	private List<T> particles;
-	private Trajectory currTraj, newTraj, pastTraj;
+	private final List<T> particles;
+	private final Trajectory currTraj, newTraj, pastTraj;
   	private final MdParameter parameters;
 	private final Topology<MdSystem<T>> topology;
 	private final double dt; 
+	private final boolean verbose;
+
+
+	/**
+	 * Constructor for subclassing
+	 */
+	protected MdSystem(){
+		this.verbose = false;	
+	}
 
 	private MdSystem(Builder<T> builder){
 		this.name = builder.name;
@@ -39,6 +48,7 @@ public class MdSystem<T extends Particle>{
 		this.pastTraj = new Trajectory(size);
 		this.dt = this.parameters.getDt();
 		this.newTraj.setTime(currTraj.getTime() + this.dt);
+		this.verbose = builder.verbose;
 	}
 
 	public String getName(){
@@ -72,14 +82,17 @@ public class MdSystem<T extends Particle>{
 	public MdParameter getParam(){
 		return this.parameters;
 	}
-	public Topology<MdSystem<T>> getTop(){
+	public Topology<MdSystem<T>> getTopology(){
 		return this.topology;
 	}
 
 	public double getTime(){
 		return this.currTraj.getTime();
 	}
-
+	
+	public boolean verbose(){
+		return this.verbose;
+	}
 	
 	public void forwardPosition(Integrator<MdSystem<T>> it){
 		it.forwardPosition(this);
@@ -116,7 +129,7 @@ public class MdSystem<T extends Particle>{
 
 	/**
 	 * Builder class provies a builder method to construct a MdSystem object.
-	 * Usage example: MdSystem system = new MdSystem.Builder("my simulation").
+	 * Usage example: MdSystem system = new MdSystem.Builder<Particle>("test").
 	 * 				  particles(myparticles).parameters(myparameters).
 	 *				  topology(mytopology).initialTrajectory(traj).build();
 	 */
@@ -127,6 +140,7 @@ public class MdSystem<T extends Particle>{
 		private Topology<MdSystem<E>> topology;
 		private int size;
 		private Trajectory initialTrajectory;
+		private boolean verbose = false; 
 
 		public Builder(String name){
 			this.name= name;
@@ -148,7 +162,10 @@ public class MdSystem<T extends Particle>{
 			this.size = traj.getSize();
 			return this;
 		} 
-
+		public Builder<E> verbose(){
+			this.verbose = true;
+			return this;
+		}
 		public MdSystem<E> build(){
 			return new MdSystem<E>(this);
 		}

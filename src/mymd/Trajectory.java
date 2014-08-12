@@ -23,7 +23,7 @@ public class Trajectory{
 
 	// The positions, velocities, and forces can only contain
 	// MdVector instances set from set methods. Thus we can ensure type safety. 
-	@SuppressWarnings("unchecked")
+//	@SuppressWarnings("unchecked")
     public Trajectory(int N) {
         this.size = N;
         this.positions = new MdVector[N];

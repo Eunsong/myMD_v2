@@ -29,14 +29,33 @@ public class GromacsImporter{
             int size = loader.getSize();
 
 			// build particle info
+			List<LJParticleType> types = new ArrayList<LJParticleType>();
             List<LJParticle> particles = new ArrayList<LJParticle>(size);
             for ( int i = 0; i < size; i++){
-                LJParticle particle = new LJParticle.Builder(i).
-                name(loader.getParticleName(i)).type(loader.getParticleType(i)).
+
+				// build particle type 
+				String typeName = loader.getParticleType(i);
+				int typeNumber = loader.getParticleTypeNumber(i);
+				double mass = loader.getParticleMass(i);
+				double C6 = loader.getParticleC6(i);
+				double C12 = loader.getParticleC12(i);
+				double charge = loader.getParticleCharge(i);
+				LJParticleType ljType = new LJParticleType.Builder(typeName).
+				number(typeNumber).mass(mass).charge(charge).C6(C6).C12(C12).build();
+
+				int index = types.indexOf(ljType);
+				if ( index == -1 ){
+					types.add(ljType);
+				}
+				else {
+					ljType = types.get(index);
+				}
+
+                LJParticle particle = new LJParticle.Builder(i, ljType).
+                name(loader.getParticleName(i)).
                 residueName(loader.getParticleResidueName(i)).
-                residueNumber(loader.getParticleResidueNumber(i)).
-                typeNumber(loader.getParticleTypeNumber(i)).mass(loader.getParticleMass(i)).
-                C6(loader.getParticleC6(i)).C12(loader.getParticleC12(i)).build();
+                residueNumber(loader.getParticleResidueNumber(i)).mass(mass).
+                C6(C6).C12(C12).build();
                 particles.add(particle);
             }
 
@@ -65,16 +84,18 @@ public class GromacsImporter{
 				double b0 = loader.getBondb0(k);
 				int func = loader.getBondFunc(k);
 				if ( func == 1 ){
-					Bond<MdSystem<LJParticle>> bond = new HarmonicBond<MdSystem<LJParticle>>(i, j, k0, b0);
+					Bond<MdSystem<LJParticle>> bond = 
+					new HarmonicBond<MdSystem<LJParticle>>(i, j, k0, b0);
 					bonds.add(bond);
 				}
 				else throw new IllegalArgumentException("bond type other than 1 is not supported yet");
 			}
 
-			Topology<MdSystem<LJParticle>> top = new Topology.Builder<MdSystem<LJParticle>>().bonds(bonds).build();	
+			Topology<MdSystem<LJParticle>> top = 
+			new Topology.Builder<MdSystem<LJParticle>>().bonds(bonds).build();	
 	
 			return new MdSystem.Builder<LJParticle>(jobName).particles(particles).
-			parameters(prm).topology(top).initialTrajectory(trj).build();
+			parameters(prm).topology(top).initialTrajectory(trj).verbose().build();
 
         }
 

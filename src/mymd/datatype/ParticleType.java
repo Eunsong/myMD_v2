@@ -6,13 +6,16 @@ public class ParticleType{
 	protected final int number; // type identification number
 	protected final double mass;
 	protected final double charge;
+	protected final boolean isShell;
 
 	
-	protected ParticleType(String name, int number, double mass, double charge){
+	protected ParticleType
+	(String name, int number, double mass, double charge, boolean isShell){
 		this.name = name;
 		this.number = number;
 		this.mass = mass;
-		this.charge = charge;
+		this.charge = charge;	
+		this.isShell = isShell;
 	}
 	
 
@@ -27,6 +30,9 @@ public class ParticleType{
 	}
 	public double getCharge(){
 		return this.charge;
+	}
+	public boolean isShell(){
+		return this.isShell;
 	}
 
 	// Two particle types are equal if they have the same name 

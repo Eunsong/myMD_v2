@@ -5,17 +5,19 @@ import mymd.datatype.*;
 
 public class SubTrajectory extends Trajectory{
 
+	// size of member arrays (fixed size)
+	private final int size;
+
+	// actual number of elements reside in its object(varies)	
 	private int subSize;
 
-    // The positions, velocities, and forces can only contain
-    // MdVector instances set from set methods. Thus we can ensure type safety.
-	@SuppressWarnings("unchecked")
-	public SubTrajectory(int N){
-		super(N);
+	public SubTrajectory(int size){
+		this.size = size;
+		super(size);
 	}
 	
-	public void setSubSize(int size){
-		this.subSize = size;
+	public void setSubSize(int subSize){
+		this.subSize = subSize;
 	}
 	public int getSubSize(){
 		return this.subSize;
