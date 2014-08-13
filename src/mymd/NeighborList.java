@@ -11,6 +11,8 @@ import mymd.datatype.*;
 public interface NeighborList<T extends MdSystem<?>>{
 
 
+	public int get(int i);
+
 	public int[] getArray(int i);
 
 

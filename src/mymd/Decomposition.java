@@ -49,8 +49,18 @@ public interface Decomposition<E extends MdSystem<?>>{
 	 * an instance of the class which calls the method
 	 *
 	 * @param sys MdSystem instance containing current particle locations
-	 * @param np Number of partitions (typically equal to the number of nodes)
 	 */
-	public void partiion(E sys, int np);
+	public void partition(E sys);
+
+
+	/**
+	 * partiion method reads particle positions from sys and partition
+	 * particles based on their coordinates and store the result in
+	 * an instance of the class which calls the method
+	 *
+	 * @param trj Trajectory instance containing particle locations
+	 */
+	public void partition(Trajectory trj);
+
 
 }

@@ -33,7 +33,7 @@ public abstract class AbstractNeighborList<T extends MdSystem<?>>
 	protected AbstractNeighborList(int numberOfParticles, double rc){
 		this.nblist = new ArrayList<SubList>(numberOfParticles);
 		for ( int i = 0; i < numberOfParticles; i++){
-			nblist.add(new SubList());
+			nblist.add(new SubList(i));
 		}
 		this.rc = rc;
 	}
@@ -64,10 +64,21 @@ public abstract class AbstractNeighborList<T extends MdSystem<?>>
 
 
 	/**
+	 * get(int i) method returns the i-particle identification number
+	 * (i.e host praticle number of the neighbor list i) 
+	 *
+	 * @param i ith sub-neighbor list
+	 * @return host particle identification number of ith sublist 
+	 */
+	public int get(int i){
+		return nblist.get(i).geti();	
+	}
+
+	/**
 	 * getArray(int i) method returns an array containing the list of 
 	 * neighbors of particle i. 
 	 *
-	 * @param i particle i
+	 * @param i ith sub-neighbor list
 	 * @return ith sublist array containing i's neighbors
 	 */
 	public int[] getArray(int i){
@@ -95,8 +106,11 @@ public abstract class AbstractNeighborList<T extends MdSystem<?>>
 	 */
 	public abstract void update(T sys, MdVector[] positions, MdVector box);
 
-	
-	
+
+	/**
+	 * reset() method initialize all sublists. This method must be invoked
+	 * prior to updating neighbor lists
+	 */
 	protected void reset(){
 		for ( int i = 0; i < getSize(); i++){
 			nblist.get(i).reset();
@@ -113,12 +127,20 @@ public abstract class AbstractNeighborList<T extends MdSystem<?>>
 	 */
 	protected class SubList{
 
+		private int index; // index number of i-particle
 		private int[] sublist;
 		private int size;
 
-		public SubList(){
+		public SubList(int index){
+			this.index = index;
 			this.size = 0;
 			this.sublist = new int[max_capacity];
+		}
+		public int geti(){
+			return this.index;
+		}
+		public void seti(int index){
+			this.index = index;
 		}
 		public int[] getList(){
 			return this.sublist;

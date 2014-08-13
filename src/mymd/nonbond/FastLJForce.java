@@ -151,20 +151,21 @@ public class FastLJForce<T extends MdSystem<LJParticle>>
 		MdVector Rij = new MdVector();
 		MdVector F = new MdVector();
 		for ( int i = 0; i < nblist.getSize(); i++){
-			MdVector Ri = traj.getPosition(i);
+			int iActual = nblist.get(i);
 			int[] sublist = nblist.getArray(i);
-			for ( int k = 0; k < nblist.getSize(i); k++){ 
-				int j = sublist[k];
-				MdVector Rj = traj.getPosition(j);
+			MdVector Ri = traj.getPosition(iActual);
+			for ( int j = 0; j < nblist.getSize(i); j++){ 
+				int jActual = sublist[j];
+				MdVector Rj = traj.getPosition(jActual);
 				Rij.copy(Ri).sub(Rj); // Rij = Ri - Rj
 				Rij.minImage(box);
 				double r = Rij.norm();
 				if ( r < rc ){
-					int itype = sys.getParticle(i).getTypeNumber();
-					int jtype = sys.getParticle(j).getTypeNumber();
+					int itype = sys.getParticle(iActual).getTypeNumber();
+					int jtype = sys.getParticle(jActual).getTypeNumber();
 					F.copy(Rij).timesSet( getTable(itype,jtype).get(r) );
-					traj.addForce(i, F);
-					traj.addReactionForce(j, F);
+					traj.addForce(iActual, F);
+					traj.addReactionForce(jActual, F);
 				}
 			}
 		}

@@ -5,19 +5,19 @@ import mymd.datatype.*;
 
 public class SubSystem<T extends Particle> extends MdSystem<T>{
 
-	private SubTrajectory traj;
+	private Trajectory subTraj;
 
 	protected SubSystem(Init<T, ?> init){
 		super(init);
-		this.traj = init.traj;		
+		this.subTraj = init.subTraj;		
 	}
 
 	protected static abstract class Init<T extends Particle, E extends Init<T,E>> 
 									                   extends MdSystem.Init<T,E>{ 
-		private SubTrajectory traj;
+		private Trajectory subTraj;
 
-		public E subTrajectory(SubTrajectory traj){
-			this.traj = traj;
+		public E subTrajectory(Trajectory subTraj){
+			this.subTraj = subTraj;
 			return self();
 		}
 	

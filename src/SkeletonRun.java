@@ -20,10 +20,9 @@ public class SkeletonRun{
 		MdSystem<LJParticle> system =  GromacsImporter.buildLJParticleSystem
 		("JOB_NAME", inputPrmFile, inputConfFile, inputTopFile);
 
-SubTrajectory subTraj = new SubTrajectory(10);
 SubSystem<LJParticle> subsystem = new SubSystem.Builder<LJParticle>().
 name("test").particles(system.getParticles()).parameters(system.getParam()).
-topology(system.getTopology()).subTrajectory(subTraj).build();
+topology(system.getTopology()).subTrajectory(null).build();
 
 
 		MdParameter prm = system.getParam();
@@ -51,11 +50,11 @@ topology(system.getTopology()).subTrajectory(subTraj).build();
 			PrintStream ps = new PrintStream(outputTrajFile);
 	
 			for ( int i = 0; i < nsteps; i++){
-//				if ( i % 10 == 0 ) System.out.println(String.format("computing %5.1fps", i*dt));
+				if ( i % 10 == 0 ) System.out.println(String.format("computing %5.1fps", i*dt));
 				if ( i % nstlist == 0 ) nblist.update(system);
 				system.forwardPosition(integrator);
 				system.updateNonBondedForce(myLJForce, nblist);
-//				system.updateBondForce();
+				system.updateBondForce();
 				system.forwardVelocity(integrator);
 				if ( i % nstxout == 0 ) mymd.MdIO.writeGro(system, ps);
 				system.update();

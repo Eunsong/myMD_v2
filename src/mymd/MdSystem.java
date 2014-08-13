@@ -47,10 +47,12 @@ public class MdSystem<T extends Particle>{
 		this.topology = init.topology;
 		this.size = init.size;
 		this.currTraj = init.initialTrajectory;
-		this.newTraj = new Trajectory(size);
-		this.pastTraj = new Trajectory(size);
 		this.dt = this.parameters.getDt();
-		if ( this.currTraj != null ) this.newTraj.setTime(currTraj.getTime() + this.dt);
+		if ( this.currTraj != null ) {
+			this.newTraj = new Trajectory(size);
+			this.pastTraj = new Trajectory(size);
+			this.newTraj.setTime(currTraj.getTime() + this.dt);
+		}	
 		this.verbose = init.verbose;
 	}
 

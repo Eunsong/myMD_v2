@@ -133,6 +133,15 @@ public class Trajectory{
 
 	// Exporting methods. These methods are needed for parallel computation
 	// using a Message Passing Interface implementation. (e.g. MPJ)
+	public double[] exportPositions(Domain domain){
+		return domain.exportPositions(this);
+	}
+
+	public void importPositions(Domain domain, double[] positionArray){
+		domain.importPositions(this, positionArray);
+	}	
+
+/*
 	public double[] exportPositions(int[] particleList){
 		int size = particleList.length;
 		double[] positionArray = new double[3*size];
@@ -176,5 +185,7 @@ public class Trajectory{
 			this.positions[id++].copySet(x, y, z); 
 		}
 	}
+
+*/
 
 }
