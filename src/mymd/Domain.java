@@ -117,7 +117,7 @@ public class Domain{
 
 
 	public double[] exportPositions(Trajectory traj){
-		double[] positionArray = new double[(capacity-2)*3];
+		double[] positionArray = new double[capacity*3];
 		int index = 0;
 		// domain particles
 		for ( int i = 0; i < domainSize; i++){
