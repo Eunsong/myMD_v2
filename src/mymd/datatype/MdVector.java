@@ -76,6 +76,12 @@ public class MdVector{
         this.z -= vec.z;
     }
 
+	public void addSet(double x, double y, double z){
+		this.x += x;
+		this.y += y;
+		this.z += z;
+	}
+
     public void addSet(MdVector vec) {
         this.x += vec.x;
         this.y += vec.y;

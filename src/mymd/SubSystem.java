@@ -1,7 +1,7 @@
 package mymd;
 
 import mymd.datatype.*;
-
+import java.lang.UnsupportedOperationException;
 
 public class SubSystem<T extends Particle> extends MdSystem<T>{
 
@@ -11,6 +11,31 @@ public class SubSystem<T extends Particle> extends MdSystem<T>{
 		super(init);
 		this.subTraj = init.subTraj;		
 	}
+
+	@Override public int getSize(){
+		return this.subTraj.getSize();
+	}
+
+	@Override public void update(){
+		this.subTraj.resetForces();
+		this.subTraj.setTime( this.subTraj.getTime() + super.getParam().getDt() );
+	}
+	
+	@Override public Trajectory getNewTraj(){
+		return this.subTraj;
+	}
+	@Override public Trajectory getCurrTraj(){
+		throw new UnsupportedOperationException("SubSystem object cannot have currTraj");
+	}
+	@Override public Trajectory getPastTraj(){
+		throw new UnsupportedOperationException("SubSystem object cannot have pastTraj");
+	}
+
+
+	public void importNewPositions(Domain domain, double[] positionArray){
+		getNewTraj().importPositions(domain, positionArray);
+	} 
+
 
 	protected static abstract class Init<T extends Particle, E extends Init<T,E>> 
 									                   extends MdSystem.Init<T,E>{ 

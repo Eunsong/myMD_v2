@@ -19,13 +19,13 @@ public class SimpleNeighborList<T extends MdSystem<?>>
 	}
 
     /**
-     * update(T sys) method uses current positions in sys and invokes
+     * update(T sys) method uses new positions in sys and invokes
      * update(T sys, MdVector[] positions, MdVector box) method 
      *
      * @param sys
      */
 	public void update(T sys){
-		MdVector[] positions = sys.getCurrTraj().getPositions();
+		MdVector[] positions = sys.getNewTraj().getPositions();
 		MdVector box = sys.getBox();
 		update(sys, positions, box);
 	}

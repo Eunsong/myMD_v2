@@ -131,6 +131,32 @@ public class MdSystem<T extends Particle>{
 		bonds.updateAllForces(this);
 	}
 
+	public void partition(Decomposition decomposition){
+		decomposition.partition(this);
+	}
+
+
+	public double[] exportNewPositions(Domain domain){
+		Trajectory trj = this.getNewTraj();
+		return trj.exportPositions(domain);
+	}
+
+	public void importNewPositions(Domain domain, double[] positionArray){
+		Trajectory trj = this.getNewTraj();
+		trj.importPositions(domain, positionArray);
+	}	
+
+	
+	public double[] exportNewForces(Domain domain){
+		Trajectory trj = this.getNewTraj();
+		return trj.exportForces(domain);
+	}
+
+	public void importNewForces(Domain domain, double[] forceArray){
+		Trajectory trj = this.getNewTraj();
+		trj.importForces(domain, forceArray);
+	}	
+
 
 	/**
 	 * Build pattern for generic subclassing. 

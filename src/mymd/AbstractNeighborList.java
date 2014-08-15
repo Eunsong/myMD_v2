@@ -38,12 +38,21 @@ public abstract class AbstractNeighborList<T extends MdSystem<?>>
 		this.rc = rc;
 	}
 
+	protected AbstractNeighborList(T sys){
+
+		int numberOfParticles = sys.getSize();
+		this.rc = sys.getParam().getRlist();
+		this.nblist = new ArrayList<SubList>(numberOfParticles);
+		for ( int i = 0; i < numberOfParticles; i++){
+			nblist.add(new SubList(i));
+		}
+	}
+
 
 	/**
-	 * getSize() method returns the number of sublists which is essentially
-	 * numberOfParticles value given when constructor was invoked.
+	 * getSize() method returns the number of sublists
 	 *
-	 * @return the number of sublists (i.e. number of particle i)
+	 * @return the number of sublists (i.e. number of host particles)
 	 */
 	public int getSize(){
 		return this.nblist.size();

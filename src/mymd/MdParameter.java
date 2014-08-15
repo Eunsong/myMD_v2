@@ -51,6 +51,7 @@ public class MdParameter{
     private int nstvout;
 //  private int nstfout; 
     private int nstenergy;
+	private int nstlog;
 
 
     // tolerance for Constraint dynamics

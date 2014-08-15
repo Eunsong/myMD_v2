@@ -20,10 +20,6 @@ public class SkeletonRun{
 		MdSystem<LJParticle> system =  GromacsImporter.buildLJParticleSystem
 		("JOB_NAME", inputPrmFile, inputConfFile, inputTopFile);
 
-SubSystem<LJParticle> subsystem = new SubSystem.Builder<LJParticle>().
-name("test").particles(system.getParticles()).parameters(system.getParam()).
-topology(system.getTopology()).subTrajectory(null).build();
-
 
 		MdParameter prm = system.getParam();
 

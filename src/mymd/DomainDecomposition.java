@@ -136,8 +136,11 @@ public class DomainDecomposition<E extends MdSystem<?>> implements Decomposition
 			double zi = positions[i].getZ();
 			int domainNumber = -1;
 			// Determine corresponding domain region 
-			if ( zi < 0 || zi > lbox ) throw new RuntimeException
-			("Particle found out of the box. Checm system equilibration and PBC");
+			if ( zi < 0 || zi > lbox ) { 
+System.out.println("i = " + i + ", zi = " +zi);
+			throw new RuntimeException
+			("Particle found out of the box. Check system equilibration and PBC");
+			}
 			else if ( zi < headDomainLength ){
 				domains.get(0).addToDomain(i);
 				domainNumber = 0;

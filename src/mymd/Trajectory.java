@@ -141,6 +141,14 @@ public class Trajectory{
 		domain.importPositions(this, positionArray);
 	}	
 
+	public double[] exportForces(Domain domain){
+		return domain.exportForces(this);
+	}
+
+	public void importForces(Domain domain, double[] forceArray){
+		domain.importForces(this, forceArray);
+	}
+
 /*
 	public double[] exportPositions(int[] particleList){
 		int size = particleList.length;

@@ -1,6 +1,7 @@
 package mymd;
 
 import mymd.datatype.MdVector;
+import java.io.PrintStream;
 
 /**
  * DomainNeighborList class implements update() method in AbstractNeighborList
@@ -13,22 +14,27 @@ import mymd.datatype.MdVector;
 public class DomainNeighborList<T extends MdSystem<?>> 
 		extends AbstractNeighborList<T> implements NeighborList<T>{
 
-	private Domain domain;
-	
-	public DomainNeighborList(int numberOfParticles, double rc, Domain domain){
-		super(numberOfParticles, rc);
+	private final Domain domain;
+
+	public DomainNeighborList(T sys, Domain domain){
+		super( domain.getDomainCapacity(), sys.getParam().getRlist() );
 		this.domain = domain;
 	}
+	
+
+	@Override public int getSize(){
+		return this.domain.getDomainSize();
+	}	
 
     /**
-     * update(T sys) method uses current positions in sys and invokes
+     * update(T sys) method uses new positions in sys and invokes
      * update(T sys, MdVector[] positions, MdVector box) method 
      *
      * @param sys MdSystem object containing system backbone information
      */
     public void update(T sys){
-        MdVector[] positions = sys.getCurrTraj().getPositions();
-        MdVector box = sys.getBox();
+        MdVector[] positions = sys.getNewTraj().getPositions();
+        MdVector box = sys.getNewTraj().getBox();
         update(sys, positions, box);
     }
 
@@ -83,6 +89,20 @@ public class DomainNeighborList<T extends MdSystem<?>>
 	}
 
 
+
+	public void printInfo(PrintStream ps){
+
+        ps.println(String.format("Neighborlist size : %d", getSize()));
+		for ( int i = 0; i < getSize(); i++){	
+			ps.println(String.format("Total number of neighbors : %d", getSize(i))); 
+			int[] particleList = getArray(i);
+			ps.println(String.format("[ i-particle : %d ]", get(i)));
+ 			for ( int j = 0; j < getSize(i); j++){
+				ps.print(particleList[j] + "  ");
+			}
+			ps.print("\n");	
+		}
+	}
 
 
 }

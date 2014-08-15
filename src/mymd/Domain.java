@@ -4,7 +4,7 @@ import mymd.datatype.MdVector;
 import java.util.List;
 import java.util.ArrayList;
 import java.lang.ArrayIndexOutOfBoundsException;
-
+import java.io.PrintStream;
 
 /**
  * Domain class provides a data structure including particle numbers associated
@@ -31,12 +31,12 @@ public class Domain{
 	public Domain(int domainCap, int buffCap){
 		this.domainCapacity = domainCap;
 		this.bufferCapacity = buffCap;
-		this.capacity = domainCapacity + bufferCapacity;
-		this.particleList = new int[capacity+2];
+		this.capacity = domainCapacity + bufferCapacity + 2;
+		this.particleList = new int[capacity];
 		this.domainSize = 0;
 		this.bufferSize = 0;
-		this.particleList[capacity] = domainSize;
-		this.particleList[capacity+1] = bufferSize;
+//		this.particleList[capacity-2] = domainSize;
+//		this.particleList[capacity-1] = bufferSize;
 	}
 
 
@@ -68,24 +68,26 @@ public class Domain{
 
 
 	public int[] exportArray(){
+		this.particleList[capacity-2] = this.domainSize;
+		this.particleList[capacity-1] = this.bufferSize;
 		return this.particleList;
 	}
 
 	public void importArray(int[] inputArray){
-		if ( inputArray.length != capacity + 2 ){
+		if ( inputArray.length != capacity ){
 			throw new ArrayIndexOutOfBoundsException
 			("inputArray size does not match Domain capacity");
 		}
 		this.particleList = inputArray;	
-		this.domainSize = inputArray[capacity];
-		this.bufferSize = inputArray[capacity+1];
+		this.domainSize = inputArray[capacity-2];
+		this.bufferSize = inputArray[capacity-1];
 	} 
 
 	public int getDomainSize(){
-		return this.particleList[capacity];
+		return this.domainSize;
 	}
 	public int getBufferSize(){
-		return this.particleList[capacity+1];
+		return this.bufferSize;
 	}
 	public int getDomainCapacity(){
 		return this.domainCapacity;
@@ -111,7 +113,7 @@ public class Domain{
 	} 
 	
 	public int getSize(){
-		return (this.particleList[capacity] + this.particleList[capacity+1]);
+		return (getDomainSize() + getBufferSize());
 	}
 
 
@@ -140,7 +142,7 @@ public class Domain{
 
 
 	public void importPositions(Trajectory traj, double[] positionArray){
-		if ( positionArray.length != (domainSize+bufferSize)*3 ){
+		if ( positionArray.length != capacity*3 ){
             throw new ArrayIndexOutOfBoundsException
             ("input positionArray size does not match Domain size");
         }
@@ -161,6 +163,74 @@ public class Domain{
 			positions[iActual].copySet(x, y, z);
 		}		
 	}
+
+
+	public double[] exportForces(Trajectory traj){
+		double[] forceArray = new double[capacity*3];
+		int index = 0;
+		// domain particles
+		for ( int i = 0; i < domainSize; i++){
+			int iActual = this.particleList[i];
+			MdVector Fi = traj.getForce(iActual);
+			forceArray[index++] = Fi.getX();
+			forceArray[index++] = Fi.getY();
+			forceArray[index++] = Fi.getZ();
+		}
+		// buffer particles
+		for ( int i = domainCapacity; i < domainCapacity + bufferSize; i++){
+			int iActual = this.particleList[i];
+			MdVector Fi = traj.getForce(iActual);
+			forceArray[index++] = Fi.getX();
+			forceArray[index++] = Fi.getY();
+			forceArray[index++] = Fi.getZ();
+		}
+		return forceArray;
+	}
+
+
+
+
+	public void importForces(Trajectory traj, double[] forceArray){
+		if ( forceArray.length != capacity*3 ){
+            throw new ArrayIndexOutOfBoundsException
+            ("input forceArray size does not match Domain size");
+        }
+		MdVector[] forces = traj.getForces();
+		int index = 0;
+		for ( int i = 0; i < domainSize; i++){
+			int iActual = this.particleList[i];
+			double x = forceArray[index++];
+			double y = forceArray[index++];
+			double z = forceArray[index++];
+			forces[iActual].addSet(x, y, z);
+		}
+		for ( int i = domainCapacity; i < domainCapacity + bufferSize; i++){
+			int iActual = this.particleList[i];
+			double x = forceArray[index++];
+			double y = forceArray[index++];
+			double z = forceArray[index++];
+			forces[iActual].addSet(x, y, z);
+		}		
+	}
+
+
+
+	public void printInfo(PrintStream ps){
+
+		ps.println(String.format("Domain size : %d , Buffer size : %d", domainSize, bufferSize));
+		ps.print(String.format("[ Domain particle list ] :  "));
+		for ( int i = 0; i < domainSize; i++){
+			ps.print(particleList[i] + "  " );
+		}
+		ps.print("\n");
+		ps.print(String.format("[ Buffer particle list ] :  "));
+		for ( int i = firstBuffer(); i < lastBuffer(); i++){
+			ps.print(particleList[i] + "  " );
+		}
+		ps.print("\n");
+
+	}
+	
 	
 
 }

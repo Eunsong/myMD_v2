@@ -111,10 +111,10 @@ public class FastLJForce<T extends MdSystem<LJParticle>>
 	 *		   the particle i due to the particle j
 	 */
     public MdVector get( T sys, int i, int j){
-		MdVector box = sys.getBox();
-
-		MdVector Ri = sys.getNewTraj().getPosition(i);
-		MdVector Rj = sys.getNewTraj().getPosition(j);
+		Trajectory traj = sys.getNewTraj();
+		MdVector box = traj.getBox();
+		MdVector Ri = traj.getPosition(i);
+		MdVector Rj = traj.getPosition(j);
 		MdVector Rij = new MdVector();
 		Rij.copy(Ri).sub(Rj);
 		Rij.minImage(box);
@@ -141,13 +141,9 @@ public class FastLJForce<T extends MdSystem<LJParticle>>
 	 * 				 in sys are the same and they are written in the same order
 	 */
     public void updateAll( T sys, NeighborList nblist ){
-		if ( sys.getSize() != nblist.getSize() ){
-			throw new IllegalArgumentException
-					("size of input NeighborList object does not match!");
-		}
 
 		Trajectory traj = sys.getNewTraj();	
-		MdVector box = sys.getBox();
+		MdVector box = traj.getBox();
 		MdVector Rij = new MdVector();
 		MdVector F = new MdVector();
 		for ( int i = 0; i < nblist.getSize(); i++){

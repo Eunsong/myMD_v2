@@ -1,0 +1,65 @@
+MPJ Express (0.38) is started in the multicore configuration
+WARNING! Invalid entry [coulombType] in the prm file
+WARNING! Invalid entry [coulombType] in the prm file
+WARNING! Invalid entry [LoadBalancingFreq] in the prm file
+WARNING! Invalid entry [LoadBalancingTimeLimit] in the prm file
+WARNING! Invalid entry [LoadBalancingFreq] in the prm file
+WARNING! Invalid entry [LoadBalancingTimeLimit] in the prm file
+WARNING! Invalid entry [coulombType] in the prm file
+WARNING! Invalid entry [coulombType] in the prm file
+WARNING! Invalid entry [LoadBalancingFreq] in the prm file
+WARNING! Invalid entry [LoadBalancingTimeLimit] in the prm file
+WARNING! Invalid entry [LoadBalancingFreq] in the prm file
+WARNING! Invalid entry [LoadBalancingTimeLimit] in the prm file
+FastLJForce lookup tables created..
+There are 1 distinctive non-bonded LJ types including : P4
+FastLJForce lookup tables created..
+There are 1 distinctive non-bonded LJ types including : P4
+FastLJForce lookup tables created..
+There are 1 distinctive non-bonded LJ types including : P4
+Computing t = 0.000 ps
+FastLJForce lookup tables created..
+There are 1 distinctive non-bonded LJ types including : P4
+i = 116
+i = 116
+i = 320
+i = 320
+i = 320
+i = 320
+i = 320
+i = 320
+i = 320
+i = 320
+Computing t = 1.000 ps
+i = 174
+i = 198
+i = 174
+i = 198
+i = 174
+i = 198
+i = 174
+i = 198
+i = 174
+i = 198
+i = 174
+i = 198
+i = 174
+i = 198
+i = 174
+i = 198
+i = 174
+i = 198
+i = 174, zi = 28022.8962792091
+java.lang.reflect.InvocationTargetException
+	at sun.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+	at sun.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:57)
+	at sun.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+	at java.lang.reflect.Method.invoke(Method.java:622)
+	at runtime.starter.MulticoreStarter$1.run(MulticoreStarter.java:289)
+	at java.lang.Thread.run(Thread.java:701)
+Caused by: java.lang.RuntimeException: Particle found out of the box. Check system equilibration and PBC
+	at mymd.DomainDecomposition.partition(DomainDecomposition.java:141)
+	at mymd.DomainDecomposition.partition(DomainDecomposition.java:91)
+	at mymd.MdSystem.partition(MdSystem.java:135)
+	at MpiSkeletonRun.main(MpiSkeletonRun.java:89)
+	... 6 more

@@ -1,12 +1,12 @@
-Log file opened on Thu Aug 14 22:49:29 2014
-Host: eunsong-chem  pid: 8079  nodeid: 0  nnodes:  1
+Log file opened on Mon Aug 11 23:36:56 2014
+Host: echoi-VirtualBox  pid: 3348  nodeid: 0  nnodes:  1
 The Gromacs distribution was built Wed Oct 19 04:52:49 UTC 2011 by
 buildd@crested [CMAKE] (Linux 2.6.24-29-server x86_64)
 
 
                          :-)  G  R  O  M  A  C  S  (-:
 
-                     Gyas ROwers Mature At Cryogenic Speed
+                God Rules Over Mankind, Animals, Cosmos and Such
 
                             :-)  VERSION 4.5.5  (-:
 
@@ -224,15 +224,6 @@ ann_npoints:           0
    scalefactor          = 1
 qm_opts:
    ngQM                 = 0
-
-Initializing Domain Decomposition on 4 nodes
-Dynamic load balancing: auto
-Will sort the charge groups at every domain (re)decomposition
-Scaling the initial minimum size with 1/0.8 (option -dds) = 1.25
-Optimizing the DD grid for 4 cells with a minimum initial size of 0.000 nm
-Domain decomposition grid 4 x 1 x 1, separate PME nodes 0
-Domain decomposition nodeid 0, coordinates 0 0 0
-
 Table routines are used for coulomb: FALSE
 Table routines are used for vdw:     FALSE
 Cut-off's:   NS: 1.4   Coulomb: 1.4   LJ: 1.4
@@ -243,78 +234,59 @@ Testing x86_64 SSE2 support... present.
 
 
 Removing pbc first time
-
-Linking all bonded interactions to atoms
-
-The initial number of communication pulses is: X 2
-The initial domain decomposition cell size is: X 0.91 nm
-
-When dynamic load balancing gets turned on, these settings will change to:
-The maximum number of communication pulses is: X 2
-The minimum size for domain decomposition cells is 0.700 nm
-The requested allowed shrink of DD cells (option -dds) is: 0.80
-The allowed shrink of domain decomposition cells is: X 0.77
-
-Making 1D domain decomposition grid 4 x 1 x 1, home cell index 0 0 0
-
 Center of mass motion removal mode is Linear
 We have the following groups for center of mass motion removal:
   0:  rest
 There are: 400 Atoms
-Charge group distribution at step 0: 95 105 103 97
-Grid: 6 x 3 x 3 cells
+Max number of connections per atom is 0
+Total number of connections is 0
 Initial temperature: 306.24 K
 
-Started mdrun on node 0 Thu Aug 14 22:49:29 2014
+Started mdrun on node 0 Mon Aug 11 23:36:56 2014
 
            Step           Time         Lambda
               0        0.00000        0.00000
 
+Grid: 3 x 3 x 3 cells
    Energies (kJ/mol)
         LJ (SR)   Coulomb (SR)      Potential    Kinetic En.   Total Energy
-   -1.30072e+04    0.00000e+00   -1.30072e+04    1.52471e+03   -1.14824e+04
+   -1.30071e+04    0.00000e+00   -1.30071e+04    1.52471e+03   -1.14824e+04
     Temperature Pressure (bar)
     3.06399e+02   -1.35894e+03
 
-DD  step 9 load imb.: force  3.6%
-
-
-
-Received the INT signal, stopping at the next NS step
-
            Step           Time         Lambda
-           2750       27.50000        0.00000
+         100000     1000.00000        0.00000
 
-Writing checkpoint, step 2750 at Thu Aug 14 22:49:30 2014
+Writing checkpoint, step 100000 at Mon Aug 11 23:37:51 2014
 
 
    Energies (kJ/mol)
         LJ (SR)   Coulomb (SR)      Potential    Kinetic En.   Total Energy
-   -1.33222e+04    0.00000e+00   -1.33222e+04    1.33384e+03   -1.19883e+04
+   -1.47025e+04    0.00000e+00   -1.47025e+04    1.01057e+00   -1.47015e+04
     Temperature Pressure (bar)
-    2.68043e+02   -1.61887e+03
+    2.03080e-01   -3.33641e+03
 
 	<======  ###############  ==>
 	<====  A V E R A G E S  ====>
 	<==  ###############  ======>
 
-	Statistics over 2751 steps using 276 frames
+	Statistics over 100001 steps using 10001 frames
 
    Energies (kJ/mol)
         LJ (SR)   Coulomb (SR)      Potential    Kinetic En.   Total Energy
-   -1.31522e+04    0.00000e+00   -1.31522e+04    1.41350e+03   -1.17387e+04
+   -1.44411e+04    0.00000e+00   -1.44411e+04    2.28953e+02   -1.42122e+04
     Temperature Pressure (bar)
-    2.84050e+02   -1.48039e+03
+    4.60093e+01   -3.14742e+03
 
    Total Virial (kJ/mol)
-    2.82497e+03    1.29844e+02   -3.14283e+00
-    1.29844e+02    2.84827e+03    1.23201e+02
-   -3.14286e+00    1.23201e+02    2.11115e+03
+    4.16183e+03    3.02143e+02   -1.01392e+02
+    3.02143e+02    5.26592e+03    2.94218e+02
+   -1.01392e+02    2.94218e+02    4.34618e+03
 
    Pressure (bar)
-   -1.64175e+03   -9.13244e+01    3.65433e+00
-   -9.13244e+01   -1.65656e+03   -9.02104e+01
-    3.65435e+00   -9.02104e+01   -1.14287e+03
+   -2.84795e+03   -2.10650e+02    7.09032e+01
+   -2.10650e+02   -3.61790e+03   -2.05188e+02
+    7.09032e+01   -2.05188e+02   -2.97641e+03
 
    Total Dipole (D)
     0.00000e+00    0.00000e+00    0.00000e+00
@@ -328,53 +300,34 @@ Writing checkpoint, step 2750 at Thu Aug 14 22:49:30 2014
 
  Computing:                               M-Number         M-Flops  % Flops
 -----------------------------------------------------------------------------
- LJ                                      51.231696        1690.646    80.1
- Outer nonbonded loop                     2.792722          27.927     1.3
- NS-Pairs                                16.993762         356.869    16.9
- Reset In Box                             0.110400           0.331     0.0
- CG-CoM                                   0.110800           0.332     0.0
- Virial                                   0.160080           2.881     0.1
- Stop-CM                                  0.110400           1.104     0.1
- Calc-Ekin                                1.100800          29.722     1.4
+ LJ                                    1864.701170       61535.139    75.9
+ Outer nonbonded loop                   139.025846        1390.258     1.7
+ NS-Pairs                               805.265686       16910.579    20.9
+ Reset In Box                             4.000400          12.001     0.0
+ CG-CoM                                   4.000400          12.001     0.0
+ Virial                                   4.450445          80.108     0.1
+ Stop-CM                                  4.000400          40.004     0.0
+ Calc-Ekin                               40.000800        1080.022     1.3
 -----------------------------------------------------------------------------
- Total                                                    2109.813   100.0
+ Total                                                   81060.112   100.0
 -----------------------------------------------------------------------------
-
-
-    D O M A I N   D E C O M P O S I T I O N   S T A T I S T I C S
-
- av. #atoms communicated per step for force:  2 x 618.2
-
- Average load imbalance: 6.3 %
- Part of the total run time spent waiting due to load imbalance: 0.5 %
 
 
      R E A L   C Y C L E   A N D   T I M E   A C C O U N T I N G
 
  Computing:         Nodes     Number     G-Cycles    Seconds     %
 -----------------------------------------------------------------------
- Domain decomp.         4        276        0.186        0.1     1.4
- DD comm. load          4         29        0.012        0.0     0.1
- Comm. coord.           4       2751        2.485        0.8    18.5
- Neighbor search        4        276        1.140        0.4     8.5
- Force                  4       2751        1.641        0.5    12.2
- Wait + Comm. F         4       2751        3.083        1.0    22.9
- Write traj.            4        276        0.292        0.1     2.2
- Update                 4       2751        0.104        0.0     0.8
- Comm. energies         4        277        4.390        1.4    32.6
- Rest                   4                   0.117        0.0     0.9
+ Neighbor search        1      10001       57.538       17.7    32.0
+ Force                  1     100001       79.883       24.5    44.4
+ Write traj.            1      10001       23.491        7.2    13.1
+ Update                 1     100001        4.586        1.4     2.5
+ Rest                   1                  14.382        4.4     8.0
 -----------------------------------------------------------------------
- Total                  4                  13.450        4.3   100.0
+ Total                  1                 179.880       55.2   100.0
 -----------------------------------------------------------------------
-
-NOTE: 33 % of the run time was spent communicating energies,
-      you might want to use the -gcom option of mdrun
-
-
-	Parallel run - timing based on wallclock.
 
                NODE (s)   Real (s)      (%)
-       Time:      1.087      1.087    100.0
+       Time:     30.490     55.226     55.2
                (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
-Performance:     47.153      1.942   2187.631      0.011
-Finished mdrun on node 0 Thu Aug 14 22:49:30 2014
+Performance:     61.158      2.659   2833.744      0.008
+Finished mdrun on node 0 Mon Aug 11 23:37:51 2014
