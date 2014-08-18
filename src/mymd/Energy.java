@@ -2,6 +2,6 @@ package mymd;
 
 public interface Energy<T extends MdSystem<?>>{
 
-	public double get(T sys, int i, int j);
+	public double getEnergy(T sys, NeighborList nblist);
 
 }

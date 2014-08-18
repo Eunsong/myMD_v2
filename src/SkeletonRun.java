@@ -39,8 +39,8 @@ public class SkeletonRun{
 		SimpleNeighborList<MdSystem<LJParticle>> nblist 
 		= new SimpleNeighborList<MdSystem<LJParticle>>(system.getSize(), rlist);
 		
-		FastLJForce<MdSystem<LJParticle>> myLJForce 
-		= new FastLJForce<MdSystem<LJParticle>>(system);
+		FastLJ<MdSystem<LJParticle>> nonbond 
+		= new FastLJ<MdSystem<LJParticle>>(system);
 
 		try {
 			PrintStream ps = new PrintStream(outputTrajFile);
@@ -49,7 +49,7 @@ public class SkeletonRun{
 				if ( i % 10 == 0 ) System.out.println(String.format("computing %5.1fps", i*dt));
 				if ( i % nstlist == 0 ) nblist.update(system);
 				system.forwardPosition(integrator);
-				system.updateNonBondedForce(myLJForce, nblist);
+				system.updateNonBondForce(nonbond, nblist);
 				system.updateBondForce();
 				system.forwardVelocity(integrator);
 				if ( i % nstxout == 0 ) mymd.MdIO.writeGro(system, ps);

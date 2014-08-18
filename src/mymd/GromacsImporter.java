@@ -4,6 +4,7 @@ import mymd.*;
 import mymd.datatype.*;
 import mymd.gromacs.LoadGromacsSystem;
 import mymd.bond.*;
+import mymd.angle.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -90,9 +91,25 @@ public class GromacsImporter{
 				}
 				else throw new IllegalArgumentException("bond type other than 1 is not supported yet");
 			}
+			Angles<MdSystem<LJParticle>> angles = new Angles<MdSystem<LJParticle>>();
+			for ( int n = 0; n < loader.getAngleSize(); n++){
+				int i = loader.getAnglei(n);
+				int j = loader.getAnglej(n);
+				int k = loader.getAnglek(n);
+				double k0 = loader.getAnglek0(n);
+				double theta0 = loader.getAngleTheta0(n);
+				int func = loader.getAngleFunc(n);
+				if ( func == 1 ){
+					Angle<MdSystem<LJParticle>> angle = 
+					new HarmonicAngle<MdSystem<LJParticle>>(i, j, k, k0, theta0);
+					angles.add(angle);
+				}
+				else throw new IllegalArgumentException("angle type other than 1 is not supported yet");
+			}
 
+	
 			Topology<MdSystem<LJParticle>> top = 
-			new Topology.Builder<MdSystem<LJParticle>>().bonds(bonds).build();	
+			new Topology.Builder<MdSystem<LJParticle>>().bonds(bonds).angles(angles).build();	
 	
 			return new MdSystem.Builder<LJParticle>(jobName).particles(particles).
 			parameters(prm).topology(top).initialTrajectory(trj).verbose().build();

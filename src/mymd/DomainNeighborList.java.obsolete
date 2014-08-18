@@ -1,0 +1,108 @@
+package mymd;
+
+import mymd.datatype.MdVector;
+import java.io.PrintStream;
+
+/**
+ * DomainNeighborList class implements update() method in AbstractNeighborList
+ * using Domain object. As of version 1.0, this is default NeighborList sub class
+ * when used with MPI implementation. 
+ *
+ * @author Eunsong Choi (eunsong.choi@gmail.com)
+ * @version 1.0
+ */
+public class DomainNeighborList<T extends MdSystem<?>> 
+		extends AbstractNeighborList<T> implements NeighborList<T>{
+
+	private final Domain domain;
+
+	public DomainNeighborList(T sys, Domain domain){
+		super( domain.getDomainCapacity(), sys.getParam().getRlist() );
+		this.domain = domain;
+	}
+	
+
+	@Override public int getSize(){
+		return this.domain.getDomainSize();
+	}	
+
+    /**
+     * update(T sys) method uses new positions in sys and invokes
+     * update(T sys, MdVector[] positions, MdVector box) method 
+     *
+     * @param sys MdSystem object containing system backbone information
+     */
+    public void update(T sys){
+        MdVector[] positions = sys.getNewTraj().getPositions();
+        MdVector box = sys.getNewTraj().getBox();
+        update(sys, positions, box);
+    }
+
+
+    /**
+     * update(T sys, MdVector[] positions, MdVector box) method finds neighbor 
+     * lists using brute force distance calculation through all pairs in each domain
+	 * and pairs between the domain and associated buffer region as specified in 
+	 * the domain field.
+     *
+     * @param sys MdSystem object containing system backbone information
+     * @param positions MdVector array containing position of particles
+	 * @param box system box dimension
+     */
+    public void update(T sys, MdVector[] positions, MdVector box){
+
+		int[] particleList = domain.exportArray();
+		double rc = super.rc;
+		double rc2 = rc*rc;
+		MdVector Rij = new MdVector();
+		int domainSize = domain.getDomainSize();
+		int bufferSize = domain.getBufferSize();
+		int domainCapacity = domain.getDomainCapacity();
+		for ( int i = 0; i < domainSize; i++){
+			int iActual = particleList[i];
+			MdVector Ri = positions[iActual];
+			super.nblist[i].reset();
+			super.nblist[i].seti(iActual);
+			// intra-domain pairs
+			for ( int j = i+1; j < domainSize; j++){
+				int jActual = particleList[j];
+				MdVector Rj = positions[jActual];
+				Rij.copy(Ri).sub(Rj).done();
+				Rij.minImage(box);
+				double rsq = Rij.normsq();
+				if ( rsq < rc2 ){
+					super.nblist[i].add(jActual);
+				}
+			}
+			// inter-domain pairs (domain-buffer pairs)
+			for ( int j = domain.firstBuffer(); j < domain.lastBuffer(); j++){
+				int jActual = particleList[j];
+				MdVector Rj = positions[jActual];
+				Rij.copy(Ri).sub(Rj).done();
+				Rij.minImage(box);
+				double rsq = Rij.normsq();
+				if ( rsq < rc2 ){
+					super.nblist[i].add(jActual);
+				}
+			}	
+		}		
+	}
+
+
+
+	public void printInfo(PrintStream ps){
+
+        ps.println(String.format("Neighborlist size : %d", getSize()));
+		for ( int i = 0; i < getSize(); i++){	
+			ps.println(String.format("Total number of neighbors : %d", getSize(i))); 
+			int[] particleList = getArray(i);
+			ps.println(String.format("[ i-particle : %d ]", get(i)));
+ 			for ( int j = 0; j < getSize(i); j++){
+				ps.print(particleList[j] + "  ");
+			}
+			ps.print("\n");	
+		}
+	}
+
+
+}

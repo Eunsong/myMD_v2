@@ -6,8 +6,8 @@ import mymd.Trajectory;
 
 public class HarmonicBond<T extends MdSystem<?>> extends AbstractBond<T>{
 
-	MdVector Rij = new MdVector();
-	MdVector Fij = new MdVector();
+	private final MdVector Rij = new MdVector();
+	private final MdVector Fij = new MdVector();
 
 	public HarmonicBond(int i, int j, double k0, double b0){
 		super(i, j, k0, b0);

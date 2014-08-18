@@ -18,17 +18,9 @@ public class MpiSkeletonRun{
         String outputTrajFile = args[6];
         String outputEnergyFile = args[7];
 
+
 		MdSystem<LJParticle> system =  GromacsImporter.buildLJParticleSystem
 		("JOB_NAME", inputPrmFile, inputConfFile, inputTopFile);
-
-
-		// gen valocity
-
-        /** MPI preparation **/
-        MPI.Init(args);
-        final int rank = MPI.COMM_WORLD.Rank();
-        final int np = MPI.COMM_WORLD.Size();
-		
 
 		MdParameter prm = system.getParam();
 
@@ -42,11 +34,21 @@ public class MpiSkeletonRun{
 		final double T0 = prm.getT0();
         final boolean convertHbonds = prm.convertHbonds();
 
+		// gen valocity
+		system.genRandomVelocities(T0);
+
+
+        /** MPI preparation **/
+        MPI.Init(args);
+        final int rank = MPI.COMM_WORLD.Rank();
+        final int np = MPI.COMM_WORLD.Size();
+		
+
         Integrator<MdSystem<LJParticle>> integrator
 		= new VelocityVerlet<MdSystem<LJParticle>>(dt);
 		
-		FastLJForce<MdSystem<LJParticle>> nonbondForce 
-		= new FastLJForce<MdSystem<LJParticle>>(system);
+		FastLJ<MdSystem<LJParticle>> nonbond 
+		= new FastLJ<MdSystem<LJParticle>>(system);
 
 		DomainDecomposition<MdSystem<LJParticle>> decomposition
 		= new DomainDecomposition<MdSystem<LJParticle>>(system, np);
@@ -80,8 +82,9 @@ public class MpiSkeletonRun{
 					}
 
 					// integrate forward
-					system.forwardPosition(integrator);
-
+					if ( tstep != 0 ){
+						system.forwardPosition(integrator);
+					}
 					// (I) update domains and send them to slave nodes
 					if ( tstep%nstlist == 0 ){
 						// updates partitions using new positions
@@ -110,13 +113,15 @@ public class MpiSkeletonRun{
 
 
 					// update non-bonded forces
-					system.updateNonBondedForce( nonbondForce, nblist);			
+					system.updateNonBondForce( nonbond, nblist);			
 
 					// update long-ranged forces					
 
 					// update bonded forces
-					//system.updateBondForce();
-				
+					system.updateBondForce();
+					
+					// update angle forces
+					system.updateAngleForce();
 
 					// (III) receive computed forces from slaves
 					for ( int proc = 1; proc < np; proc++){
@@ -207,7 +212,7 @@ public class MpiSkeletonRun{
 
 
 				// compute non-bonded forces
-				subsystem.updateNonBondedForce( nonbondForce, nblist );
+				subsystem.updateNonBondForce( nonbond, nblist );
 
 				// PME
 

@@ -1,6 +1,7 @@
 package mymd;
 
 import mymd.datatype.*;
+import java.util.Random;
 
 /**
  * Trajectory class contains dynamic simulation system information 
@@ -130,6 +131,49 @@ public class Trajectory{
     }
 
 
+	/**
+	 * generates random velocities of speed V to all existing particles
+	 * in this Trajector object.
+	 *
+	 * @param T temperature in Kelvin
+	 */
+	public void genVelocities(double v){
+		for ( int i = 0; i < size; i++){
+			genVelocity(i, v);
+		}
+	}
+
+
+	
+	/**
+	 * generates a random velocity of speed v on a particle i
+ 	 *
+	 * @param i particle index in which velocity will be generated to
+	 * @param v target speed 
+	 */
+	public void genVelocity(int i, double v){
+	
+		Random generator = new Random();
+		boolean succeeded = false;
+		double r1 = 0.0, r2 = 0.0, s = 0.0;		
+
+		while ( !succeeded ) {
+			r1 = 2.0*generator.nextDouble() - 1.0;
+            r2 = 2.0*generator.nextDouble() - 1.0;
+            s = Math.sqrt( Math.pow(r1,2) + Math.pow(r2,2) );
+            if ( s < 1 ) {
+                    succeeded = true;
+            }
+		}
+
+        double vx = 2*Math.sqrt(1 - Math.pow(s,2))*r1;
+        double vy = 2*Math.sqrt(1 - Math.pow(s,2))*r2;
+        double vz = 1 - 2*Math.pow(s,2);
+		
+		this.velocities[i].copySet(v*vx, v*vy, v*vz);
+	}
+
+
 
 	// Exporting methods. These methods are needed for parallel computation
 	// using a Message Passing Interface implementation. (e.g. MPJ)
@@ -149,51 +193,5 @@ public class Trajectory{
 		domain.importForces(this, forceArray);
 	}
 
-/*
-	public double[] exportPositions(int[] particleList){
-		int size = particleList.length;
-		double[] positionArray = new double[3*size];
-		int i = 0;
-		for ( int id : particleList ){
-			positionArray[i++] = this.positions[id].getX();
-			positionArray[i++] = this.positions[id].getY();
-			positionArray[i++] = this.positions[id].getZ();
-		}
-		return positionArray;		
-	}
-
-	public float[] exportFloatPositions(int[] particleList){
-		int size = particleList.length;
-		float[] positionArray = new float[3*size];
-		int i = 0;
-		for ( int id : particleList ){
-			positionArray[i++] = (float)this.positions[id].getX();
-			positionArray[i++] = (float)this.positions[id].getY();
-			positionArray[i++] = (float)this.positions[id].getZ();
-		}
-		return positionArray;		
-	}
-
-	public void importPositions(double[] positionArray, int[] particleList){
-		int i = 0;
-		for ( int id : particleList ){
-			double x = positionArray[i++];
-			double y = positionArray[i++];
-			double z = positionArray[i++];
-			this.positions[id].copySet(x, y, z); 
-		}
-	}
-	
-	public void importPositions(double[] positionArray){
-		int id = 0;
-		for ( int i = 0; i < positionArray.length; ){
-			double x = positionArray[i++];
-			double y = positionArray[i++];
-			double z = positionArray[i++];
-			this.positions[id++].copySet(x, y, z); 
-		}
-	}
-
-*/
 
 }

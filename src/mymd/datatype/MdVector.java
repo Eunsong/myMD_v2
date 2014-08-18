@@ -59,6 +59,13 @@ public class MdVector{
         return this.x*this.x + this.y*this.y + this.z*this.z;
     }
 
+	public void normalize(){
+		double factor = 1.0/norm();
+		this.x *= factor;
+		this.y *= factor;
+		this.z *= factor;
+	}
+
     public void copySet(MdVector vec) {
         this.x = vec.x;
         this.y = vec.y;

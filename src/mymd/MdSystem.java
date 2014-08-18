@@ -3,6 +3,7 @@ package mymd;
 import mymd.datatype.*;
 import mymd.nonbond.*;
 import mymd.bond.*;
+import mymd.angle.*;
 import mymd.gromacs.LoadGromacsSystem;
 import java.util.List;
 
@@ -19,6 +20,9 @@ import java.util.List;
  */
 
 public class MdSystem<T extends Particle>{
+
+	// boltzmann constant in units of kJ/mol/K
+	public static final double kb = 0.0083144621;
 
 	private final String name;
 	private final int size;
@@ -108,6 +112,25 @@ public class MdSystem<T extends Particle>{
 	}
 
 
+
+	/**
+	 * generates random velocities of temperature T to all particles in the
+	 * current trajectory.
+	 *
+	 * @param T target temperature in Kelvin
+	 */
+	public void genRandomVelocities(double T){
+		Trajectory trj = currTraj;
+		for ( int i = 0; i < size; i++){
+			if ( !particles.get(i).isShell() ){
+				double massi = particles.get(i).getMass();
+				double vi = Math.sqrt( (3.0*kb*T)/massi);
+				currTraj.genVelocity(i, vi);
+			}
+		}
+	}
+
+
 	public void update(){
 		Trajectory tmp = this.pastTraj;
 		this.pastTraj = this.currTraj;
@@ -118,9 +141,9 @@ public class MdSystem<T extends Particle>{
 	}
 
 
-	public void updateNonBondedForce
-	(NonBondedForce<MdSystem<T>> nonbonded, NeighborList nblist){
-		nonbonded.updateAll(this, nblist);
+	public void updateNonBondForce
+	(NonBond<MdSystem<T>> nonbond, NeighborList nblist){
+		nonbond.updateForce(this, nblist);
 	}
 
 	public void updateBondForce(){
@@ -131,7 +154,15 @@ public class MdSystem<T extends Particle>{
 		bonds.updateAllForces(this);
 	}
 
-	public void partition(Decomposition decomposition){
+	public void updateAngleForce(){
+		updateAngleForce(topology.getAngles());
+	}
+
+	public void updateAngleForce(Angles<MdSystem<T>> angles){
+		angles.updateAllForces(this);
+	}
+
+	public void partition(Decomposition<MdSystem<T>> decomposition){
 		decomposition.partition(this);
 	}
 

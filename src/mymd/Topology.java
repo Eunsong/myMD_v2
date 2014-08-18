@@ -3,6 +3,7 @@ package mymd;
 //import mymd.datatype.MdVector;
 import mymd.nonbond.*;
 import mymd.bond.Bonds;
+import mymd.angle.Angles;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -17,10 +18,11 @@ import java.util.ArrayList;
 public class Topology<T extends MdSystem<?>> {
 
 	private final Bonds<T> bonds;
-
+	private final Angles<T> angles;
 
 	private Topology(Builder<T> builder){
 		this.bonds = builder.bonds;
+		this.angles = builder.angles;
 	}
 
 
@@ -28,9 +30,14 @@ public class Topology<T extends MdSystem<?>> {
 		return this.bonds;
 	}
 
+	public Angles<T> getAngles(){
+		return this.angles;
+	}
+
 	public static class Builder<E extends MdSystem<?>>{
 
 		private Bonds<E> bonds;
+		private Angles<E> angles;
 	
 		public Builder(){
 		}
@@ -39,7 +46,12 @@ public class Topology<T extends MdSystem<?>> {
 			this.bonds = bonds;
 			return this;
 		}
-		
+	
+		public Builder<E> angles(Angles<E> angles){
+			this.angles = angles;
+			return this;
+		}		
+
 		public Topology<E> build(){
 			return new Topology<E>(this);
 		}

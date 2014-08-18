@@ -2,7 +2,7 @@
 ;	File 'mdout.mdp' was generated
 ;	By user: echoi (1000)
 ;	On host: echoi-VirtualBox
-;	At date: Mon Aug 11 23:36:45 2014
+;	At date: Fri Aug 15 21:45:51 2014
 ;
 
 ; VARIOUS PREPROCESSING OPTIONS
@@ -25,7 +25,7 @@ simulation_part          = 1
 ; mode for center of mass motion removal
 comm-mode                = Linear
 ; number of steps for center of mass motion removal
-nstcomm                  = 1
+nstcomm                  = 0
 ; group(s) for center of mass motion removal
 comm-grps                = 
 
@@ -59,7 +59,7 @@ nstlog                   = 0
 nstcalcenergy            = -1
 nstenergy                = 0
 ; Output frequency and precision for .xtc file
-nstxtcout                = 10
+nstxtcout                = 100
 xtc_precision            = 1000
 ; This selects the subset of atoms for the .xtc file. You can
 ; select multiple groups. By default all atoms will be written.
@@ -200,7 +200,7 @@ annealing_temp           =
 
 ; GENERATE VELOCITIES FOR STARTUP RUN
 gen_vel                  = no
-gen_temp                 = 298
+gen_temp                 = 300
 gen_seed                 = -1
 
 ; OPTIONS FOR BONDS    

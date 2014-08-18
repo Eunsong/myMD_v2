@@ -105,6 +105,37 @@ public class LoadGromacsSystem{
 	} 
 
 
+
+
+
+	public int getAngleSize(){
+		return this.top.getAngles().size();
+	}
+	public int getAnglei(int i){
+		return this.top.getAngles().get(i).geti();
+	}
+
+	public int getAnglej(int i){
+		return this.top.getAngles().get(i).getj();
+	}
+	public int getAnglek(int i){
+		return this.top.getAngles().get(i).getk();
+	}
+
+	public double getAnglek0(int i){
+		return this.top.getAngles().get(i).getK0();
+	}
+	public double getAngleTheta0(int i){
+		return this.top.getAngles().get(i).getT0();
+	}
+	public int getAngleFunc(int i){
+		return this.top.getAngles().get(i).getFunc();
+	} 
+
+
+
+
+
     public void build(){
 
         /** read topology from input file */
