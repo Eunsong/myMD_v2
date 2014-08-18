@@ -155,7 +155,7 @@ public class FastLJ<T extends MdSystem<LJParticle>> implements NonBond<T>{
 	 * 				 this method assumes the size of nblist and trajectories
 	 * 				 in sys are the same and they are written in the same order
 	 */
-    public void updateForce( T sys, NeighborList nblist ){
+    public void updateAllForces( T sys, NeighborList nblist ){
 
 		Trajectory traj = sys.getNewTraj();	
 		MdVector box = traj.getBox();
@@ -183,7 +183,7 @@ public class FastLJ<T extends MdSystem<LJParticle>> implements NonBond<T>{
 	}
 
 
-	public double getEnergy(T sys, NeighborList nblist){
+	public double getTotalEnergy(T sys, NeighborList nblist){
 
 		Trajectory traj = sys.getNewTraj();	
 		MdVector box = traj.getBox();

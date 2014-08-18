@@ -4,6 +4,7 @@ import mymd.datatype.*;
 import mymd.nonbond.*;
 import mymd.bond.*;
 import mymd.angle.*;
+import mymd.dihedral.*;
 import mymd.gromacs.LoadGromacsSystem;
 import java.util.List;
 
@@ -141,26 +142,81 @@ public class MdSystem<T extends Particle>{
 	}
 
 
+
+	/******** methods updating various forces(to newTraj) ********/
 	public void updateNonBondForce
 	(NonBond<MdSystem<T>> nonbond, NeighborList nblist){
-		nonbond.updateForce(this, nblist);
+		nonbond.updateAllForces(this, nblist);
 	}
-
 	public void updateBondForce(){
 		updateBondForce(topology.getBonds());
 	}
-
 	public void updateBondForce(Bonds<MdSystem<T>> bonds){
 		bonds.updateAllForces(this);
 	}
-
 	public void updateAngleForce(){
 		updateAngleForce(topology.getAngles());
 	}
-
 	public void updateAngleForce(Angles<MdSystem<T>> angles){
 		angles.updateAllForces(this);
 	}
+	public void updateDihedralForce(){
+		updateDihedralForce(topology.getDihedrals());
+	}
+	public void updateDihedralForce(Dihedrals<MdSystem<T>> dihedrals){
+		dihedrals.updateAllForces(this);
+	}
+
+
+	/******** methods computing various energies(from newTraj) *******/
+
+	/**
+	 * getNonBondEnergy method returns nonbonded potential energy
+	 * of nonbond pairs listed in the specified nblist. When using parallel 
+	 * computation, each node should compute their responsible part and
+	 * send the result to the head node.
+	 */
+	public double getNonBondEnergy
+	(NonBond<MdSystem<T>> nonbond, NeighborList nblist){
+		return nonbond.getTotalEnergy(this, nblist);	 
+    }
+	public double getBondEnergy(){
+		return getBondEnergy(topology.getBonds());
+	}
+
+	public double getBondEnergy(Bonds<MdSystem<T>> bonds){
+		return bonds.getTotalEnergy(this);
+	}
+	public double getAngleEnergy(){
+		return getAngleEnergy(topology.getAngles());
+	}
+	public double getAngleEnergy(Angles<MdSystem<T>> angles){
+		return angles.getTotalEnergy(this);
+	}
+
+	public double getDihedralEnergy(){
+		return getDihedralEnergy(topology.getDihedrals());
+	}
+	public double getDihedralEnergy(Dihedrals<MdSystem<T>> dihedrals){
+		return dihedrals.getTotalEnergy(this);
+	}
+
+
+	public double getKineticEnergy(){
+		Trajectory trj = this.newTraj;
+		MdVector[] velocities = trj.getVelocities();
+		double energy = 0.0;
+		for ( int i = 0; i < trj.getSize(); i++){
+			double massi = particles.get(i).getMass();
+			energy += 0.5*massi*velocities[i].normsq();
+		}
+		return energy;
+	}
+
+
+
+
+
 
 	public void partition(Decomposition<MdSystem<T>> decomposition){
 		decomposition.partition(this);
@@ -187,6 +243,9 @@ public class MdSystem<T extends Particle>{
 		Trajectory trj = this.getNewTraj();
 		trj.importForces(domain, forceArray);
 	}	
+
+
+
 
 
 	/**

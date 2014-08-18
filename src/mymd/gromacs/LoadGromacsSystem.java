@@ -136,6 +136,44 @@ public class LoadGromacsSystem{
 
 
 
+
+
+	public int getDihedralSize(){
+		return this.top.getDihedrals().size();
+	}
+	public int getDihedrali(int i){
+		return this.top.getDihedrals().get(i).geti();
+	}
+
+	public int getDihedralj(int i){
+		return this.top.getDihedrals().get(i).getj();
+	}
+	public int getDihedralk(int i){
+		return this.top.getDihedrals().get(i).getk();
+	}
+	public int getDihedrall(int i){
+		return this.top.getDihedrals().get(i).getl();
+	}
+
+	public double getDihedralk0(int i){
+		return this.top.getDihedrals().get(i).getK0();
+	}
+	public int getDihedraln(int i){
+		return this.top.getDihedrals().get(i).getN();
+	}
+	public double getDihedralPhi0(int i){
+		return this.top.getDihedrals().get(i).getP0();
+	}
+	public int getDihedralFunc(int i){
+		return this.top.getDihedrals().get(i).getFunc();
+	} 
+
+
+
+
+
+
+
     public void build(){
 
         /** read topology from input file */

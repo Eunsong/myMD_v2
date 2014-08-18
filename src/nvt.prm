@@ -1,7 +1,7 @@
 ; simulation run parameters
 
 ; time step
-dt			=		0.01 ; (in ps)
+dt			=		0.002 ; (in ps)
 nsteps		=		100000
 
 
@@ -14,7 +14,7 @@ nstlist		=		10	  ; neighbor list update frequency
 ; output control
 nstxout		=		100
 nstvout		=		10
-nstenergy	=		1000
+nstenergy	=		100
 
 
 ; coulomb interaction

@@ -3,6 +3,7 @@ import mymd.nonbond.*;
 import mymd.datatype.*;
 import mymd.gromacs.LoadGromacsSystem;
 import mymd.bond.*;
+import mymd.thermostat.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.PrintStream;
@@ -32,6 +33,8 @@ public class MpiSkeletonRun{
         final int nstenergy = prm.getNstenergy();
    		final int nstlog = 100; //prm.getNstlog();
 		final double T0 = prm.getT0();
+		final double TRef = prm.getRefT();
+		final double tauT = prm.getTauT();
         final boolean convertHbonds = prm.convertHbonds();
 
 		// gen valocity
@@ -53,6 +56,9 @@ public class MpiSkeletonRun{
 		DomainDecomposition<MdSystem<LJParticle>> decomposition
 		= new DomainDecomposition<MdSystem<LJParticle>>(system, np);
 
+		Thermostat<MdSystem<LJParticle>> thermostat 
+		= new BerendsenThermostat<MdSystem<LJParticle>>(TRef, tauT);
+
 
 		// push initial positions to the new trajectory
 		system.forwardPosition(integrator);
@@ -73,6 +79,7 @@ public class MpiSkeletonRun{
 	
 			try {
 				PrintStream ps = new PrintStream(outputTrajFile);
+				PrintStream psEnergy = new PrintStream(outputEnergyFile);
 
 				for ( int tstep = 0; tstep < nsteps; tstep++){
 				
@@ -123,6 +130,9 @@ public class MpiSkeletonRun{
 					// update angle forces
 					system.updateAngleForce();
 
+					// update dihedral forces
+					system.updateDihedralForce();
+
 					// (III) receive computed forces from slaves
 					for ( int proc = 1; proc < np; proc++){
 						double[] forceArray = new double[3*SUB_CAPACITY]; 
@@ -134,23 +144,45 @@ public class MpiSkeletonRun{
 						system.importNewForces(domainEach, forceArray);
 					}
 
-				
 
 					// forward velocities
 					system.forwardVelocity(integrator);
 
+
+					// apply temperature coupling
+					thermostat.apply(system);
+
+
+					// print energy (using information in newTraj )
+					if ( tstep % nstenergy == 0 ){
+						double nonbondEnergy = 0.0;
+						nonbondEnergy = system.getNonBondEnergy(nonbond, nblist);
+						// receive partial nonbond energies from slave-nodes and add
+						for ( int proc = 1; proc < np; proc++){
+							double[] partialEnergy = new double[1];
+
+							MPI.COMM_WORLD.
+							Recv( partialEnergy, 0, 1, MPI.DOUBLE, proc, 99); 
+							nonbondEnergy += partialEnergy[0];
+						}												
+
+						double coulombEnergy = 0.0; // temporary.
+						mymd.MdIO.printEnergy
+						(system, nonbondEnergy, coulombEnergy, psEnergy);	
+					}	
+
+
 					// update current trajectories from new trajectories
 					system.update();
-
-
+	
 					if ( tstep%nstxout == 0 ){
 						mymd.MdIO.writeGro(system, ps);
 					}
-					
 				
 				}
 
 				ps.close();
+				psEnergy.close();
 			}
 				
 			catch ( java.io.IOException ex){
@@ -221,6 +253,15 @@ public class MpiSkeletonRun{
 				double[] forceArray = subsystem.exportNewForces(domain);
 				MPI.COMM_WORLD.
 				Send( forceArray, 0, SUB_CAPACITY*3, MPI.DOUBLE, 0, 99); 
+
+
+				if ( tstep % nstenergy == 0 ){
+					double[] partialEnergy = new double[1];
+					partialEnergy[0] = subsystem.getNonBondEnergy(nonbond, nblist);
+
+					MPI.COMM_WORLD.
+					Send( partialEnergy, 0, 1, MPI.DOUBLE, 0, 99); 
+				} 
 			
 				// reset force components
 				subsystem.update();

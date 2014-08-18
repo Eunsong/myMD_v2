@@ -107,6 +107,12 @@ public class MdVector{
         this.z += (vec1.z + vec2.z + vec3.z );
     }
 
+	public void crossSet(MdVector vec){
+		this.x = this.y*vec.z - this.z*vec.y;
+		this.y = -this.x*vec.z + this.z*vec.x;
+		this.z = this.x*vec.y - this.y*vec.x;
+	}
+
 
     public MdVector copy(MdVector vec) {
 		copySet(vec);
@@ -136,6 +142,11 @@ public class MdVector{
 		addSet(vec1, vec2, vec3);
 		return this;
     }
+
+	public MdVector cross(MdVector vec){
+		crossSet(vec);
+		return this;
+	}
 
 
 

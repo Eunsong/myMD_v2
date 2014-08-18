@@ -44,6 +44,7 @@ public class SkeletonRun{
 
 		try {
 			PrintStream ps = new PrintStream(outputTrajFile);
+			PrintStream psEnergy = new PrintStream(outputEnergyFile);
 	
 			for ( int i = 0; i < nsteps; i++){
 				if ( i % 10 == 0 ) System.out.println(String.format("computing %5.1fps", i*dt));
@@ -53,9 +54,17 @@ public class SkeletonRun{
 				system.updateBondForce();
 				system.forwardVelocity(integrator);
 				if ( i % nstxout == 0 ) mymd.MdIO.writeGro(system, ps);
+				if ( i % nstenergy == 0 ) {
+					double nonbondEnergy;
+					nonbondEnergy = system.getNonBondEnergy(nonbond, nblist);
+					double coulombEnergy;
+					coulombEnergy = 0.0; //temporary
+					mymd.MdIO.printEnergy(system, nonbondEnergy, coulombEnergy, psEnergy);
+				}
 				system.update();
 			}
 			ps.close();
+			psEnergy.close();
 		}
 		catch ( java.io.IOException ex){
 			

@@ -1,34 +1,59 @@
-Log file opened on Fri Aug 15 21:46:01 2014
-Host: echoi-VirtualBox  pid: 2471  nodeid: 0  nnodes:  1
-The Gromacs distribution was built Wed Oct 19 04:52:49 UTC 2011 by
-buildd@crested [CMAKE] (Linux 2.6.24-29-server x86_64)
+Log file opened on Sun Aug 17 23:52:03 2014
+Host: eunsong-chem  pid: 7944  nodeid: 0  nnodes:  4
+Gromacs version:    VERSION 4.6.5
+Precision:          single
+Memory model:       64 bit
+MPI library:        MPI
+OpenMP support:     enabled
+GPU support:        enabled
+invsqrt routine:    gmx_software_invsqrt(x)
+CPU acceleration:   AVX_256
+FFT library:        fftw-3.3.2-sse2
+Large file support: enabled
+RDTSCP usage:       enabled
+Built on:           Wed Feb  5 11:30:45 CST 2014
+Built by:           eunsong@eunsong-chem [CMAKE]
+Build OS/arch:      Linux 3.8.0-35-generic x86_64
+Build CPU vendor:   GenuineIntel
+Build CPU brand:    Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
+Build CPU family:   6   Model: 42   Stepping: 7
+Build CPU features: aes apic avx clfsh cmov cx8 cx16 htt lahf_lm mmx msr nonstop_tsc pcid pclmuldq pdcm popcnt pse rdtscp sse2 sse3 sse4.1 sse4.2 ssse3 tdt x2apic
+C compiler:         /usr/bin/gcc GNU gcc (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3
+C compiler flags:   -mavx   -D_FORTIFY_SOURCE=2  -Wextra -Wno-missing-field-initializers -Wno-sign-compare -Wall -Wno-unused -Wunused-value   -fomit-frame-pointer -funroll-all-loops -fexcess-precision=fast  -O3 -DNDEBUG
+C++ compiler:       /usr/bin/c++ GNU c++ (Ubuntu/Linaro 4.6.3-1ubuntu5) 4.6.3
+C++ compiler flags: -mavx   -D_FORTIFY_SOURCE=2 -Wextra -Wno-missing-field-initializers -Wno-sign-compare -Wall -Wno-unused -Wunused-value   -fomit-frame-pointer -funroll-all-loops -fexcess-precision=fast  -O3 -DNDEBUG
+CUDA compiler:      /usr/local/cuda/bin/nvcc nvcc: NVIDIA (R) Cuda compiler driver;Copyright (c) 2005-2013 NVIDIA Corporation;Built on Wed_Jul_17_18:36:13_PDT_2013;Cuda compilation tools, release 5.5, V5.5.0
+CUDA compiler flags:-gencode;arch=compute_20,code=sm_20;-gencode;arch=compute_20,code=sm_21;-gencode;arch=compute_30,code=sm_30;-gencode;arch=compute_35,code=sm_35;-gencode;arch=compute_35,code=compute_35;-use_fast_math;-ccbin=/usr/bin/gcc;-Xcompiler;-fPIC ; -mavx;-D_FORTIFY_SOURCE=2;-Wextra;-Wno-missing-field-initializers;-Wno-sign-compare;-Wall;-Wno-unused;-Wunused-value;-fomit-frame-pointer;-funroll-all-loops;-fexcess-precision=fast;-O3;-DNDEBUG
+CUDA driver:        5.50
+CUDA runtime:       5.50
 
 
                          :-)  G  R  O  M  A  C  S  (-:
 
-                       GRowing Old MAkes el Chrono Sweat
+                          ∏≠∞ãöåîﬂ≤æºûùçöﬂûëõﬂ¨ñëñåãöç
 
-                            :-)  VERSION 4.5.5  (-:
+                            :-)  VERSION 4.6.5  (-:
 
-        Written by Emile Apol, Rossen Apostolov, Herman J.C. Berendsen,
-      Aldert van Buuren, P√§r Bjelkmar, Rudi van Drunen, Anton Feenstra, 
-        Gerrit Groenhof, Peter Kasson, Per Larsson, Pieter Meulenhoff, 
+        Contributions from Mark Abraham, Emile Apol, Rossen Apostolov, 
+           Herman J.C. Berendsen, Aldert van Buuren, P√§r Bjelkmar,  
+     Rudi van Drunen, Anton Feenstra, Gerrit Groenhof, Christoph Junghans, 
+        Peter Kasson, Carsten Kutzner, Per Larsson, Pieter Meulenhoff, 
            Teemu Murtola, Szilard Pall, Sander Pronk, Roland Schulz, 
                 Michael Shirts, Alfons Sijbers, Peter Tieleman,
 
                Berk Hess, David van der Spoel, and Erik Lindahl.
 
        Copyright (c) 1991-2000, University of Groningen, The Netherlands.
-            Copyright (c) 2001-2010, The GROMACS development team at
+         Copyright (c) 2001-2012,2013, The GROMACS development team at
         Uppsala University & The Royal Institute of Technology, Sweden.
             check out http://www.gromacs.org for more information.
 
          This program is free software; you can redistribute it and/or
-          modify it under the terms of the GNU General Public License
-         as published by the Free Software Foundation; either version 2
+       modify it under the terms of the GNU Lesser General Public License
+        as published by the Free Software Foundation; either version 2.1
              of the License, or (at your option) any later version.
 
-                                :-)  mdrun  (-:
+                              :-)  mdrun_465  (-:
 
 
 ++++ PLEASE READ AND CITE THE FOLLOWING REFERENCE ++++
@@ -63,132 +88,129 @@ Comp. Phys. Comm. 91 (1995) pp. 43-56
 Input Parameters:
    integrator           = md
    nsteps               = 100000
-   init_step            = 0
+   init-step            = 0
+   cutoff-scheme        = Group
    ns_type              = Grid
    nstlist              = 10
    ndelta               = 2
    nstcomm              = 0
-   comm_mode            = None
+   comm-mode            = None
    nstlog               = 0
    nstxout              = 0
    nstvout              = 0
    nstfout              = 0
-   nstcalcenergy        = 10
-   nstenergy            = 0
+   nstcalcenergy        = 100
+   nstenergy            = 100
    nstxtcout            = 100
-   init_t               = 0
-   delta_t              = 0.01
+   init-t               = 0
+   delta-t              = 0.01
    xtcprec              = 1000
+   fourierspacing       = 0.12
    nkx                  = 0
    nky                  = 0
    nkz                  = 0
-   pme_order            = 4
-   ewald_rtol           = 1e-05
-   ewald_geometry       = 0
-   epsilon_surface      = 0
-   optimize_fft         = FALSE
+   pme-order            = 4
+   ewald-rtol           = 1e-05
+   ewald-geometry       = 0
+   epsilon-surface      = 0
+   optimize-fft         = FALSE
    ePBC                 = xyz
    bPeriodicMols        = FALSE
    bContinuation        = FALSE
    bShakeSOR            = FALSE
    etc                  = No
+   bPrintNHChains       = FALSE
    nsttcouple           = -1
    epc                  = No
    epctype              = Isotropic
    nstpcouple           = -1
-   tau_p                = 1
-   ref_p (3x3):
-      ref_p[    0]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
-      ref_p[    1]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
-      ref_p[    2]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
+   tau-p                = 1
+   ref-p (3x3):
+      ref-p[    0]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
+      ref-p[    1]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
+      ref-p[    2]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
    compress (3x3):
       compress[    0]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
       compress[    1]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
       compress[    2]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
-   refcoord_scaling     = No
-   posres_com (3):
-      posres_com[0]= 0.00000e+00
-      posres_com[1]= 0.00000e+00
-      posres_com[2]= 0.00000e+00
-   posres_comB (3):
-      posres_comB[0]= 0.00000e+00
-      posres_comB[1]= 0.00000e+00
-      posres_comB[2]= 0.00000e+00
-   andersen_seed        = 815131
+   refcoord-scaling     = No
+   posres-com (3):
+      posres-com[0]= 0.00000e+00
+      posres-com[1]= 0.00000e+00
+      posres-com[2]= 0.00000e+00
+   posres-comB (3):
+      posres-comB[0]= 0.00000e+00
+      posres-comB[1]= 0.00000e+00
+      posres-comB[2]= 0.00000e+00
+   verlet-buffer-drift  = 0.005
    rlist                = 1.4
    rlistlong            = 1.4
+   nstcalclr            = 0
    rtpi                 = 0.05
    coulombtype          = Cut-off
-   rcoulomb_switch      = 0
+   coulomb-modifier     = None
+   rcoulomb-switch      = 0
    rcoulomb             = 1.4
    vdwtype              = Cut-off
-   rvdw_switch          = 0
+   vdw-modifier         = None
+   rvdw-switch          = 0
    rvdw                 = 1.4
-   epsilon_r            = 1
-   epsilon_rf           = 1
+   epsilon-r            = 1
+   epsilon-rf           = inf
    tabext               = 1
-   implicit_solvent     = No
-   gb_algorithm         = Still
-   gb_epsilon_solvent   = 80
+   implicit-solvent     = No
+   gb-algorithm         = Still
+   gb-epsilon-solvent   = 80
    nstgbradii           = 1
    rgbradii             = 1
-   gb_saltconc          = 0
-   gb_obc_alpha         = 1
-   gb_obc_beta          = 0.8
-   gb_obc_gamma         = 4.85
-   gb_dielectric_offset = 0.009
-   sa_algorithm         = Ace-approximation
-   sa_surface_tension   = 2.05016
+   gb-saltconc          = 0
+   gb-obc-alpha         = 1
+   gb-obc-beta          = 0.8
+   gb-obc-gamma         = 4.85
+   gb-dielectric-offset = 0.009
+   sa-algorithm         = Ace-approximation
+   sa-surface-tension   = 2.05016
    DispCorr             = No
-   free_energy          = no
-   init_lambda          = 0
-   delta_lambda         = 0
-   n_foreign_lambda     = 0
-   sc_alpha             = 0
-   sc_power             = 0
-   sc_sigma             = 0.3
-   sc_sigma_min         = 0.3
-   nstdhdl              = 10
-   separate_dhdl_file   = yes
-   dhdl_derivatives     = yes
-   dh_hist_size         = 0
-   dh_hist_spacing      = 0.1
+   bSimTemp             = FALSE
+   free-energy          = no
    nwall                = 0
-   wall_type            = 9-3
-   wall_atomtype[0]     = -1
-   wall_atomtype[1]     = -1
-   wall_density[0]      = 0
-   wall_density[1]      = 0
-   wall_ewald_zfac      = 3
+   wall-type            = 9-3
+   wall-atomtype[0]     = -1
+   wall-atomtype[1]     = -1
+   wall-density[0]      = 0
+   wall-density[1]      = 0
+   wall-ewald-zfac      = 3
    pull                 = no
+   rotation             = FALSE
    disre                = No
-   disre_weighting      = Conservative
-   disre_mixed          = FALSE
-   dr_fc                = 1000
-   dr_tau               = 0
+   disre-weighting      = Conservative
+   disre-mixed          = FALSE
+   dr-fc                = 1000
+   dr-tau               = 0
    nstdisreout          = 100
-   orires_fc            = 0
-   orires_tau           = 0
+   orires-fc            = 0
+   orires-tau           = 0
    nstorireout          = 100
-   dihre-fc             = 1000
-   em_stepsize          = 0.01
-   em_tol               = 10
+   dihre-fc             = 0
+   em-stepsize          = 0.01
+   em-tol               = 10
    niter                = 20
-   fc_stepsize          = 0
+   fc-stepsize          = 0
    nstcgsteep           = 1000
    nbfgscorr            = 10
    ConstAlg             = Lincs
-   shake_tol            = 0.0001
-   lincs_order          = 4
-   lincs_warnangle      = 30
-   lincs_iter           = 1
-   bd_fric              = 0
-   ld_seed              = 1993
-   cos_accel            = 0
+   shake-tol            = 0.0001
+   lincs-order          = 4
+   lincs-warnangle      = 30
+   lincs-iter           = 1
+   bd-fric              = 0
+   ld-seed              = 1993
+   cos-accel            = 0
    deform (3x3):
       deform[    0]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
       deform[    1]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
       deform[    2]={ 0.00000e+00,  0.00000e+00,  0.00000e+00}
+   adress               = FALSE
    userint1             = 0
    userint2             = 0
    userint3             = 0
@@ -199,13 +221,13 @@ Input Parameters:
    userreal4            = 0
 grpopts:
    nrdf:       26991
-   ref_t:           0
-   tau_t:           0
+   ref-t:           0
+   tau-t:           0
 anneal:          No
-ann_npoints:           0
+ann-npoints:           0
    acc:	           0           0           0
    nfreeze:           N           N           N
-   energygrp_flags[  0]: 0
+   energygrp-flags[  0]: 0
    efield-x:
       n = 0
    efield-xt:
@@ -222,119 +244,62 @@ ann_npoints:           0
    QMconstraints        = 0
    QMMMscheme           = 0
    scalefactor          = 1
-qm_opts:
+qm-opts:
    ngQM                 = 0
+
+Initializing Domain Decomposition on 4 nodes
+Dynamic load balancing: auto
+Will sort the charge groups at every domain (re)decomposition
+Initial maximum inter charge-group distances:
+    two-body bonded interactions: 0.338 nm, Bond, atoms 5 6
+  multi-body bonded interactions: 0.853 nm, Proper Dih., atoms 2 5
+Minimum cell size due to bonded interactions: 0.938 nm
+Scaling the initial minimum size with 1/0.8 (option -dds) = 1.25
+Optimizing the DD grid for 4 cells with a minimum initial size of 1.173 nm
+The maximum allowed number of cells is: X 8 Y 8 Z 8
+Domain decomposition grid 4 x 1 x 1, separate PME nodes 0
+Domain decomposition nodeid 0, coordinates 0 0 0
+
+Using 4 MPI processes
+
+Detecting CPU-specific acceleration.
+Present hardware specification:
+Vendor: GenuineIntel
+Brand:  Intel(R) Core(TM) i5-2400 CPU @ 3.10GHz
+Family:  6  Model: 42  Stepping:  7
+Features: aes apic avx clfsh cmov cx8 cx16 htt lahf_lm mmx msr nonstop_tsc pcid pclmuldq pdcm popcnt pse rdtscp sse2 sse3 sse4.1 sse4.2 ssse3 tdt x2apic
+Acceleration most likely to fit this hardware: AVX_256
+Acceleration selected at GROMACS compile time: AVX_256
+
+
+1 GPU detected on host eunsong-chem:
+  #0: NVIDIA GeForce GT 240, compute cap.: 1.2, ECC:  no, stat: incompatible
+
 Table routines are used for coulomb: FALSE
 Table routines are used for vdw:     FALSE
 Cut-off's:   NS: 1.4   Coulomb: 1.4   LJ: 1.4
 System total charge: 0.000
-Configuring nonbonded kernels...
-Configuring standard C nonbonded kernels...
-Testing x86_64 SSE2 support... present.
-
-
+Potential shift: LJ r^-12: 0.000 r^-6 0.000, Coulomb 0.000
 Removing pbc first time
-There are: 8997 Atoms
-Max number of connections per atom is 30
-Total number of connections is 218
-Max number of graph edges per atom is 2
-Total number of graph edges is 18
-Initial temperature: 296.408 K
+Pinning threads with an auto-selected logical core stride of 1
 
-Started mdrun on node 0 Fri Aug 15 21:46:01 2014
+Linking all bonded interactions to atoms
 
-           Step           Time         Lambda
-              0        0.00000        0.00000
+The initial number of communication pulses is: X 1
+The initial domain decomposition cell size is: X 2.53 nm
 
-Grid: 10 x 10 x 10 cells
-   Energies (kJ/mol)
-           Bond          Angle    Proper Dih.        LJ (SR)   Coulomb (SR)
-    1.18589e+01    6.20753e+00    1.49553e+01   -2.82058e+05    0.00000e+00
-      Potential    Kinetic En.   Total Energy    Temperature Pressure (bar)
-   -2.82025e+05    3.32430e+04   -2.48782e+05    2.96261e+02   -4.45991e+02
+The maximum allowed distance for charge groups involved in interactions is:
+                 non-bonded interactions           1.400 nm
+            two-body bonded interactions  (-rdd)   1.400 nm
+          multi-body bonded interactions  (-rdd)   1.400 nm
 
+When dynamic load balancing gets turned on, these settings will change to:
+The maximum number of communication pulses is: X 1
+The minimum size for domain decomposition cells is 1.400 nm
+The requested allowed shrink of DD cells (option -dds) is: 0.80
+The allowed shrink of domain decomposition cells is: X 0.55
+The maximum allowed distance for charge groups involved in interactions is:
+                 non-bonded interactions           1.400 nm
+            two-body bonded interactions  (-rdd)   1.400 nm
+          multi-body bonded interactions  (-rdd)   1.400 nm
 
-
-Received the INT signal, stopping at the next NS step
-
-           Step           Time         Lambda
-          18900      189.00000        0.00000
-
-Writing checkpoint, step 18900 at Fri Aug 15 21:48:20 2014
-
-
-   Energies (kJ/mol)
-           Bond          Angle    Proper Dih.        LJ (SR)   Coulomb (SR)
-    3.65355e+00    3.25608e+00    9.05698e+00   -3.06623e+05    0.00000e+00
-      Potential    Kinetic En.   Total Energy    Temperature Pressure (bar)
-   -3.06607e+05    1.21630e+04   -2.94444e+05    1.08397e+02   -2.26396e+03
-
-	<======  ###############  ==>
-	<====  A V E R A G E S  ====>
-	<==  ###############  ======>
-
-	Statistics over 18901 steps using 1891 frames
-
-   Energies (kJ/mol)
-           Bond          Angle    Proper Dih.        LJ (SR)   Coulomb (SR)
-    7.40903e+00    7.85650e+00    1.02510e+01   -2.95229e+05    0.00000e+00
-      Potential    Kinetic En.   Total Energy    Temperature Pressure (bar)
-   -2.95203e+05    1.99613e+04   -2.75242e+05    1.77895e+02   -1.79987e+03
-
-   Total Virial (kJ/mol)
-    6.47141e+04    1.23600e+00   -1.79718e+00
-    1.23574e+00    6.45732e+04   -1.71631e+01
-   -1.79732e+00   -1.71634e+01    6.46165e+04
-
-   Pressure (bar)
-   -1.80204e+03   -2.02012e-02    1.11994e-01
-   -2.01930e-02   -1.79807e+03    5.73649e-01
-    1.11999e-01    5.73657e-01   -1.79948e+03
-
-   Total Dipole (D)
-    0.00000e+00    0.00000e+00    0.00000e+00
-
-
-	M E G A - F L O P S   A C C O U N T I N G
-
-   RF=Reaction-Field  FE=Free Energy  SCFE=Soft-Core/Free Energy
-   T=Tabulated        W3=SPC/TIP3p    W4=TIP4p (single or pairs)
-   NF=No Forces
-
- Computing:                               M-Number         M-Flops  % Flops
------------------------------------------------------------------------------
- LJ                                    8146.726074      268841.960    79.6
- Outer nonbonded loop                   307.239417        3072.394     0.9
- NS-Pairs                              2888.792041       60664.633    18.0
- Reset In Box                            17.013327          51.040     0.0
- Shift-X                                  0.378020           2.268     0.0
- CG-CoM                                  17.013327          51.040     0.0
- Bonds                                    0.170109          10.036     0.0
- Angles                                   0.151208          25.403     0.0
- Propers                                  0.529228         121.193     0.0
- Virial                                  17.098422         307.772     0.1
- Calc-Ekin                              170.061294        4591.655     1.4
------------------------------------------------------------------------------
- Total                                                  337739.395   100.0
------------------------------------------------------------------------------
-
-
-     R E A L   C Y C L E   A N D   T I M E   A C C O U N T I N G
-
- Computing:         Nodes     Number     G-Cycles    Seconds     %
------------------------------------------------------------------------
- Neighbor search        1       1891      195.460       60.0    43.1
- Force                  1      18901      228.978       70.3    50.5
- Write traj.            1        190        2.556        0.8     0.6
- Update                 1      18901       15.857        4.9     3.5
- Rest                   1                  11.003        3.4     2.4
------------------------------------------------------------------------
- Total                  1                 453.854      139.4   100.0
------------------------------------------------------------------------
-
-               NODE (s)   Real (s)      (%)
-       Time:    118.540    139.416     85.0
-                       1:58
-               (Mnbf/s)   (GFlops)   (ns/day)  (hour/ns)
-Performance:     68.726      2.849    137.763      0.174
-Finished mdrun on node 0 Fri Aug 15 21:48:20 2014

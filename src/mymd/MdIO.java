@@ -38,5 +38,43 @@ public class MdIO{
 	}
 
 
+	/**
+	 * printEnergy method prints out energy components computed from 
+	 * new Trajectory(should be invoked after updating all forces and velocities
+	 * and before calling update() method in MdSystem. Currently, this method
+	 * assumes all bonded type potentials are computed from the head node. 
+	 * Non-bonded and Coulomb interactions should be computed prior to calling	
+	 * this method, and results should be passed as input parameters. This way
+	 * we can make use of slave nodes for computing nonbonded potentials. 
+	 *
+	 * @param sys 
+	 * @param nonbondEnergy total non-bonded potential energy computed in advance
+	 * @param coulombEnergy total coulomb potential energy computed in advance
+	 * @param ps PrintStream object where output energies should be written
+	 */
+	public static <T extends MdSystem<?>> void printEnergy(T sys, 
+		          double nonbondEnergy, double coulombEnergy, PrintStream ps){
+
+		double time = sys.getNewTraj().getTime();
+		double bondEnergy = sys.getBondEnergy();
+		double angleEnergy = sys.getAngleEnergy();
+		double dihedralEnergy = sys.getDihedralEnergy();
+		double kineticEnergy = sys.getKineticEnergy();
+	
+		ps.print( printFormattedEnergy(time, nonbondEnergy, coulombEnergy, 
+				  bondEnergy, angleEnergy, dihedralEnergy, kineticEnergy));
+
+	}
+
+	private static String printFormattedEnergy
+		(double time, double nonbond, double coulomb, double bond, double angle, 
+		 double dihedral, double kinetic){
+
+		double potential = nonbond + coulomb + bond + angle + dihedral;
+		double total = potential + kinetic;
+		return String.format("%6.2f %1.6e %1.6e %1.6e %1.6e %1.6e %1.6e %1.6e %1.6e\n", 
+			   time, nonbond, coulomb, bond, angle, dihedral, kinetic, potential, total);
+	}
+
 
 }

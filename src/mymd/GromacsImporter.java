@@ -5,6 +5,7 @@ import mymd.datatype.*;
 import mymd.gromacs.LoadGromacsSystem;
 import mymd.bond.*;
 import mymd.angle.*;
+import mymd.dihedral.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -107,9 +108,29 @@ public class GromacsImporter{
 				else throw new IllegalArgumentException("angle type other than 1 is not supported yet");
 			}
 
+			Dihedrals<MdSystem<LJParticle>> dihedrals = new Dihedrals<MdSystem<LJParticle>>();
+			for ( int n = 0; n < loader.getDihedralSize(); n++){
+				int i = loader.getDihedrali(n);
+				int j = loader.getDihedralj(n);
+				int k = loader.getDihedralk(n);
+				int l = loader.getDihedrall(n);
+				int func = loader.getDihedralFunc(n);
+
+				if ( func == 1 ){
+					double k0 = loader.getDihedralk0(n);
+					int ni = loader.getDihedraln(n);
+					double phi0 = loader.getDihedralPhi0(n);
+					Dihedral<MdSystem<LJParticle>> dihedral = 
+					new StandardDihedral<MdSystem<LJParticle>>(i, j, k, l, k0, ni, phi0);
+					dihedrals.add(dihedral);
+				}
+				else throw new IllegalArgumentException("dihedral type other than 1 is not supported yet");
+			}
+
+
 	
 			Topology<MdSystem<LJParticle>> top = 
-			new Topology.Builder<MdSystem<LJParticle>>().bonds(bonds).angles(angles).build();	
+			new Topology.Builder<MdSystem<LJParticle>>().bonds(bonds).angles(angles).dihedrals(dihedrals).build();	
 	
 			return new MdSystem.Builder<LJParticle>(jobName).particles(particles).
 			parameters(prm).topology(top).initialTrajectory(trj).verbose().build();
