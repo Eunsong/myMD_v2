@@ -36,6 +36,10 @@ public class MpiSkeletonRun{
 		final double TRef = prm.getRefT();
 		final double tauT = prm.getTauT();
         final boolean convertHbonds = prm.convertHbonds();
+		if ( convertHbonds ){
+			system.convertHBondsToConstraints();
+		}
+	
 
 		// gen valocity
 		system.genRandomVelocities(T0);
@@ -50,8 +54,8 @@ public class MpiSkeletonRun{
         Integrator<MdSystem<LJParticle>> integrator
 		= new VelocityVerlet<MdSystem<LJParticle>>(dt);
 		
-		FastLJ<MdSystem<LJParticle>> nonbond 
-		= new FastLJ<MdSystem<LJParticle>>(system);
+		LessFastLJ<MdSystem<LJParticle>> nonbond 
+		= new LessFastLJ<MdSystem<LJParticle>>(system);
 
 		DomainDecomposition<MdSystem<LJParticle>> decomposition
 		= new DomainDecomposition<MdSystem<LJParticle>>(system, np);
@@ -71,7 +75,6 @@ public class MpiSkeletonRun{
 		DomainNeighborList<MdSystem<LJParticle>> nblist 
 		= new DomainNeighborList<MdSystem<LJParticle>>(system, domain);
 
-
 		int SUB_CAPACITY = domain.getCapacity();
 
 		// head node
@@ -88,9 +91,10 @@ public class MpiSkeletonRun{
 						"Computing t = %5.3f ps", tstep*dt));
 					}
 
-					// integrate forward
+					// integrate forward (apply position constraints if applicable)
 					if ( tstep != 0 ){
 						system.forwardPosition(integrator);
+						system.applyPositionConstraint();
 					}
 					// (I) update domains and send them to slave nodes
 					if ( tstep%nstlist == 0 ){
@@ -147,7 +151,8 @@ public class MpiSkeletonRun{
 
 					// forward velocities
 					system.forwardVelocity(integrator);
-
+					// apply velocity constraints
+					system.correctConstraintVelocity();
 
 					// apply temperature coupling
 					thermostat.apply(system);

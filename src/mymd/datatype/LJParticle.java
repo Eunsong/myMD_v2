@@ -2,17 +2,31 @@ package mymd.datatype;
 
 public class LJParticle implements Particle{
 
-	private final int number;
+	// number is unique particle number (no two particles have the same number)
+	private final int number; 
+
+	// id is particle identification number within its molecule type
+	// e.g. two oxygen atoms in different water molecule have the same id
+	private final int id; 
 	private final String name;
 
 	private final LJParticleType type;
-//	private final String type;
 	private final int typeNumber;
 
 	private final String residueName;
 	private final int residueNumber;
+
+	/**
+	 * moleculeNumber is unique number specifying a molecule where the particle 
+	 * belongs to. It is not molTypeId that was used in the alpha
+	 * version. No two molecules have the same moleculeNumber. 
+	 * (this condition is required in order to figure out intra-molecular 
+	 * interactions in run time. For example, when checking for exclusions,
+	 * one should first check if two atoms have same moleculeNumber, and if then
+	 * look for exclusions defined in their moleculeType using their id numbers)
+	 */
 	private final int moleculeNumber;
-	private final String moleculeType;
+	private final MoleculeType moleculeType;
 
     private final double mass;
     private final double charge;
@@ -26,6 +40,7 @@ public class LJParticle implements Particle{
 
 	private LJParticle(Builder builder){
 		this.number = builder.number;
+		this.id = builder.id;
 		this.name = builder.name;
 		this.type = builder.type;
 		this.typeNumber = builder.type.getNumber();
@@ -46,6 +61,9 @@ public class LJParticle implements Particle{
 
 	public int getNumber(){
 		return this.number;
+	}
+	public int getId(){
+		return this.id;
 	}
 	
 	public String getName(){
@@ -72,7 +90,7 @@ public class LJParticle implements Particle{
 		return this.moleculeNumber;
 	}
 
-	public String getMoleculeType(){
+	public MoleculeType getMoleculeType(){
 		return this.moleculeType;
 	}
 	
@@ -108,12 +126,12 @@ public class LJParticle implements Particle{
 	public static class Builder{
 
 		private int number;
+		private int id;
 		private String name = "unnamedParticle";
 		private LJParticleType type;
-//		private int typeNumber = -1;
 		private String residueName = "unnamedResidue";
 		private int residueNumber = -1;
-		private String moleculeType = "unnamedMolecule";
+		private MoleculeType moleculeType;
 		private int moleculeNumber = -1;
 
 		private double mass = 0.0;
@@ -138,7 +156,19 @@ public class LJParticle implements Particle{
 			this.isShell = type.isShell();
 		}
 
-
+		/******** essential builder settings ********/
+		public Builder moleculeType(MoleculeType type){
+			this.moleculeType = type;
+			return this;
+		}
+		public Builder moleculeNumber(int number){
+			this.moleculeNumber = number;
+			return this;
+		}
+		public Builder id(int id){
+			this.id = id;
+			return this;
+		}
 		/**
 		 * mass and charge values are copied from given LJParticleType by default.
 		 * To overload these values, use charge() and mass() method prior to build()
@@ -155,7 +185,6 @@ public class LJParticle implements Particle{
 			this.mass = mass;
 			return this;
 		}
-
 		/**
 		 * These methods override C6 and C12 value. Defaults are those specified
 		 * the type object(otherwise, 0.0)
@@ -168,7 +197,6 @@ public class LJParticle implements Particle{
 			this.C12 = C12;
 			return this;
 		}
-
 		// Shell type is also overridable 
 		public Builder isShell(){
 			this.isShell = true;
@@ -176,7 +204,9 @@ public class LJParticle implements Particle{
 		}
 
 
-		// optional settings
+
+
+		/******* optional settings *******/
 		public Builder name(String name){
 			this.name = name;
 			return this;
@@ -189,19 +219,14 @@ public class LJParticle implements Particle{
 			this.residueName = name;
 			return this;
 		}
-		public Builder moleculeType(String type){
-			this.moleculeType = type;
-			return this;
-		}
-		public Builder moleculeNumber(int number){
-			this.moleculeNumber = number;
-			return this;
-		}
 
 		public Builder chargeGroup(int groupNumber){
 			this.chargeGroup = groupNumber;
 			return this;
 		}
+
+
+
 
 		public LJParticle build(){
 			if ( !this.isShell ){

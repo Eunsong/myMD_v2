@@ -4,11 +4,11 @@ public interface Particle{
 
 	public int getNumber();
 	
+	public int getId();
+	
 	public String getName();
 
 	public ParticleType getType();
-	
-//	public String getType();
 
 	public int getTypeNumber();
 
@@ -16,7 +16,7 @@ public interface Particle{
 
 	public int getResidueNumber();
 	
-	public String getMoleculeType();
+	public MoleculeType getMoleculeType();
 	
 	public int getMoleculeNumber();
 	

@@ -22,12 +22,11 @@ import mymd.datatype.MdVector;
  * @author Eunsong Choi (eunsong.choi@gmail.com)
  * @version 1.0
  */
-
 public class DomainDecomposition<E extends MdSystem<?>> implements Decomposition<E>{
 
 	private final int totalSystemSize;
 	private double head_node_load = 0.8;
-	private static final double CAPACITY_FACTOR = 1.2;
+	private static final double CAPACITY_FACTOR = 1.4;
 	private final int nPartition;
 	private List<Domain> domains;
 	private final double rlist;
@@ -137,9 +136,8 @@ public class DomainDecomposition<E extends MdSystem<?>> implements Decomposition
 			int domainNumber = -1;
 			// Determine corresponding domain region 
 			if ( zi < 0 || zi > lbox ) { 
-System.out.println("i = " + i + ", zi = " +zi);
-			throw new RuntimeException
-			("Particle found out of the box. Check system equilibration and PBC");
+				throw new RuntimeException
+				("Particle found out of the box. Check system equilibration and PBC");
 			}
 			else if ( zi < headDomainLength ){
 				domains.get(0).addToDomain(i);
@@ -147,9 +145,7 @@ System.out.println("i = " + i + ", zi = " +zi);
 			}
 			else {
 				domainNumber = 1 + (int)((zi - headDomainLength)/otherDomainLength);
-//System.out.println("adding particle " + i + " to domain " + domainNumber );
-//System.out.println("zi = " + zi );
-				domains.get(domainNumber).addToDomain(i);
+                domains.get(domainNumber).addToDomain(i);
 			}
 
 			// Determine corresponding buffer regions

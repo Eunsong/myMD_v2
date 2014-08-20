@@ -51,7 +51,9 @@ public class LoadGromacsSystem{
 	public int getParticleNumber(int i){
 		return this.mdsystem.getSite(i).getAtomId();
 	}
-
+	public int getParticleId(int i){
+		return this.mdsystem.getSite(i).getNr();
+	}
 	public String getParticleName(int i){
 		return this.mdsystem.getSite(i).getAtomName();
 	}
@@ -68,6 +70,35 @@ public class LoadGromacsSystem{
 	public String getParticleResidueName(int i){
 		return this.mdsystem.getSite(i).getResName();
 	}	
+
+
+	// molecule type's name
+	public String getParticleMoleculeName(int i){
+		int typeId = this.mdsystem.getSite(i).getMolTypeId();
+		return this.top.getMolType(typeId).getType(); 
+	}
+
+	public int getParticleMoleculeNumber(int i){
+		return this.mdsystem.getSite(i).getMolId();
+	}
+	public int getParticleMoleculeTypeNumber(int i){
+		return this.mdsystem.getSite(i).getMolTypeId();
+	}
+
+	public int getParticleMoleculeNrexcl(int i){
+		int typeId = this.mdsystem.getSite(i).getMolTypeId();
+		return this.top.getMolType(typeId).getNrExcl();
+	}
+	public int getParticleMoleculeNAtoms(int i){
+		int typeId = this.mdsystem.getSite(i).getMolTypeId();
+		return this.top.getMolType(typeId).getNAtoms();
+	}
+
+	public boolean[][] getParticleExclusions(int i){
+		int typeId = this.mdsystem.getSite(i).getMolTypeId();
+		return this.top.getMolType(typeId).getExclusions();
+	}
+
 
 	public double getParticleMass(int i){
 		return this.mdsystem.getSite(i).getMass();
@@ -168,6 +199,26 @@ public class LoadGromacsSystem{
 		return this.top.getDihedrals().get(i).getFunc();
 	} 
 
+	public double[] getDihedralC(int i){
+		return this.top.getDihedrals().get(i).getC();
+	}
+
+
+
+	public int getConstraintSize(){
+		return this.top.getConstraints().size();
+	}
+	public int getConstrainti(int i){
+		return this.top.getConstraints().get(i).geti();
+	}
+
+	public int getConstraintj(int i){
+		return this.top.getConstraints().get(i).getj();
+	}
+
+	public double getConstraintd0(int i){
+		return this.top.getConstraints().get(i).getDij();
+	}
 
 
 

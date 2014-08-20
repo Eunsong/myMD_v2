@@ -2,7 +2,7 @@
 ;	File 'mdout.mdp' was generated
 ;	By user: eunsong (1000)
 ;	On host: eunsong-chem
-;	At date: Sun Aug 17 23:51:59 2014
+;	At date: Tue Aug 19 23:20:40 2014
 ;
 
 ; VARIOUS PREPROCESSING OPTIONS
@@ -16,16 +16,16 @@ define                   =
 integrator               = md
 ; Start time and timestep in ps
 tinit                    = 0.0
-dt                       = 0.01
-nsteps                   = 100000
+dt                       = 0.002
+nsteps                   = 10000
 ; For exact run continuation or redoing part of a run
-init-step                = 0
+init_step                = 0
 ; Part index is updated automatically on checkpointing (keeps files separate)
 simulation-part          = 1
 ; mode for center of mass motion removal
 comm-mode                = Linear
 ; number of steps for center of mass motion removal
-nstcomm                  = 0
+nstcomm                  = 1
 ; group(s) for center of mass motion removal
 comm-grps                = 
 
@@ -51,16 +51,16 @@ rtpi                     = 0.05
 
 ; OUTPUT CONTROL OPTIONS
 ; Output frequency for coords (x), velocities (v) and forces (f)
-nstxout                  = 0
-nstvout                  = 0
+nstxout                  = 0000
+nstvout                  = 0000
 nstfout                  = 0
 ; Output frequency for energies to log file and energy file
-nstlog                   = 0
+nstlog                   = 1000
 nstcalcenergy            = 100
-nstenergy                = 100
+nstenergy                = 1000
 ; Output frequency and precision for .xtc file
-nstxtcout                = 100
-xtc_precision            = 1000
+nstxtcout                = 1000
+xtc-precision            = 1000
 ; This selects the subset of atoms for the .xtc file. You can
 ; select multiple groups. By default all atoms will be written.
 xtc-grps                 = 
@@ -90,19 +90,19 @@ nstcalclr                = -1
 ; Method for doing electrostatics
 coulombtype              = cut-off
 coulomb-modifier         = Potential-shift-Verlet
-rcoulomb_switch          = 0.0
+rcoulomb-switch          = 0
 rcoulomb                 = 1.4
 ; Relative dielectric constant for the medium and the reaction field
 epsilon_r                = 1
-epsilon-rf               = 0
+epsilon_rf               = 1
 ; Method for doing Van der Waals
-vdw_type                 = cut-off
+vdw-type                 = cut-off
 vdw-modifier             = Potential-shift-Verlet
 ; cut-off lengths       
-rvdw-switch              = 0
+rvdw-switch              = 1.0
 rvdw                     = 1.4
 ; Apply long range dispersion corrections for Energy and Pressure
-DispCorr                 = No
+DispCorr                 = no
 ; Extension of the potential lookup tables beyond the cut-off
 table-extension          = 1
 ; Separate tables between energy group pairs
@@ -110,31 +110,31 @@ energygrp-table          =
 ; Spacing for the PME/PPPM FFT grid
 fourierspacing           = 0.12
 ; FFT grid size, when a value is 0 fourierspacing will be used
-fourier-nx               = 0
-fourier-ny               = 0
-fourier-nz               = 0
+fourier_nx               = 0
+fourier_ny               = 0
+fourier_nz               = 0
 ; EWALD/PME/PPPM parameters
-pme-order                = 4
-ewald-rtol               = 1e-05
-ewald-geometry           = 3d
-epsilon-surface          = 0
-optimize-fft             = no
+pme_order                = 6
+ewald_rtol               = 1e-6
+ewald_geometry           = 3d
+epsilon_surface          = 0
+optimize_fft             = no
 
 ; IMPLICIT SOLVENT ALGORITHM
-implicit-solvent         = No
+implicit_solvent         = No
 
 ; GENERALIZED BORN ELECTROSTATICS
 ; Algorithm for calculating Born radii
-gb-algorithm             = Still
+gb_algorithm             = Still
 ; Frequency of calculating the Born radii inside rlist
 nstgbradii               = 1
 ; Cutoff for Born radii calculation; the contribution from atoms
 ; between rlist and rgbradii is updated every nstlist steps
-rgbradii                 = 1
+rgbradii                 = 2
 ; Dielectric coefficient of the implicit solvent
 gb-epsilon-solvent       = 80
 ; Salt concentration in M for Generalized Born models
-gb-saltconc              = 0
+gb_saltconc              = 0
 ; Scaling factors used in the OBC GB model. Default values are OBC(II)
 gb-obc-alpha             = 1
 gb-obc-beta              = 0.8
@@ -147,23 +147,23 @@ sa-surface-tension       = -1
 
 ; OPTIONS FOR WEAK COUPLING ALGORITHMS
 ; Temperature coupling  
-tcoupl                   = no
+tcoupl                   = Berendsen
 nsttcouple               = -1
 nh-chain-length          = 10
 print-nose-hoover-chain-variables = no
 ; Groups to couple separately
-tc-grps                  = 
+tc_grps                  = System
 ; Time constant (ps) and reference temperature (K)
-tau-t                    = 
-ref-t                    = 
+tau_t                    = 0.5
+ref_t                    = 300
 ; pressure coupling     
 Pcoupl                   = no
 Pcoupltype               = isotropic
 nstpcouple               = -1
 ; Time constant (ps), compressibility (1/bar) and reference P (bar)
-tau-p                    = 1
-compressibility          = 
-ref-p                    = 
+tau-p                    = 1.0
+compressibility          = 4.5e-5
+ref-p                    = 1
 ; Scaling of reference coordinates, No, All or COM
 refcoord-scaling         = No
 
@@ -206,29 +206,29 @@ annealing-time           =
 annealing-temp           = 
 
 ; GENERATE VELOCITIES FOR STARTUP RUN
-gen_vel                  = no
-gen_temp                 = 300
-gen_seed                 = -1
+gen-vel                  = yes
+gen-temp                 = 300
+gen-seed                 = 2181
 
 ; OPTIONS FOR BONDS    
-constraints              = none
+constraints              = h-bonds
 ; Type of constraint algorithm
-constraint_algorithm     = Lincs
+constraint-algorithm     = Lincs
 ; Do not constrain the start configuration
 continuation             = no
 ; Use successive overrelaxation to reduce the number of shake iterations
 Shake-SOR                = no
 ; Relative tolerance of shake
-shake-tol                = 0.0001
+shake-tol                = 1e-04
 ; Highest order in the expansion of the constraint coupling matrix
-lincs_order              = 4
+lincs-order              = 12
 ; Number of iterations in the final step of LINCS. 1 is fine for
 ; normal simulations, but use 2 to conserve energy in NVE runs.
 ; For energy minimization with constraints it should be 4 to 8.
 lincs-iter               = 1
 ; Lincs will write a warning to the stderr if in one step a bond
 ; rotates over more degrees than
-lincs_warnangle          = 30
+lincs-warnangle          = 30
 ; Convert harmonic bonds to morse potentials
 morse                    = no
 
@@ -279,7 +279,7 @@ couple-moltype           =
 couple-lambda0           = vdw-q
 couple-lambda1           = vdw-q
 couple-intramol          = no
-init-lambda              = -1
+init-lambda              = 0.0
 init-lambda-state        = -1
 delta-lambda             = 0
 nstdhdl                  = 50
@@ -294,7 +294,7 @@ calc-lambda-neighbors    = 1
 init-lambda-weights      = 
 dhdl-print-energy        = no
 sc-alpha                 = 0
-sc-power                 = 1
+sc-power                 = 0
 sc-r-power               = 6
 sc-sigma                 = 0.3
 sc-coul                  = no

@@ -5,6 +5,7 @@ import mymd.nonbond.*;
 import mymd.bond.*;
 import mymd.angle.*;
 import mymd.dihedral.*;
+import mymd.constraint.*;
 import mymd.gromacs.LoadGromacsSystem;
 import java.util.List;
 
@@ -214,6 +215,30 @@ public class MdSystem<T extends Particle>{
 	}
 
 
+
+
+	/******* constraint algorithms ********/
+
+	public void convertHBondsToConstraints(){
+		convertHBondsToConstraints(topology.getConstraints());
+	}
+	public void convertHBondsToConstraints(Constraints<MdSystem<T>> constraints){
+		constraints.convertHBondsToConstraints(this);
+	}
+
+	public void applyPositionConstraint(){
+		applyPositionConstraint( topology.getConstraints() );
+	}
+	
+	public void applyPositionConstraint(Constraints<MdSystem<T>> constraints){
+		constraints.updateAllPositions(this);
+	}
+	public void correctConstraintVelocity(){
+		correctConstraintVelocity(topology.getConstraints());
+	}
+	public void correctConstraintVelocity(Constraints<MdSystem<T>> constraints){
+		constraints.updateAllVelocities(this);
+	}
 
 
 

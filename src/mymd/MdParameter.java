@@ -65,6 +65,8 @@ public class MdParameter{
     private String thermostat; // e.g. Berendsen, none 
 
 
+	// LJ input type (sigma-epsilon or C6-C12. Defualt is former)
+	private String LJInputType = "sigma-epsilon";
 
     public MdParameter() {
         // default pme setup 
@@ -235,6 +237,13 @@ public class MdParameter{
     }
 
 
+	public void setLJInputType(String type){
+		this.LJInputType = type;
+	}
+	public String getLJInputType(){
+		return this.LJInputType;
+	}
+
 
 	public void importFromFile(String filename){
 
@@ -338,6 +347,13 @@ public class MdParameter{
                         System.exit(0);
                     }
                 }
+				else if ( tokens[0].equals("LJInputType")) {
+					if ( !tokens[2].equals("sigma-epsilon") && !tokens[2].equals("C6-C12") ){
+						System.out.println("Not supported LJ Input Type " + tokens[2] );
+						System.exit(0);
+					}
+					setLJInputType( tokens[2]);
+				}
                 else if ( tokens[0].equals("")) {
                     // empty line. do nothing
                 }

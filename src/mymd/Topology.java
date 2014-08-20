@@ -5,6 +5,7 @@ import mymd.nonbond.*;
 import mymd.bond.Bonds;
 import mymd.angle.Angles;
 import mymd.dihedral.Dihedrals;
+import mymd.constraint.Constraints;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -21,11 +22,13 @@ public class Topology<T extends MdSystem<?>> {
 	private final Bonds<T> bonds;
 	private final Angles<T> angles;
 	private final Dihedrals<T> dihedrals;
+	private final Constraints<T> constraints;
 
 	private Topology(Builder<T> builder){
 		this.bonds = builder.bonds;
 		this.angles = builder.angles;
 		this.dihedrals = builder.dihedrals;
+		this.constraints = builder.constraints;
 	}
 
 
@@ -40,12 +43,17 @@ public class Topology<T extends MdSystem<?>> {
 	public Dihedrals<T> getDihedrals(){
 		return this.dihedrals;
 	}
+	
+	public Constraints<T> getConstraints(){
+		return this.constraints;
+	}
 
 	public static class Builder<E extends MdSystem<?>>{
 
 		private Bonds<E> bonds;
 		private Angles<E> angles;
 		private Dihedrals<E> dihedrals;
+		private Constraints<E> constraints;
 	
 		public Builder(){
 		}
@@ -62,6 +70,11 @@ public class Topology<T extends MdSystem<?>> {
 
 		public Builder<E> dihedrals(Dihedrals<E> dihedrals){
 			this.dihedrals = dihedrals;
+			return this;
+		}
+
+		public Builder<E> constraints(Constraints<E> constraints){
+			this.constraints = constraints;
 			return this;
 		}
 

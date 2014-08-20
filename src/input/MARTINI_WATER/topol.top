@@ -1,0 +1,16 @@
+
+#include "martini_v2.1.itp"
+
+; Then include the file(s) containing the topologies of other
+; molecules present in your system.
+
+; Define a name for your system
+
+[ system ]
+WATER (MARTINI) 
+
+; Define the composition of your system
+; The molecule names should correspond to those defined in the itp file(s).
+
+[ molecules ]
+W 400

@@ -108,9 +108,12 @@ public class MdVector{
     }
 
 	public void crossSet(MdVector vec){
-		this.x = this.y*vec.z - this.z*vec.y;
-		this.y = -this.x*vec.z + this.z*vec.x;
-		this.z = this.x*vec.y - this.y*vec.x;
+		double newx = this.y*vec.z - this.z*vec.y;
+		double newy = -this.x*vec.z + this.z*vec.x;
+		double newz = this.x*vec.y - this.y*vec.x;
+		this.x = newx;
+		this.y = newy;
+		this.z = newz;
 	}
 
 

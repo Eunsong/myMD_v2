@@ -16,6 +16,10 @@ public class Bonds<T extends MdSystem<?>> implements Iterable<Bond<T>>{
 	public void add(Bond<T> bond){
 		this.bonds.add(bond);
 	}
+
+	public void remove(int i){
+		this.bonds.remove(i);
+	}
 	
 	public Bond<T> get(int i){
 		return this.bonds.get(i);

@@ -6,6 +6,7 @@ import mymd.gromacs.LoadGromacsSystem;
 import mymd.bond.*;
 import mymd.angle.*;
 import mymd.dihedral.*;
+import mymd.constraint.*;
 import java.util.List;
 import java.util.ArrayList;
 
@@ -30,9 +31,17 @@ public class GromacsImporter{
 			loader.build();
             int size = loader.getSize();
 
+			// read simulatin parameters from input prm file
+			MdParameter prm = new MdParameter();
+			prm.importFromFile(prmFile);
+			String LJInputType = prm.getLJInputType();
+
 			// build particle info
 			List<LJParticleType> types = new ArrayList<LJParticleType>();
             List<LJParticle> particles = new ArrayList<LJParticle>(size);
+			
+			List<MoleculeType> molecules = new ArrayList<MoleculeType>();
+
             for ( int i = 0; i < size; i++){
 
 				// build particle type 
@@ -41,6 +50,12 @@ public class GromacsImporter{
 				double mass = loader.getParticleMass(i);
 				double C6 = loader.getParticleC6(i);
 				double C12 = loader.getParticleC12(i);
+				if ( LJInputType.equals("sigma-epsilon") ){
+					double sigma = C6;
+					double epsilon = C12;
+					C6 = 4.0*epsilon*Math.pow(sigma,6);
+					C12 = 4.0*epsilon*Math.pow(sigma,12);
+				}
 				double charge = loader.getParticleCharge(i);
 				LJParticleType ljType = new LJParticleType.Builder(typeName).
 				number(typeNumber).mass(mass).charge(charge).C6(C6).C12(C12).build();
@@ -53,8 +68,27 @@ public class GromacsImporter{
 					ljType = types.get(index);
 				}
 
+				String moleName = loader.getParticleMoleculeName(i);
+				int moleNumber = loader.getParticleMoleculeNumber(i);
+				int moleTypeNumber = loader.getParticleMoleculeTypeNumber(i);
+				int numberOfParticles = loader.getParticleMoleculeNAtoms(i);
+				int nrexcl = loader.getParticleMoleculeNrexcl(i);
+				boolean[][] exclusions = loader.getParticleExclusions(i);
+
+				MoleculeType moleType = new MoleculeType.Builder(moleName).
+				exclusions(exclusions).numberOfParticles(numberOfParticles).
+				nrexcl(nrexcl).build();
+				if ( !molecules.contains(moleType) ){
+					molecules.add(moleType);
+				}
+				else {
+					index = molecules.indexOf(moleType);
+					moleType = molecules.get(index);
+				}
+				
                 LJParticle particle = new LJParticle.Builder(i, ljType).
-                name(loader.getParticleName(i)).
+                name(loader.getParticleName(i)).id(loader.getParticleId(i)).
+				moleculeNumber(moleNumber).moleculeType(moleType).
                 residueName(loader.getParticleResidueName(i)).
                 residueNumber(loader.getParticleResidueNumber(i)).mass(mass).
                 C6(C6).C12(C12).build();
@@ -73,9 +107,6 @@ public class GromacsImporter{
             	trj.setPosition(i, new MdVector(x,y,z));
 	        }
 
-			// read simulatin parameters from input prm file
-			MdParameter prm = new MdParameter();
-			prm.importFromFile(prmFile);
 
 			// build Topology object
 			Bonds<MdSystem<LJParticle>> bonds = new Bonds<MdSystem<LJParticle>>();
@@ -124,13 +155,32 @@ public class GromacsImporter{
 					new StandardDihedral<MdSystem<LJParticle>>(i, j, k, l, k0, ni, phi0);
 					dihedrals.add(dihedral);
 				}
-				else throw new IllegalArgumentException("dihedral type other than 1 is not supported yet");
+				else if ( func == 3 ){
+
+					double[] C = loader.getDihedralC(n);
+					Dihedral<MdSystem<LJParticle>> dihedral = 
+					new RBDihedral<MdSystem<LJParticle>>(i, j, k, l, C);
+					dihedrals.add(dihedral);
+
+				}
+				else throw new IllegalArgumentException("dihedral type other than 1 or 3 are not supported yet");
+			}
+
+
+			Constraints<MdSystem<LJParticle>> constraints = new Constraints<MdSystem<LJParticle>>();
+			for ( int n = 0; n < loader.getConstraintSize(); n++){
+				int i = loader.getConstrainti(n);
+				int j = loader.getConstraintj(n);
+				double d0 = loader.getConstraintd0(n);
+				Constraint<MdSystem<LJParticle>> constraint = 
+				new SimpleShake<MdSystem<LJParticle>>(i, j, d0);
+				constraints.add(constraint);
 			}
 
 
 	
 			Topology<MdSystem<LJParticle>> top = 
-			new Topology.Builder<MdSystem<LJParticle>>().bonds(bonds).angles(angles).dihedrals(dihedrals).build();	
+			new Topology.Builder<MdSystem<LJParticle>>().bonds(bonds).angles(angles).dihedrals(dihedrals).constraints(constraints).build();	
 	
 			return new MdSystem.Builder<LJParticle>(jobName).particles(particles).
 			parameters(prm).topology(top).initialTrajectory(trj).verbose().build();

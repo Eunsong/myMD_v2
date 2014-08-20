@@ -35,8 +35,6 @@ public class Domain{
 		this.particleList = new int[capacity];
 		this.domainSize = 0;
 		this.bufferSize = 0;
-//		this.particleList[capacity-2] = domainSize;
-//		this.particleList[capacity-1] = bufferSize;
 	}
 
 
