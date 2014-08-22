@@ -4,13 +4,17 @@ import mymd.datatype.*;
 import mymd.gromacs.LoadGromacsSystem;
 import mymd.bond.*;
 import mymd.thermostat.*;
+import mymd.its.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.PrintStream;
 
+import java.math.BigDecimal;
+import java.math.MathContext;
+
 import mpi.*;
 
-public class MpiSkeletonRun{
+public class MpiITSpreRun{
 	public static void main(String[] args){
 
         String inputPrmFile = args[3];
@@ -18,6 +22,7 @@ public class MpiSkeletonRun{
         String inputTopFile = args[5];
         String outputTrajFile = args[6];
         String outputEnergyFile = args[7];
+		String ITSout = args[8];
 
 
 		MdSystem<LJParticle> system =  GromacsImporter.buildLJParticleSystem
@@ -31,7 +36,7 @@ public class MpiSkeletonRun{
         final int nstxout = prm.getNstxout();
         final int nstvout = prm.getNstvout();
         final int nstenergy = prm.getNstenergy();
-   		final int nstlog = 100; //prm.getNstlog();
+   		final int nstlog = 10; //prm.getNstlog();
 		final double T0 = prm.getT0();
 		final double TRef = prm.getRefT();
 		final double tauT = prm.getTauT();
@@ -39,7 +44,43 @@ public class MpiSkeletonRun{
 		if ( convertHbonds ){
 			system.convertHBondsToConstraints();
 		}
+
+
+		/************** ITS setup ****************/
+		final int ksize = 12;
+		final double Tstep = 25.0; // T increment
+		final int ITSEnergyFreq = 20; // frequency of energy storing for ITS
+		final int ITSFreq = 50000; // frequency of distribution update
+
+		final double[] Temps = new double[ksize];
+		final double[] p0 = new double[ksize];
+		final double[] n0 = new double[ksize];
 	
+		for ( int i = 0; i < ksize; i++){
+			Temps[i] = T0 + i*Tstep;
+			p0[i] = 1.0/ksize;
+			n0[i] = 1.0;
+		}
+		/****************************************/
+
+/*
+final BigDecimal[] n0 = new BigDecimal[ksize];
+MathContext mathset = new MathContext(5);
+n0[0] = new BigDecimal("6.94440e-03", mathset);
+n0[1] = new BigDecimal("3.84190e+961", mathset);
+n0[2] = new BigDecimal("1.46220e+1786", mathset);
+n0[3] = new BigDecimal("5.13700e+2500", mathset);
+n0[4] = new BigDecimal("7.43260e+3125", mathset);
+n0[5] = new BigDecimal("2.91620e+3677", mathset);
+n0[6] = new BigDecimal("6.04880e+4167", mathset);
+n0[7] = new BigDecimal("2.71120e+4606", mathset);
+n0[8] = new BigDecimal("1.71220e+5001", mathset);
+n0[9] = new BigDecimal("3.29670e+5358", mathset);
+n0[10] = new BigDecimal("1.32240e+5683", mathset);
+n0[11] = new BigDecimal("3.82860e+5979", mathset);
+*/
+
+
 
 		// gen valocity
 		system.genRandomVelocities(T0);
@@ -84,6 +125,11 @@ public class MpiSkeletonRun{
 				PrintStream ps = new PrintStream(outputTrajFile);
 				PrintStream psEnergy = new PrintStream(outputEnergyFile);
 
+
+				ITS<MdSystem<LJParticle>> its = new ITS<MdSystem<LJParticle>>(T0, ksize, Temps, p0, n0);
+				List<Double> Uorgs = new ArrayList<Double>(ITSFreq);
+
+
 				for ( int tstep = 0; tstep < nsteps; tstep++){
 				
 					if ( tstep%nstlog == 0 ) {
@@ -96,6 +142,9 @@ public class MpiSkeletonRun{
 						system.forwardPosition(integrator);
 						system.applyPositionConstraint();
 					}
+
+
+
 					// (I) update domains and send them to slave nodes
 					if ( tstep%nstlist == 0 ){
 						// updates partitions using new positions
@@ -123,6 +172,38 @@ public class MpiSkeletonRun{
 
 
 
+
+					// (ITS Step 0 ) compute original energy
+					{
+						if ( tstep != 0 && tstep%ITSFreq == 0 ){
+							its.update(Uorgs);
+							its.printResult();	
+							Uorgs.clear();
+						}
+
+						if ( tstep % ITSEnergyFreq == 0 ){
+							double nonbondEnergy = 0.0;
+							nonbondEnergy = system.getNonBondEnergy(nonbond, nblist);
+							// receive partial nonbond energies from slave-nodes and add
+							for ( int proc = 1; proc < np; proc++){
+								double[] partialEnergy = new double[1];
+	
+								MPI.COMM_WORLD.
+								Recv( partialEnergy, 0, 1, MPI.DOUBLE, proc, 99); 
+								nonbondEnergy += partialEnergy[0];
+							}												
+							double coulombEnergy = 0.0; // temporary.
+							double bond = system.getBondEnergy();
+							double angle = system.getAngleEnergy();
+							double dihedral = system.getDihedralEnergy();
+							double Uorg = nonbondEnergy + bond + angle + dihedral;
+							Uorgs.add(Uorg);
+							//System.out.println("Factor = " + its.getBiasFactor(Uorg));
+						}
+					}	
+
+
+
 					// update non-bonded forces
 					system.updateNonBondForce( nonbond, nblist);			
 
@@ -147,6 +228,10 @@ public class MpiSkeletonRun{
 						Domain domainEach = decomposition.getDomain(proc);
 						system.importNewForces(domainEach, forceArray);
 					}
+
+
+					// (ITS step 1 ) Apply biasing forces
+					its.applyBiasForce(system, Uorgs.get( Uorgs.size() - 1) );
 
 
 					// forward velocities
@@ -185,7 +270,11 @@ public class MpiSkeletonRun{
 					}
 				
 				}
-
+				
+				// (ITS final step)
+				its.printResult(ITSout);
+	
+				
 				ps.close();
 				psEnergy.close();
 			}
@@ -246,6 +335,15 @@ public class MpiSkeletonRun{
 					nblist.update(subsystem);
 
 				}
+
+				// (ITS 0 step)
+				if ( tstep % ITSEnergyFreq == 0 ){	
+					double[] partialEnergy = new double[1];
+					partialEnergy[0] = subsystem.getNonBondEnergy(nonbond, nblist);
+
+					MPI.COMM_WORLD.
+					Send( partialEnergy, 0, 1, MPI.DOUBLE, 0, 99); 
+				} 
 
 
 				// compute non-bonded forces
