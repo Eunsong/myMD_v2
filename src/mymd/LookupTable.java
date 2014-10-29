@@ -10,6 +10,6 @@ package mymd;
  */
 public interface LookupTable{
 
-	public double get(double r);
+    public double get(double r);
 
 }
