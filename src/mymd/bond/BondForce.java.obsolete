@@ -1,9 +1,0 @@
-package mymd;
-
-import mymd.MdSystem;
-
-public interface BondForce<T extends MdSystem<?>> extends Force<T>{
-
-	public void update(T sys, int i, int j);
-
-}
