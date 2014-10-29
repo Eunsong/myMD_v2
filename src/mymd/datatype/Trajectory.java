@@ -19,17 +19,17 @@ public class Trajectory<E extends MdVector> {
     private double time;
     private E box;
 
-	// The positions, velocities, and forces can only contain
-	// E instances set from set methods. Thus we can ensure type safety. 
-	@SuppressWarnings("unchecked")
+    // The positions, velocities, and forces can only contain
+    // E instances set from set methods. Thus we can ensure type safety. 
+    @SuppressWarnings("unchecked")
     public MdTraj(int N) {
         this.size = N;
         this.positions = (E[]) new Object[N];
         this.velocities = (E[]) new Object[N];
         this.forces = (E[]) new Object[N];
-		initPositions();
-		initVelocities();
-		initForces();
+        initPositions();
+        initVelocities();
+        initForces();
         this.time = 0.0;
         this.box = new E();
     }

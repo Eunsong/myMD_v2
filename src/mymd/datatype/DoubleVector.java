@@ -4,12 +4,12 @@ public class DoubleVector implements MdVector{
 
     private double x,y,z;
 
-	public static DoubleVector create(){
-		return new DoubleVector();
-	}
-	public static DoubleVector create(MdVector v){
-		return new DoubleVector(v);
-	}
+    public static DoubleVector create(){
+        return new DoubleVector();
+    }
+    public static DoubleVector create(MdVector v){
+        return new DoubleVector(v);
+    }
 
     public DoubleVector() {
         this.x = 0.0;
@@ -29,15 +29,15 @@ public class DoubleVector implements MdVector{
         this.z = vec.getZ();
     }
 
-	public double getX(){
-		return this.x;
-	}
-	public double getY(){
-		return this.y;
-	}
-	public double getZ(){
-		return this.z;
-	}
+    public double getX(){
+        return this.x;
+    }
+    public double getY(){
+        return this.y;
+    }
+    public double getZ(){
+        return this.z;
+    }
 
     public double norm() {
         return Math.sqrt( this.x*this.x + this.y*this.y + this.z*this.z );
@@ -52,11 +52,11 @@ public class DoubleVector implements MdVector{
         this.y = vec.getY();
         this.z = vec.getZ();
     }
-	public void copy(double x, double y, double z){
-		this.x = x;
-		this.y = y;
-		this.z = z;	
-	}
+    public void copy(double x, double y, double z){
+        this.x = x;
+        this.y = y;
+        this.z = z; 
+    }
 
     public void sub(MdVector vec) {
         this.x -= vec.getX();
@@ -70,7 +70,7 @@ public class DoubleVector implements MdVector{
         this.z += vec.getZ();
     }
 
-	public void add(MdVector vec1, MdVector vec2){
+    public void add(MdVector vec1, MdVector vec2){
         this.x += (vec1.getX() + vec2.getX() );
         this.y += (vec1.getY() + vec2.getY() );
         this.z += (vec1.getZ() + vec2.getZ() );
@@ -84,28 +84,28 @@ public class DoubleVector implements MdVector{
 
 
 
-	public void times(double factor){
-		this.x *= factor;
-		this.y *= factor;
-		this.z *= factor;
-	}
+    public void times(double factor){
+        this.x *= factor;
+        this.y *= factor;
+        this.z *= factor;
+    }
 
-	public void times(int factor){
-		this.x *= factor;
-		this.y *= factor;
-		this.z *= factor;
-	}
+    public void times(int factor){
+        this.x *= factor;
+        this.y *= factor;
+        this.z *= factor;
+    }
 
-	public void reset(){
-		this.x = 0.0;
-		this.y = 0.0;
-		this.z = 0.0;
-	}
+    public void reset(){
+        this.x = 0.0;
+        this.y = 0.0;
+        this.z = 0.0;
+    }
 
-	
+    
 
 
-	/******** Static methods ********/
+    /******** Static methods ********/
 
     public static double norm(MdVector vec) {
         return Math.sqrt( vec.getX()*vec.getX() + vec.getY()*vec.getY() + vec.getZ()*vec.getZ() );
@@ -145,7 +145,7 @@ public class DoubleVector implements MdVector{
         DoubleVector tmp = new DoubleVector( v.x*factor, v.y*factor, v.z*factor );
         return tmp;
     }
-	public static DoubleVector times(MdVector v, int factor){
+    public static DoubleVector times(MdVector v, int factor){
         DoubleVector tmp = new DoubleVector( v.x*factor, v.y*factor, v.z*factor );
         return tmp;
     }

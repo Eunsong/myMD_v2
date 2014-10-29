@@ -65,10 +65,10 @@ public class Constraint{
         return this.ftype;
     }
     public double getLambda(){
-    	return this.lambda;
+        return this.lambda;
     }
     public void setLambda(double lambda){
-    	this.lambda = lambda;
+        this.lambda = lambda;
     }
 
     //public void applyConstraints(System sys, Top top, Prm prm, Traj newTraj);
