@@ -7,9 +7,9 @@ import java.util.Iterator;
 
 
 public class Constraints<T extends MdSystem<?>> 
-								implements Iterable<Constraint<T>>{
+                                implements Iterable<Constraint<T>>{
 
-	private List<Constraint<T>> constraints;
+    private List<Constraint<T>> constraints;
 
 
 }

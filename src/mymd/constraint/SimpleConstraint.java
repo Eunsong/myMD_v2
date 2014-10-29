@@ -12,9 +12,9 @@ import mymd.MdSystem;
  */
 public interface SimpleConstraint<T extends MdSystem<?>> extends Constraint<T>{
 
-	public int geti();
-	public int getj();
-	
-	public double getTargetDistance();
+    public int geti();
+    public int getj();
+    
+    public double getTargetDistance();
 
 }
