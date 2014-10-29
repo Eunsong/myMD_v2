@@ -2,16 +2,16 @@ package mymd.nonbond;
 
 public class LJEnergyLookupTable extends AbstractLookupTable{
 
-	private final double C6, C12;
+    private final double C6, C12;
 
     public double getC6(){
         return this.C6;
     }
     public double getC12(){
         return this.C12;
-    }	
+    }   
 
-	public LJEnergyLookupTable(double rc, double C6, double C12){
+    public LJEnergyLookupTable(double rc, double C6, double C12){
         super(rc);
         this.C6 = C6;
         this.C12 = C12;
@@ -26,7 +26,7 @@ public class LJEnergyLookupTable extends AbstractLookupTable{
         }
     }
 
-	
+    
 
 
 
