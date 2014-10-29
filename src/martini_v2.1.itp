@@ -1,0 +1,66 @@
+; MARTINI FORCEFIELD V2.1 - FINAL VERSION 
+; 
+; SJ MARRINK, 16-06-2007 (last modified: 26-1-2011)
+;
+; please cite:
+;
+; L. Monticelli, S. Kandasamy, X. Periole, R. Larson, D.P. Tieleman, S.J. Marrink.
+; The MARTINI coarse grained force field: extension to proteins.
+; J. Chem. Th. Comp., 4:819-834, 2008. 
+;
+; S.J. Marrink, H.J. Risselada, S. Yefimov, D.P. Tieleman, A.H. de Vries.
+; The MARTINI forcefield: coarse grained model for biomolecular simulations.
+; JPC-B, 111:7812-7824, 2007.
+;
+; and (if using lipid topologies):
+;
+; S.J. Marrink, A.H. de Vries, A.E. Mark.
+; Coarse grained model for semi-quantitative lipid simulations.
+; JPC-B, 108:750-760, 2004.
+
+
+[ defaults ]
+1 1
+
+[ atomtypes ]
+
+; Currently eighteen particle types are defined, divided into four main categories 
+; (P, polar; N, intermediate; C, apolar; Q, charged)
+; each of which has a number of sublevels (0,a,d, or ad) 
+; subtype 0 has no hydrogen bond forming capacities,
+; subtype d has some hydrogen donor capacities, 
+; subtype a some hydrogen acceptor capacities, 
+; and subtype da has both donor and acceptor capacities 
+; or (1,2,3,4,5) where subtype 5 is more polar than 1.
+
+; Two main classes of particles are furthermore distinguished, namely
+; STANDARD particles which are mapped using a 4:1 mapping scheme, and
+; RING particles which are used for ring compounds mapped 2-3:1.
+; A special BIG particle type is defined in addition to prevent freezing of CG water.
+; Two AMINO acid particle types are used to avoid Q-C clashes inside proteins.
+
+; For reasons of computational efficiency, all particle masses are set to 72 amu,
+; except for ring types which are set to 45 amu.
+; For realistic dynamics, the particle masses should be adapted. 
+; This might require a reduction of the integration timestep, however.
+
+; name mass charge ptype c6 c12
+
+; STANDARD types, 4:1 mapping
+; polar type
+P4 72.0 0.000 A	0.21558E-00 	0.23238E-02 ; attractive 
+SN0 45.0 0.000 A 0.85338E-01     0.53946E-03 ; 75almost attractive, s=0.43
+
+
+[ nonbond_params ]
+
+  
+;;;;;; WATER (representing 4 H2O molecules)
+
+[ moleculetype ]
+; molname  	nrexcl
+  W 	    	1
+
+[ atoms ]
+;id 	type 	resnr 	residu 	atom 	cgnr 	charge
+ 1 	P4 	1 	W 	W 	1 	0 
