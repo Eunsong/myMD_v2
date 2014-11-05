@@ -1,7 +1,19 @@
 # myMD code
 
-Java based full fledged molecular dynamics simulation code supporting
+Java based high-performance generic molecular dynamics simulation code supporting
 standard gromacs input files
+
+## Usage Example
+To run a regular MD simulation on a single core machine.
+
+    RunSkeleton [prm file] [gro file] [top file] [out traj] [out energy]
+
+
+To run a regular MD simulation on a distributed memory multi-core/multi-node machone.
+
+    mpjrun.sh -np [number of cores] MpiRunSkeleton [prm file] [gro file] [top file] [out traj] [out energy]
+
+
 
 ## Features
 ### Parallel Computing
