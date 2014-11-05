@@ -8,11 +8,20 @@ import mymd.its.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.PrintStream;
-
 import java.math.BigDecimal;
 import java.math.MathContext;
-
 import mpi.*;
+
+/**
+ * Runs a pre-run simulation for a product-run using Integrate-Temperature-Sampling
+ * method for an enhance phase-space sampling during the simulation. The code requires
+ * a MPJ-Express library to carry out parallel computing on a distributed memory
+ * platform (e.g. cluster computer). Simulation settings should be specified
+ * in an input prm file.
+ *
+ * @author Eunsong Choi (eunsong.choi@gmail.com)
+ * @version 1.0
+ */
 
 public class MpiITSpreRun{
     public static void main(String[] args){
@@ -23,7 +32,6 @@ public class MpiITSpreRun{
         String outputTrajFile = args[6];
         String outputEnergyFile = args[7];
         String ITSout = args[8];
-
 
         MdSystem<LJParticle> system =  GromacsImporter.buildLJParticleSystem
         ("JOB_NAME", inputPrmFile, inputConfFile, inputTopFile);
@@ -63,35 +71,14 @@ public class MpiITSpreRun{
         }
         /****************************************/
 
-/*
-final BigDecimal[] n0 = new BigDecimal[ksize];
-MathContext mathset = new MathContext(5);
-n0[0] = new BigDecimal("6.94440e-03", mathset);
-n0[1] = new BigDecimal("3.84190e+961", mathset);
-n0[2] = new BigDecimal("1.46220e+1786", mathset);
-n0[3] = new BigDecimal("5.13700e+2500", mathset);
-n0[4] = new BigDecimal("7.43260e+3125", mathset);
-n0[5] = new BigDecimal("2.91620e+3677", mathset);
-n0[6] = new BigDecimal("6.04880e+4167", mathset);
-n0[7] = new BigDecimal("2.71120e+4606", mathset);
-n0[8] = new BigDecimal("1.71220e+5001", mathset);
-n0[9] = new BigDecimal("3.29670e+5358", mathset);
-n0[10] = new BigDecimal("1.32240e+5683", mathset);
-n0[11] = new BigDecimal("3.82860e+5979", mathset);
-*/
-
-
-
         // gen valocity
         system.genRandomVelocities(T0);
-
 
         /** MPI preparation **/
         MPI.Init(args);
         final int rank = MPI.COMM_WORLD.Rank();
         final int np = MPI.COMM_WORLD.Size();
         
-
         Integrator<MdSystem<LJParticle>> integrator
         = new VelocityVerlet<MdSystem<LJParticle>>(dt);
         
@@ -125,10 +112,8 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
                 PrintStream ps = new PrintStream(outputTrajFile);
                 PrintStream psEnergy = new PrintStream(outputEnergyFile);
 
-
                 ITS<MdSystem<LJParticle>> its = new ITS<MdSystem<LJParticle>>(T0, ksize, Temps, p0, n0);
                 List<Double> Uorgs = new ArrayList<Double>(ITSFreq);
-
 
                 for ( int tstep = 0; tstep < nsteps; tstep++){
                 
@@ -142,8 +127,6 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
                         system.forwardPosition(integrator);
                         system.applyPositionConstraint();
                     }
-
-
 
                     // (I) update domains and send them to slave nodes
                     if ( tstep%nstlist == 0 ){
@@ -160,7 +143,6 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
                         nblist.update(system);
                     }
 
-
                     // (II) export new positions to slave nodes
                     for ( int proc = 1; proc < np; proc++){
                         Domain domainEach = decomposition.getDomain(proc);
@@ -169,9 +151,6 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
                         MPI.COMM_WORLD.
                         Send( positionArray, 0, 3*SUB_CAPACITY, MPI.DOUBLE, proc, 99); 
                     }
-
-
-
 
                     // (ITS Step 0 ) compute original energy
                     {
@@ -202,8 +181,6 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
                         }
                     }   
 
-
-
                     // update non-bonded forces
                     system.updateNonBondForce( nonbond, nblist);            
 
@@ -233,7 +210,6 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
                     // (ITS step 1 ) Apply biasing forces
                     its.applyBiasForce(system, Uorgs.get( Uorgs.size() - 1) );
 
-
                     // forward velocities
                     system.forwardVelocity(integrator);
                     // apply velocity constraints
@@ -241,7 +217,6 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
 
                     // apply temperature coupling
                     thermostat.apply(system);
-
 
                     // print energy (using information in newTraj )
                     if ( tstep % nstenergy == 0 ){
@@ -260,38 +235,29 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
                         mymd.MdIO.printEnergy
                         (system, nonbondEnergy, coulombEnergy, psEnergy);   
                     }   
-
-
                     // update current trajectories from new trajectories
                     system.update();
     
                     if ( tstep%nstxout == 0 ){
                         mymd.MdIO.writeGro(system, ps);
                     }
-                
                 }
                 
                 // (ITS final step)
                 its.printResult(ITSout);
-    
                 
                 ps.close();
                 psEnergy.close();
             }
                 
             catch ( java.io.IOException ex){
-
-
             }
-
-
         }
         // slave nodes
         else{
         
             decomposition = null;
             String slaveName = String.format("slave-%d", rank);
-
 
             /*** change subSystem constructor so it accepts a MdSystem object
                  as an input parameter. SubSystem is needed only if MdSystem object
@@ -320,8 +286,6 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
     
                 }
 
-
-
                 // (II) receives new positions
                 double[] positionArray = new double[3*SUB_CAPACITY];
                 MPI.COMM_WORLD.
@@ -333,7 +297,6 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
                 if ( tstep%nstlist == 0 ){
                     // update local neighbor list
                     nblist.update(subsystem);
-
                 }
 
                 // (ITS 0 step)
@@ -345,18 +308,15 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
                     Send( partialEnergy, 0, 1, MPI.DOUBLE, 0, 99); 
                 } 
 
-
                 // compute non-bonded forces
                 subsystem.updateNonBondForce( nonbond, nblist );
 
                 // PME
 
-
                 // (III) export forces and send them to head-node
                 double[] forceArray = subsystem.exportNewForces(domain);
                 MPI.COMM_WORLD.
                 Send( forceArray, 0, SUB_CAPACITY*3, MPI.DOUBLE, 0, 99); 
-
 
                 if ( tstep % nstenergy == 0 ){
                     double[] partialEnergy = new double[1];
@@ -368,19 +328,8 @@ n0[11] = new BigDecimal("3.82860e+5979", mathset);
             
                 // reset force components
                 subsystem.update();
-
             }
-
-
         }
-
-
-
-
-
-
-
         MPI.Finalize();
-        
     }
 }

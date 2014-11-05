@@ -7,9 +7,18 @@ import mymd.thermostat.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.io.PrintStream;
-
 import mpi.*;
 
+
+/**
+ * Runs a generic MD simulation using the myMD module. This code
+ * runs a simulation parallely on a distributed momory platform(e.g. cluster computer)
+ * using MPJ-Express library. Simulation settings should be specified
+ * in an input prm file but standard GROMACS-like files can be used for force-fields.
+ *
+ * @author Eunsong Choi (eunsong.choi@gmail.com)
+ * @version 1.0
+ */
 public class MpiSkeletonRun{
     public static void main(String[] args){
 
@@ -18,7 +27,6 @@ public class MpiSkeletonRun{
         String inputTopFile = args[5];
         String outputTrajFile = args[6];
         String outputEnergyFile = args[7];
-
 
         MdSystem<LJParticle> system =  GromacsImporter.buildLJParticleSystem
         ("JOB_NAME", inputPrmFile, inputConfFile, inputTopFile);
@@ -40,17 +48,14 @@ public class MpiSkeletonRun{
             system.convertHBondsToConstraints();
         }
     
-
         // gen valocity
         system.genRandomVelocities(T0);
-
 
         /** MPI preparation **/
         MPI.Init(args);
         final int rank = MPI.COMM_WORLD.Rank();
         final int np = MPI.COMM_WORLD.Size();
         
-
         Integrator<MdSystem<LJParticle>> integrator
         = new VelocityVerlet<MdSystem<LJParticle>>(dt);
         
@@ -121,8 +126,6 @@ public class MpiSkeletonRun{
                         Send( positionArray, 0, 3*SUB_CAPACITY, MPI.DOUBLE, proc, 99); 
                     }
 
-
-
                     // update non-bonded forces
                     system.updateNonBondForce( nonbond, nblist);            
 
@@ -157,7 +160,6 @@ public class MpiSkeletonRun{
                     // apply temperature coupling
                     thermostat.apply(system);
 
-
                     // print energy (using information in newTraj )
                     if ( tstep % nstenergy == 0 ){
                         double nonbondEnergy = 0.0;
@@ -183,19 +185,13 @@ public class MpiSkeletonRun{
                     if ( tstep%nstxout == 0 ){
                         mymd.MdIO.writeGro(system, ps);
                     }
-                
                 }
-
                 ps.close();
                 psEnergy.close();
             }
                 
             catch ( java.io.IOException ex){
-
-
             }
-
-
         }
         // slave nodes
         else{
@@ -228,10 +224,7 @@ public class MpiSkeletonRun{
                     
                     // import received array to its local domain
                     domain.importArray( partition );
-    
                 }
-
-
 
                 // (II) receives new positions
                 double[] positionArray = new double[3*SUB_CAPACITY];
@@ -247,18 +240,15 @@ public class MpiSkeletonRun{
 
                 }
 
-
                 // compute non-bonded forces
                 subsystem.updateNonBondForce( nonbond, nblist );
 
                 // PME
 
-
                 // (III) export forces and send them to head-node
                 double[] forceArray = subsystem.exportNewForces(domain);
                 MPI.COMM_WORLD.
                 Send( forceArray, 0, SUB_CAPACITY*3, MPI.DOUBLE, 0, 99); 
-
 
                 if ( tstep % nstenergy == 0 ){
                     double[] partialEnergy = new double[1];
@@ -272,15 +262,7 @@ public class MpiSkeletonRun{
                 subsystem.update();
 
             }
-
-
         }
-
-
-
-
-
-
 
         MPI.Finalize();
         

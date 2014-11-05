@@ -7,7 +7,15 @@ import java.util.List;
 import java.util.ArrayList;
 import java.io.PrintStream;
 
-
+/**
+ * Runs a generic MD simulation using the myMD module. This version works on
+ * a single core. Use MpiSkeletonRun for a parallel computing version. 
+ * Simulation settings should be specified
+ * in an input prm file but standard GROMACS-like files can be used for force-fields.
+ *
+ * @author Eunsong Choi (eunsong.choi@gmail.com)
+ * @version 1.0
+ */
 public class SkeletonRun{
     public static void main(String[] args){
 
@@ -19,7 +27,6 @@ public class SkeletonRun{
 
         MdSystem<LJParticle> system =  GromacsImporter.buildLJParticleSystem
         ("JOB_NAME", inputPrmFile, inputConfFile, inputTopFile);
-
 
         MdParameter prm = system.getParam();
 
@@ -69,8 +76,5 @@ public class SkeletonRun{
         catch ( java.io.IOException ex){
             
         }
-
-
-        
     }
 }
