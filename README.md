@@ -3,6 +3,14 @@
 Java based high-performance generic molecular dynamics simulation code supporting
 standard gromacs input files
 
+
+## Requirements
+
+Parallel computing algorithm is implemented using MPJ-Express library(http://mpj-express.org),
+and Particle-Mesh-Ewald summation for fast long-range interaction requires FFT library 
+provided by JTransforms(https://sites.google.com/site/piotrwendykier/software/jtransforms).
+
+
 ## Usage Example
 To run a regular MD simulation on a single core machine.
 
