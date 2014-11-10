@@ -24,8 +24,8 @@ To run a regular MD simulation on a distributed memory multi-core/multi-node mac
 
 
 ## Features
-### Parallel Computing
-parallel computation on a distrubted memory system(e.g. cluster computer) is supported through MPJ express library. Current version supports domain decomposition which results in better scaling performance. 
+### Domain-based decomposition for efficient Parallel Computing
+parallel computation on a distrubted memory system(e.g. cluster computer) is supported through MPJ express library. Current version supports domain-based decomposition which results in better scaling performance compared to particle-based decomposition.
 ### Compatible with standard Gromacs input files
 can use standard Gromacs like input files (e.g. *.gro, *.itp, *.top) allowing one to use this code to complement package programs.
 ### Customizable
