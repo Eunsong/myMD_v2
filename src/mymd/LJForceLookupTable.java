@@ -1,4 +1,4 @@
-package mymd.nonbond;
+package mymd;
 
 public class LJForceLookupTable extends AbstractLookupTable{
 

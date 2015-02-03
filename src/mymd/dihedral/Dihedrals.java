@@ -9,34 +9,34 @@ import java.util.Iterator;
 
 public class Dihedrals<T extends MdSystem<?>> implements Iterable<Dihedral<T>>{
 
-	private List<Dihedral<T>> dihedrals;
+    private List<Dihedral<T>> dihedrals;
 
-	public Dihedrals(){
-		this.dihedrals = new ArrayList<Dihedral<T>>();
-	}
+    public Dihedrals(){
+        this.dihedrals = new ArrayList<Dihedral<T>>();
+    }
 
-	public void add(Dihedral<T> dihedral){
-		this.dihedrals.add(dihedral);
-	}
+    public void add(Dihedral<T> dihedral){
+        this.dihedrals.add(dihedral);
+    }
 
-	public Dihedral<T> get(int i){
-		return this.dihedrals.get(i);
-	}
+    public Dihedral<T> get(int i){
+        return this.dihedrals.get(i);
+    }
 
-	public int size(){
-		return this.dihedrals.size();
-	}
+    public int size(){
+        return this.dihedrals.size();
+    }
 
-	public Iterator<Dihedral<T>> iterator(){
-		return this.dihedrals.iterator();
-	}
+    public Iterator<Dihedral<T>> iterator(){
+        return this.dihedrals.iterator();
+    }
 
-	public void updateAllForces(T sys){
-		for ( Dihedral<T> dihedral : dihedrals ){
-			dihedral.updateForce(sys);
-		}
-	}
-	
+    public void updateAllForces(T sys){
+        for ( Dihedral<T> dihedral : dihedrals ){
+            dihedral.updateForce(sys);
+        }
+    }
+    
     public double getTotalEnergy(T sys){
         double energy = 0.0;
         for ( Dihedral<T> dihedral : dihedrals ){
@@ -44,7 +44,7 @@ public class Dihedrals<T extends MdSystem<?>> implements Iterable<Dihedral<T>>{
         }
         return energy;
     }
-			
+            
 
 
 

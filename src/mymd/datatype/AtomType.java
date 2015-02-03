@@ -7,7 +7,7 @@ public class AtomType {
     private final int typeId;
     private final double Vii; // sigma, C6 etc
     private final double Wii; // epsilon, C12 etc
-	private final double mass;
+    private final double mass;
     private final double charge;
     private final String ptype;
 

@@ -19,71 +19,71 @@ import java.util.ArrayList;
  */
 public class Topology<T extends MdSystem<?>> {
 
-	private final Bonds<T> bonds;
-	private final Angles<T> angles;
-	private final Dihedrals<T> dihedrals;
-	private final Constraints<T> constraints;
+    private final Bonds<T> bonds;
+    private final Angles<T> angles;
+    private final Dihedrals<T> dihedrals;
+    private final Constraints<T> constraints;
 
-	private Topology(Builder<T> builder){
-		this.bonds = builder.bonds;
-		this.angles = builder.angles;
-		this.dihedrals = builder.dihedrals;
-		this.constraints = builder.constraints;
-	}
-
-
-	public Bonds<T> getBonds(){
-		return this.bonds;
-	}
-
-	public Angles<T> getAngles(){
-		return this.angles;
-	}
-
-	public Dihedrals<T> getDihedrals(){
-		return this.dihedrals;
-	}
-	
-	public Constraints<T> getConstraints(){
-		return this.constraints;
-	}
-
-	public static class Builder<E extends MdSystem<?>>{
-
-		private Bonds<E> bonds;
-		private Angles<E> angles;
-		private Dihedrals<E> dihedrals;
-		private Constraints<E> constraints;
-	
-		public Builder(){
-		}
-
-		public Builder<E> bonds(Bonds<E> bonds){
-			this.bonds = bonds;
-			return this;
-		}
-	
-		public Builder<E> angles(Angles<E> angles){
-			this.angles = angles;
-			return this;
-		}		
-
-		public Builder<E> dihedrals(Dihedrals<E> dihedrals){
-			this.dihedrals = dihedrals;
-			return this;
-		}
-
-		public Builder<E> constraints(Constraints<E> constraints){
-			this.constraints = constraints;
-			return this;
-		}
-
-		public Topology<E> build(){
-			return new Topology<E>(this);
-		}
+    private Topology(Builder<T> builder){
+        this.bonds = builder.bonds;
+        this.angles = builder.angles;
+        this.dihedrals = builder.dihedrals;
+        this.constraints = builder.constraints;
+    }
 
 
-	}
+    public Bonds<T> getBonds(){
+        return this.bonds;
+    }
+
+    public Angles<T> getAngles(){
+        return this.angles;
+    }
+
+    public Dihedrals<T> getDihedrals(){
+        return this.dihedrals;
+    }
+    
+    public Constraints<T> getConstraints(){
+        return this.constraints;
+    }
+
+    public static class Builder<E extends MdSystem<?>>{
+
+        private Bonds<E> bonds;
+        private Angles<E> angles;
+        private Dihedrals<E> dihedrals;
+        private Constraints<E> constraints;
+    
+        public Builder(){
+        }
+
+        public Builder<E> bonds(Bonds<E> bonds){
+            this.bonds = bonds;
+            return this;
+        }
+    
+        public Builder<E> angles(Angles<E> angles){
+            this.angles = angles;
+            return this;
+        }       
+
+        public Builder<E> dihedrals(Dihedrals<E> dihedrals){
+            this.dihedrals = dihedrals;
+            return this;
+        }
+
+        public Builder<E> constraints(Constraints<E> constraints){
+            this.constraints = constraints;
+            return this;
+        }
+
+        public Topology<E> build(){
+            return new Topology<E>(this);
+        }
+
+
+    }
 /*
     // List of angle triplets
     private List<Angle> angles;
@@ -119,6 +119,6 @@ public class Topology<T extends MdSystem<?>> {
         this.constraintGroups = new ArrayList<ConstraintGroup>();
     }
 
-	*/	
+    */  
 
 }

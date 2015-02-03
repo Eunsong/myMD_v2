@@ -1,4 +1,4 @@
-package mymd.nonbond;
+package mymd;
 
 /**
  * AbstractLookupTable abstract class provides skeleton code for implementing
@@ -12,7 +12,7 @@ package mymd.nonbond;
 public abstract class AbstractLookupTable implements LookupTable{
     
     protected final double rc; // cut-off distance
-    protected static final int DEFAULT_TABLE_SIZE = 100000;
+    protected static final int DEFAULT_TABLE_SIZE = 1000000;
     protected final int TABLE_SIZE;
     protected double[] table;
 

@@ -2,17 +2,17 @@ package mymd.datatype;
 
 public class Atom{
 
-	// atom number
+    // atom number
     private int nr;
-	// atom type
+    // atom type
     private String type;
-	// atom name 
+    // atom name 
     private String name;
-	// charge group number
+    // charge group number
     private int cgnr;
-	// atom charge
+    // atom charge
     private double charge;
-	// atom mass
+    // atom mass
     private double mass;
 
     public MdAtom() {

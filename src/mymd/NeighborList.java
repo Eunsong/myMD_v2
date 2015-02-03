@@ -11,9 +11,9 @@ import mymd.datatype.*;
 public interface NeighborList<T extends MdSystem<?>>{
 
 
-	public int get(int i);
+    public int get(int i);
 
-	public int[] getArray(int i);
+    public int[] getArray(int i);
 
 
     /**
@@ -21,7 +21,7 @@ public interface NeighborList<T extends MdSystem<?>>{
      *
      * @return the number of sublists (i.e. number of particle i)
      */
-	public int getSize();
+    public int getSize();
 
 
     /**
@@ -33,10 +33,10 @@ public interface NeighborList<T extends MdSystem<?>>{
      * @param i particle i 
      * @return the number of neighboring particles of the particle i
      */
-	public int getSize(int i);
+    public int getSize(int i);
 
-	public void update(T sys);
+    public void update(T sys);
 
-	public void update(T sys, MdVector[] positions, MdVector box);
+    public void update(T sys, MdVector[] positions, MdVector box);
 
 }

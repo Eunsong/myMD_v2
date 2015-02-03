@@ -12,7 +12,7 @@ import mymd.MdSystem;
  */
 public interface Constraint<T extends MdSystem<?>>{
 
-	public void updatePosition(T sys);
+    public void updatePosition(T sys);
 
-	public void updateVelocity(T sys);
+    public void updateVelocity(T sys);
 }

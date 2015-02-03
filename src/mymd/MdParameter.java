@@ -13,11 +13,11 @@ public class MdParameter{
     // total number of time steps
     private int nsteps;
 
-	// particle system type
-	public enum ParticleSystem{
-		Lennard_Jones, Lennard_Jones_Coulomb, SAPT;
-	}
-//	private final ParticleSystem particleSystem;
+    // particle system type
+    public enum ParticleSystem{
+        Lennard_Jones, Lennard_Jones_Coulomb, SAPT;
+    }
+//  private final ParticleSystem particleSystem;
 
     // coulomb cut-off distance
     private double rc;
@@ -51,7 +51,7 @@ public class MdParameter{
     private int nstvout;
 //  private int nstfout; 
     private int nstenergy;
-	private int nstlog;
+    private int nstlog;
 
 
     // tolerance for Constraint dynamics
@@ -65,8 +65,8 @@ public class MdParameter{
     private String thermostat; // e.g. Berendsen, none 
 
 
-	// LJ input type (sigma-epsilon or C6-C12. Defualt is former)
-	private String LJInputType = "sigma-epsilon";
+    // LJ input type (sigma-epsilon or C6-C12. Defualt is former)
+    private String LJInputType = "sigma-epsilon";
 
     public MdParameter() {
         // default pme setup 
@@ -237,15 +237,15 @@ public class MdParameter{
     }
 
 
-	public void setLJInputType(String type){
-		this.LJInputType = type;
-	}
-	public String getLJInputType(){
-		return this.LJInputType;
-	}
+    public void setLJInputType(String type){
+        this.LJInputType = type;
+    }
+    public String getLJInputType(){
+        return this.LJInputType;
+    }
 
 
-	public void importFromFile(String filename){
+    public void importFromFile(String filename){
 
         // Check whether the input file exists and is readable
         File file = new File(filename);
@@ -347,13 +347,13 @@ public class MdParameter{
                         System.exit(0);
                     }
                 }
-				else if ( tokens[0].equals("LJInputType")) {
-					if ( !tokens[2].equals("sigma-epsilon") && !tokens[2].equals("C6-C12") ){
-						System.out.println("Not supported LJ Input Type " + tokens[2] );
-						System.exit(0);
-					}
-					setLJInputType( tokens[2]);
-				}
+                else if ( tokens[0].equals("LJInputType")) {
+                    if ( !tokens[2].equals("sigma-epsilon") && !tokens[2].equals("C6-C12") ){
+                        System.out.println("Not supported LJ Input Type " + tokens[2] );
+                        System.exit(0);
+                    }
+                    setLJInputType( tokens[2]);
+                }
                 else if ( tokens[0].equals("")) {
                     // empty line. do nothing
                 }

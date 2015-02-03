@@ -1,4 +1,4 @@
-package mymd.nonbond;
+package mymd;
 
 /**
  * a public interface which provides an API for lookup tables
