@@ -1,22 +1,24 @@
 ;
-;	File 'topol.top' was generated
-;	By user: jagannath (515)
-;	On host: yethiraj01
-;	At date: Thu Apr 28 20:18:51 2011
+; Example topology file for MARTINI 2.0
 ;
-;	This is your topology file
-;	PEO25_W
-;
-; Include forcefield parameters
-#include "ffoplsaa.itp"
-#include "bmim.itp"
-#include "bf4.itp"
+
+; First include the file containing all particle definitions,
+; the interaction matrix, plus the topology for water.
+
+#include "martini_v2.1.itp"
+
+; Then include the file(s) containing the topologies of other
+; molecules present in your system.
+
+#include "peo10_martini.itp"
+
+; Define a name for your system
 
 [ system ]
-; Name
-BMIMBF4
+PEO10 + WATER (MARTINI) 
+
+; Define the composition of your system
+; The molecule names should correspond to those defined in the itp file(s).
 
 [ molecules ]
-; Compound        #mols
-BMIM			  200
-BF4				  200
+W 400

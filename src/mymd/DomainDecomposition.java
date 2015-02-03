@@ -26,7 +26,7 @@ public class DomainDecomposition<E extends MdSystem<?>> implements Decomposition
 
 	private final int totalSystemSize;
 	private double head_node_load = 0.8;
-	private static final double CAPACITY_FACTOR = 1.4;
+	private static final double CAPACITY_FACTOR = 5.0;
 	private final int nPartition;
 	private List<Domain> domains;
 	private final double rlist;

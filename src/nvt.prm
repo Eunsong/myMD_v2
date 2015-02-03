@@ -1,20 +1,20 @@
 ; simulation run parameters
 
 ; time step
-dt			=		0.002 ; (in ps)
-nsteps		=		100000
+dt			=		0.02 ; (in ps)
+nsteps		=		1000000
 
 
 ; neighbor list
 hashTS		=		10	  ; size of the hash table for neighbor search
 rlist		=		1.4   ; neighbor list cut-off
-nstlist		=		100	  ; neighbor list update frequency
+nstlist		=		10	  ; neighbor list update frequency
 
 
 ; output control
-nstxout		=		1000
+nstxout		=		100
 nstvout		=		10
-nstenergy	=		10000
+nstenergy	=		100
 
 
 ; coulomb interaction
@@ -29,7 +29,7 @@ beta_pme	=		2.2310; (=1.0/0.448228) ;pme Gaussian width
 ; vdw interaction
 vdwType		=		cut-off
 rvdw		=		1.4   ; rvdw cut-off
-LJInputType =       sigma-epsilon ; use C6-C12 otherwise 
+LJInputType =     C6-C12 ;  sigma-epsilon ; use C6-C12 otherwise 
 
 
 ; temperature coupling

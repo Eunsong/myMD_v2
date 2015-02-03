@@ -62,8 +62,6 @@ public class DomainNeighborList<T extends MdSystem<?>>
 		int domainCapacity = domain.getDomainCapacity();
 		for ( int i = 0; i < domainSize; i++){
 			int iActual = particleList[i];
-//System.out.println("i = " + i);
-//System.out.println("iActual = " + iActual);
 			MdVector Ri = positions[iActual];
 			super.nblist.get(i).reset();
 			super.nblist.get(i).seti(iActual);
@@ -72,16 +70,6 @@ public class DomainNeighborList<T extends MdSystem<?>>
 
 				int jActual = particleList[j];
 
-//int ni = sys.getParticle(iActual).getId();
-//int nj = sys.getParticle(jActual).getId();
-
-//if ( jActual < iActual + 10){
-//System.out.println("iActual = " + iActual);
-//System.out.println("jActual = " + jActual);
-
-//System.out.println("ni = " + ni);
-//System.out.println("nj = " + nj);
-//}
 				// check for exclusion 
 				if ( sys.getParticle(iActual).getMoleculeNumber()
 					 == sys.getParticle(jActual).getMoleculeNumber() ){
@@ -89,11 +77,6 @@ public class DomainNeighborList<T extends MdSystem<?>>
 					int ni = sys.getParticle(iActual).getId();
 					int nj = sys.getParticle(jActual).getId();
 
-//System.out.println("iActual = " + iActual);
-//System.out.println("jActual = " + jActual);
-
-//System.out.println("ni = " + ni);
-//System.out.println("nj = " + nj);
 					MoleculeType moleType = sys.getParticle(iActual).getMoleculeType();
 					if ( moleType.checkExclusion(ni, nj) ){
 						continue;
@@ -112,17 +95,6 @@ public class DomainNeighborList<T extends MdSystem<?>>
 			// inter-domain pairs (domain-buffer pairs)
 			for ( int j = domain.firstBuffer(); j < domain.lastBuffer(); j++){
 				int jActual = particleList[j];
-
-
-//int ni = sys.getParticle(iActual).getId();
-//int nj = sys.getParticle(jActual).getId();
-
-//System.out.println("iActual = " + iActual);
-//System.out.println("jActual = " + jActual);
-
-//System.out.println("ni = " + ni);
-//System.out.println("nj = " + nj);
-
 
 				// check for exclusion 
 				if ( sys.getParticle(iActual).getMoleculeNumber()
